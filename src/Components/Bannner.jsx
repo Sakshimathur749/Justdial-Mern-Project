@@ -6,9 +6,9 @@ import '../css/components.css'
 const Bannner = () => {
   return (
     <div className="intro-header">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-12">
+      <Container>
+        <Row>
+          <Col lg='12'>
             <div className="intro-message">
               <h1>
                 Discover Your City
@@ -44,9 +44,9 @@ const Bannner = () => {
                   </li>
                 </ul>
             </div>
-          </div>
-        </div>
-      </div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

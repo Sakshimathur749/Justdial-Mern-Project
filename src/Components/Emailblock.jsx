@@ -42,7 +42,7 @@ const Emailblock = () => {
           id="newsletter_form"
           method="POST"
           action="https://buyphpcode.com/justdialclone/newsletter"
-          enctype="multipart/form-data"
+          encType="multipart/form-data"
         >
           <input
             type="hidden"

@@ -41,7 +41,7 @@ const Subcategories = () => {
                 <div className="bor_head">&nbsp;</div>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-142">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -53,7 +53,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-143">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -65,7 +65,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-144">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -77,7 +77,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-145">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -89,7 +89,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-146">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -101,7 +101,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-147">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -113,7 +113,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-148">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -125,7 +125,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-149">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -137,7 +137,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-150">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
@@ -149,7 +149,7 @@ const Subcategories = () => {
                 </ul>
                 <ul className="">
                   <li className="brdr has-sub">
-                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-151">
+                    <a href="/categories/product">
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""

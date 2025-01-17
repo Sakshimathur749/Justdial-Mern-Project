@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Row,
-  Col,
-  Container,
-  Card,
-  CardHeader,
-  CardBody,
-} from "react-bootstrap";
+import {Row,Col,Container,} from "react-bootstrap";
 import Image from "../assets/banner.webp";
 import "../css/common.css";
 import "../css/card.css";
