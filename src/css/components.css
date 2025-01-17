@@ -1,0 +1,895 @@
+/* Service page  */
+.catetory-block {
+    background: #e7e7e7 url('https://buyphpcode.com/justdialclone/assets/front/images/patt-bg.png');
+    background-position: center center;
+    background-repeat: repeat;
+    padding: 50px 0;
+    border-top: 1px solid #e7d09c;
+}
+.category-head h3 {
+    text-align: center;
+    font-family: 'noto_sansbold';
+    font-size: 36px;
+    color: #5c5c5c;
+}
+.category-head span {
+    display: block;
+    height: 5px;
+    width: 40px;
+    border-radius: 10px;
+    margin: 20px auto 50px;
+}
+.category-head {
+    text-align: center;
+}
+.cate-count-block ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: inline-grid;
+    grid-template-columns: repeat(5, minmax(-webkit-calc((100% / 5) - 15px), 1fr));
+    grid-gap: 15px;
+    width: 100%;
+}
+.cate-count-block ul li a {
+    float: left;
+    background: #fff;
+    padding: 0px 10px 14px 16px;
+    max-width: 273px;
+    width: 100%;
+    margin: 0 6px 12px 6px;
+    border: 1px solid #ebebeb;
+    box-shadow: 0 1px 0 #cacaca;
+}
+.cate-count-block ul li a:hover {
+    background: #f9f9f9;
+}
+.cate-img {
+    margin-right: 8px;
+    display: inline-block;
+}
+.cate-img>img {
+    vertical-align: sub;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.cate-txt {
+    margin-right: 2px;
+    font-size: 16px;
+    color: #8e8e8e;
+    font-family: 'varela_roundregular';
+    display: inline-block;
+    max-width: 163px;
+    width: 100%;
+    padding-top: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.cate-count {
+    font-family: 'varela_roundregular';
+    color: #8e8e8e;
+    font-size: 14px;
+    display: inline-block;
+}
+.mar-none {
+    margin: 0 !important;
+}
+.all-cate-btn {
+    max-width: 222px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+.all-cate-btn button {
+    border: none;
+    height: 44px;
+    width: 100%;
+    border-radius: 30px;
+    font-family: 'varela_roundregular';
+    font-size: 16px;
+    color: #ffffff;
+}
+.all-cate-btn button:hover {
+    background: #e6ab2a;
+}
+.btns-widt {
+    max-width: 290px !important;
+}
+
+/* SearchBanner Components css */
+.search_bg {
+    background: url("https://buyphpcode.com/justdialclone/assets/front/images/search_bg.jpg") repeat scroll 0px 0px
+}
+
+/* Breadcrumb css */
+.gry_container hr {
+    border: 2px solid #d8d8d8;
+    margin-bottom: 22px;
+    margin-top: 5px;
+    padding: 0;
+}
+
+.gry_container .breadcrumb {
+    color: #707070;
+    border-radius: 4px;
+    list-style: outside none none;
+    margin-bottom: 2px;
+    padding: 25px 0px 6px 0px;
+}
+
+.gry_container .breadcrumb>li+li::before {
+    color: #707070;
+    content: "/ ";
+    padding: 0 5px;
+}
+
+.gry_container .breadcrumb .active {
+    color: #f9a820;
+}
+
+.gry_container .breadcrumb a {
+    color: #707070;
+}
+
+/* Subcategories Components css */
+.my_whit_bg {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    padding: 20px;
+}
+
+.title_acc {
+    color: #8e8c8c;
+    font-family: "noto_sansregular", sans-serif;
+    font-size: 20px;
+    margin-bottom: 21px;
+}
+
+.sidebar-nav {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #fff;
+    border-color: #fcb339 #e1e1e1 #e1e1e1;
+    border-image: none;
+    border-style: solid;
+    border-width: 3px 1px 1px;
+    list-style: outside none none;
+    margin: 0 0 15px;
+    padding: 0;
+    top: 0;
+    width: 100%;
+    position: relative;
+}
+
+.sidebar-brand {
+    color: #414141;
+    font-family: "noto_sansregular", sans-serif;
+    font-size: 20px;
+    padding: 9px 13px;
+}
+
+.sidebar-brand>img {
+    margin-right: 9px;
+}
+
+.bor_head {
+    background: #6eab40;
+    height: 3px;
+    margin-bottom: 13px;
+    margin-top: 4px;
+    width: 70px;
+    margin-left: 18px;
+}
+
+.sidebar-nav li {
+    border-bottom: 1px solid #eee;
+    line-height: normal;
+    padding: 7px 5px 6px 12px;
+    position: relative;
+    color: #777777;
+}
+
+.sidebar-nav li a {
+    color: #777777;
+    display: block;
+    font-size: 14px;
+    overflow: hidden;
+    text-decoration: none !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    width: 100%;
+}
+.brdr.has-sub img {
+    display: inline-block;
+    float: left;
+    margin-right: 6px;
+}
+.slide_m>ul>li.has-sub>a span {
+    display: block;
+    background: url("https://buyphpcode.com/justdialclone/assets/front/images/icon_plus.png") no-repeat scroll right 5% center;
+}
+hr.nn {
+    border-color: #ddd;
+    border-width: 2px;
+    margin: -1px 0 5px;
+}
+
+/* Banner components css */
+.intro-header {
+    padding-top: 120px;
+    background: url('https://buyphpcode.com/justdialclone/assets/front/images/intro-bg.jpg') no-repeat center center;
+    background-size: cover;
+    text-align: center;
+}
+
+.intro-header .intro-message {
+    padding-bottom: 15%;
+    padding-top: 15%;
+    position: relative;
+}
+
+.intro-message>h1 {
+    font-size: 50px;
+    margin: 0;
+    text-shadow: 1px 0px 7px rgba(0, 0, 0, 0.3);
+    font-family: 'noto_sansbold';
+    color: #fff;
+}
+
+.intro-message>h1>span {
+    background: #fff;
+    height: 4px;
+    width: 60px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 24px;
+}
+
+.list-inline {
+    margin-top: 60px;
+}
+
+.list-inline>li {
+    max-width: 665px;
+    width: 100%;
+}
+
+.search-txt::-moz-placeholder {
+    color: #bbbbbb;
+}
+
+.form-group {
+    width: 100% !important;
+    background: white !important;
+    border-radius: 24px !important;
+    display: flex !important;
+    border: none !important;
+    border: medium none;
+    margin-right: 20%;
+    border-radius: 24px;
+    font-size: 16px;
+    min-height: 53px;
+    margin-left: 20%;
+}
+
+.list-inline>li .form-control-feedback {
+    width: 60px;
+    line-height: 54px;
+    background-color: transparent;
+    border: none;
+    pointer-events: visible;
+}
+
+.form-control-map {
+    display: block;
+    height: 34px;
+    line-height: 34px;
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    text-align: center;
+    top: 8px;
+    width: 34px;
+    z-index: 2;
+}
+
+.search-txt {
+    width: 100% !important;
+    padding: 16px 15px 15px 0px;
+    outline: none;
+    border: none;
+    background: none !important;
+}
+
+.search-txt.city_finder.ui-autoComplete-input {
+    background: url("../images/home_map.png");
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-left: 24px;
+}
+
+.form-control-feedback {
+    top: -4px;
+    border: none;
+    align-content: center;
+    justify-items: center;
+    padding: 15px;
+    background: none !important;
+}
+
+.search-txt.city_finder {
+    max-width: 172px;
+    width: 100%;
+    border-right: 1px solid #bbbbbb !important;
+}
+
+.list-inline>li .search-txt {
+    border: 0 none;
+    display: inline-block;
+    float: left;
+    height: 30px;
+    margin-left: 15px;
+    text-align: left;
+}
+
+.list-inline>li .form-control-map {
+    background-color: transparent;
+    border: medium none;
+    line-height: normal;
+    pointer-events: visible;
+    width: 60px;
+}
+
+.has-feedback {
+    padding-right: 30px;
+}
+
+.search_sub .has-feedback .search-txt {
+    max-width: 59%;
+    width: 100%;
+}
+
+/* EmailBlock Component Css */
+.email-block {
+    height: 300px;
+    background-image: url('https://buyphpcode.com/justdialclone/assets/front/images/email-img.jpg');
+    box-shadow: 0 5px 0 #da7d09;
+    padding: 55px 0;
+    margin-top: 40px;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.email-content {
+    font-family: 'noto_sansregular';
+    font-size: 36px;
+    color: #ffffff;
+    max-width: 828px;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto 20px;
+    text-shadow: -2px 4px 5px rgba(0, 0, 0, 0.4);
+}
+
+.email-textbox {
+    max-width: 368px;
+    width: 100%;
+    margin: 0 auto;
+    height: 46px;
+    position: relative;
+}
+
+.email-textbox input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 30px;
+    color: #a5a5a5;
+    font-size: 14px;
+    font-family: 'varela_roundregular';
+    padding: 0 50px;
+}
+
+.email-textbox img {
+    position: absolute;
+    top: 16px;
+    left: 18px;
+}
+
+.email-textbox i {
+    color: #5ead40;
+    font-size: 23px;
+}
+
+.email-textbox button {
+    position: absolute;
+    top: 11px;
+    right: 15px;
+    background: none;
+    border: none;
+}
+
+/* Service page  */
+.catetory-block {
+    background: #e7e7e7 url('https://buyphpcode.com/justdialclone/assets/front/images/patt-bg.png');
+    background-position: center center;
+    background-repeat: repeat;
+    padding: 50px 0;
+    border-top: 1px solid #e7d09c;
+}
+
+.category-head h3 {
+    text-align: center;
+    font-family: 'noto_sansbold';
+    font-size: 36px;
+    color: #5c5c5c;
+}
+
+.category-head span {
+    display: block;
+    height: 5px;
+    width: 40px;
+    border-radius: 10px;
+    background: #5ead40;
+    margin: 20px auto 50px;
+}
+
+.category-head {
+    text-align: center;
+}
+
+.cate-count-block ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.cate-count-block ul li a {
+    float: left;
+    background: #fff;
+    padding: 0px 10px 14px 16px;
+    max-width: 273px;
+    width: 100%;
+    margin: 0 6px 12px 6px;
+    border: 1px solid #ebebeb;
+    box-shadow: 0 1px 0 #cacaca;
+}
+
+.cate-count-block ul li a:hover {
+    background: #f9f9f9;
+}
+
+.cate-img {
+    margin-right: 8px;
+    display: inline-block;
+}
+
+.cate-img>img {
+    vertical-align: sub;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.cate-txt {
+    margin-right: 2px;
+    font-size: 16px;
+    color: #8e8e8e;
+    font-family: 'varela_roundregular';
+    display: inline-block;
+    max-width: 163px;
+    width: 100%;
+    padding-top: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.cate-count {
+    font-family: 'varela_roundregular';
+    color: #8e8e8e;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.mar-none {
+    margin: 0 !important;
+}
+
+.all-cate-btn {
+    max-width: 222px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.all-cate-btn button {
+    background: #4d9f2e;
+    border: none;
+    height: 44px;
+    width: 100%;
+    border-radius: 30px;
+    font-family: 'varela_roundregular';
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.all-cate-btn button:hover {
+    background: #e6ab2a;
+}
+
+.btns-widt {
+    max-width: 290px !important;
+}
+
+/* HowitsWork Component Css */
+.how-it-work-block {
+    background-image: url('https://buyphpcode.com/justdialclone/assets/front/images/map-img.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    padding: 10px 0 40px;
+    margin-top: 30px;
+}
+
+.what-to-do {
+    text-align: center;
+}
+
+.what-to-do h4 a {
+    font-size: 25px;
+    color: #121212;
+    font-family: 'varela_roundregular';
+    margin-bottom: 15px;
+    transition: 0.5s;
+}
+
+.what-to-do h4 a:hover {
+    color: #e6ab2a;
+}
+
+.what-to-do h6 {
+    font-size: 14px;
+    font-family: 'varela_roundregular';
+    color: #949494;
+    line-height: 22px;
+    height: 65px;
+    overflow: hidden;
+}
+
+.over-img {
+    transition: all 0.2s linear;
+}
+
+.over-img:hover {
+    transform: scale(1.1, 1.1);
+}
+
+.cate-addre-block-two {
+    margin: 0 auto;
+    width: 45px;
+}
+
+.f1_container {
+    margin: -77px auto 80px;
+    width: 44px;
+    z-index: 1;
+}
+
+.f1_container {
+    perspective: 1000;
+}
+.face {
+    position: absolute;
+    height: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.f1_container-tow {
+    width: 91px;
+    margin: 0 auto;
+}
+
+.f1_container-tow {
+    perspective: 1000;
+}
+
+.f1_container-tow .face {
+    position: relative;
+    transition: 0.5s;
+    height: 120px;
+    padding-top: 10px;
+}
+
+.f1_container-tow .face:hover {
+    padding-top: 0;
+}
+
+.how-it span {
+    margin-bottom: 40px;
+}
+
+.first-cate-white:hover .cate-addre-block-two {
+    -webkit-animation: bounce 3s infinite;
+    animation: bounce 3s infinite;
+}
+
+/* TopCities Component Css */
+.resp-tab-content-active {
+    display: block;
+}
+
+.resp-accordion:first-child {
+    border-top: 1px solid #c1c1c1 !important;
+}
+
+.first-cate-img {
+    border-radius: 15px 15px 0 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.first-cate-img img {
+    border-radius: 15px 15px 0 0;
+    width: 100%;
+    height: 175px;
+}
+
+.first-cate-white {
+    background: #ffffff;
+    padding: 20px 25px 0px;
+    border-radius: 0 0 15px 15px;
+    position: relative;
+}
+
+.resta-name {
+    text-align: center;
+}
+
+.resta-name span {
+    display: block;
+    height: 4px;
+    width: 31px;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+.resta-name h6 a {
+    color: #434343;
+    display: block;
+    font-family: "varela_roundregular";
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.5s ease 0s;
+    white-space: nowrap;
+}
+
+.resta-name h6 a:hover {
+    color: #e6ab2a;
+}
+
+.resta-content {
+    text-align: center;
+    color: #7f7f7f;
+    font-size: 14px;
+    font-family: 'varela_roundregular';
+    margin: 17px 0 0;
+    height: 43px;
+    overflow: hidden;
+}
+
+.resta-rating-block {
+    margin: 10px auto 0;
+    max-width: 106px;
+    width: 100%;
+    text-align: center;
+}
+
+.resta-rating-block i {
+    font-size: 17px;
+    color: #B9B1B1;
+    margin-right: 2px;
+}
+
+.star-acti {
+    color: #e6ab2a !important;
+}
+
+.resta-rating-block11 {
+    max-width: 228px;
+    width: 100%;
+}
+
+.resta-rating-block11 i {
+    font-size: 20px;
+    color: #7f7f7f;
+    margin-right: 2px;
+    vertical-align: super;
+}
+
+.resta-rating-block12 i {
+    color: #ffffff;
+    font-size: 17px;
+    margin-right: 2px;
+}
+
+.resta-rating-block12 {
+    margin-bottom: 10px;
+}
+
+.star-acti {
+    color: #e6ab2a !important;
+}
+
+.dtls-pg {
+    font-size: 18px !important;
+    display: inline;
+}
+
+.exp-category-head h3 {
+    text-align: center;
+    font-family: 'noto_sansbold';
+    font-size: 36px;
+    color: #5c5c5c;
+}
+
+.exp-category-head span {
+    display: block;
+    height: 5px;
+    width: 40px;
+    border-radius: 10px;
+    margin: 20px auto 30px;
+}
+
+/* Responsive CSS */
+/* Large Desktops (up to 1200px) */
+@media (max-width: 1200px) {
+    .intro-message > h1 {
+        font-size: 45px;
+    }
+
+    .form-group {
+        margin-left: 20%;
+        margin-right: 20%;
+    }
+
+    .list-inline > li .form-control-feedback {
+        width: 60px;
+    }
+}
+
+/* Desktops (up to 992px) */
+@media (max-width: 992px) {
+    /* Banner Component */
+    .intro-message > h1 {
+        font-size: 40px;
+    }
+    .form-group {
+        margin-left: 15%;
+        margin-right: 15%;
+    }
+    .list-inline > li .form-control-feedback {
+        width: 50px;
+        line-height: 45px;
+    }
+    .select {
+        width: 100%;
+        margin-top: 10px;
+        background: none !important;
+        border-right: none !important;
+        border-bottom: 1px solid #bbbbbb !important ;
+    }
+    .form-group {
+        flex-direction: column;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 10px;
+    }
+    .list-inline > li .search-txt {
+        width: 100%;
+    }
+
+    /* Service Components */
+    .cate-count-block ul {
+        grid-template-columns: repeat(3, minmax(0, 1fr)); 
+    }
+}
+
+/* Tablets (576px to 768px) */
+@media (max-width: 768px) {
+    /* Banner Component */
+    .intro-message > h1 {
+        font-size: 40px;
+    }
+    .list-inline > li .search-txt {
+        width: 100%; 
+    }
+    .list-inline > li .form-control-feedback {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .form-group svg {
+        margin-left: 0;
+    }
+    .list-inline > li .search-txt {
+        width: 100%; 
+    }
+    .form-group {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .select {
+        margin-top: 10px;
+    }
+
+    /* Footer Component*/
+    .grid-columns {
+        grid-template-columns: 1fr 1fr; 
+      }
+      .footer .footer-top {
+        padding: 30px 20px;
+      }    
+      .footer .social-links a {
+        width: 35px;
+        height: 35px;
+      }
+    
+      /* Service Component */
+      .cate-count-block ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    }
+    .all-cate-btn {
+        max-width: 280px; 
+    }
+}
+
+@media (max-width: 576px) {
+   /* Banner Component */
+    .intro-message > h1 {
+        font-size: 30px;
+    }
+    .list-inline > li .search-txt {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .list-inline > li .form-control-feedback {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .select {
+        width: 100%;
+        margin-top: 10px;
+    }
+   .form-group svg {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    /* Footer Component */
+    .grid-columns {
+        grid-template-columns: 1fr; 
+      }
+      .footer .footer-top {
+        padding: 20px;
+      }
+      .footer h4 {
+        font-size: 14px;
+      }
+      .footer .social-links a {
+        width: 30px;
+        height: 30px;
+      }    
+
+      /* Service Component */
+      .cate-count-block ul {
+        grid-template-columns: 1fr; 
+    }
+    .all-cate-btn {
+        max-width: 100%; 
+    }
+}

@@ -1,0 +1,33 @@
+/* Header or Navbar */
+.nav-link{
+    justify-items: center;
+    align-self: center;
+}
+.flag-select{
+    padding-bottom: 0px !important;
+}
+@media screen and (max-width:1200px)  {
+    .navbar-nav{
+        display: none !important;
+    }
+    .nav-link{
+        display: none !important;
+    }
+    .navbar-toggler{
+        position: absolute;
+        right: 30px;
+    }
+    .navbar-brand{
+        position: absolute;
+        left: 40px;
+    }
+    .nav-right{
+        position: absolute;
+        right: 15%;
+    }
+}
+@media screen and (max-width: 700px)  {
+    .nav-right{
+        display: none !important;
+    }
+}
