@@ -1,6 +1,5 @@
 import React from "react";
 import {Row,Col,Container,} from "react-bootstrap";
-import Image from "../assets/banner.webp";
 import "../css/common.css";
 import "../css/card.css";
 const Cards = () => {
@@ -9,7 +8,7 @@ const Cards = () => {
       <Container>
         <Row className="justify-content-between">
           <Col lg="5" className="card-container">
-            <h2>Catering</h2><hr/>
+            <h3>Catering</h3><hr/>
             <Row className="card-grid">
               <Col lg="5" className="card-box">
                 <img
@@ -41,8 +40,8 @@ const Cards = () => {
               </Col>
             </Row>
           </Col>
-          <Col lg="5" className="card-container">
-            <h2>Catering</h2><hr/>
+          {/* <Col lg="5" className="card-container">
+            <h3>Catering</h3><hr/>
             <Row className="card-grid">
               <Col lg="5" className="card-box">
                 <img
@@ -73,7 +72,7 @@ const Cards = () => {
                 <h5>Heading 1</h5>
               </Col>
             </Row>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </div>

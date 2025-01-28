@@ -4,6 +4,9 @@
     --body-font-family: sans-serif ,Arial, Helvetica;
     --bg-yellow:#e6ab2a;
     --bg-gray:#676879;
+    --text-gray:#8e8e8e;
+    --heading-gray:#5c5c5c;
+    --heading-sub:#434343;
     /* --bs-yellow: #d89605; */
     --ztc-text-text-1: #0D0E10;
         --ztc-text-text-2: #fff;
@@ -383,26 +386,41 @@ body{
      font-style: normal;
      line-height: inherit
  }
-
- ol,
- ul {
-     padding-left: 2rem
- }
-
- dl,
- ol,
- ul {
-     margin-top: 0;
-     margin-bottom: 1rem
- }
-
- ol ol,
- ol ul,
- ul ol,
- ul ul {
-     margin-bottom: 0
- }
-
+ label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input[type="search"] {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+  }
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin: 4px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
+  }
+  input[type="file"] {
+    display: block;
+  }
+  input[type="range"] {
+    display: block;
+    width: 100%;
+  }
+  select[multiple],
+  select[size] {
+    height: auto;
+  }
+  input[type="file"]:focus,
+  input[type="radio"]:focus,
+  input[type="checkbox"]:focus {
+    outline: thin dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
  dt {
      font-weight: 700
  }
@@ -450,7 +468,6 @@ body{
  }
 
  a {
-     color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
      text-decoration: underline
  }
 
@@ -2680,43 +2697,59 @@ body{
      }
  }
 
- .form-range::-moz-range-thumb:active {
-     background-color: #b6d4fe
- }
-
- .form-range::-moz-range-track {
-     width: 100%;
-     height: .5rem;
-     color: transparent;
-     cursor: pointer;
-     background-color: var(--bs-secondary-bg);
-     border-color: transparent;
-     border-radius: 1rem
- }
-
- .form-range:disabled {
-     pointer-events: none
- }
-
- .form-range:disabled::-webkit-slider-thumb {
-     background-color: var(--bs-secondary-color)
- }
-
- .form-range:disabled::-moz-range-thumb {
-     background-color: var(--bs-secondary-color)
- }
-
- .form-floating {
-     position: relative
- }
-
- .form-floating>.form-control,
- .form-floating>.form-control-plaintext,
- .form-floating>.form-select {
-     height: calc(3.5rem + calc(var(--bs-border-width) * 2));
-     min-height: calc(3.5rem + calc(var(--bs-border-width) * 2));
-     line-height: 1.25
- }
+ .form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+         -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+  .form-control:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+  }
+  .form-control::-moz-placeholder {
+    color: #999;
+    opacity: 1;
+  }
+  .form-control:-ms-input-placeholder {
+    color: #999;
+  }
+  .form-control::-webkit-input-placeholder {
+    color: #999;
+  }
+  .form-control::-ms-expand {
+    background-color: transparent;
+    border: 0;
+  }
+  .form-control[disabled],
+  .form-control[readonly],
+  fieldset[disabled] .form-control {
+    background-color: #eee;
+    opacity: 1;
+  }
+  .form-control[disabled],
+  fieldset[disabled] .form-control {
+    cursor: not-allowed;
+  }
+  textarea.form-control {
+    height: auto;
+  }
+  input[type="search"] {
+    -webkit-appearance: none;
+  }
 
  .form-floating>label {
      position: absolute;
@@ -4103,12 +4136,7 @@ body{
     color: var(--bg-black);
     background-color: var(--bg-white);
     position: relative;
-  }
-  
-  .footer .footer-top {
-    padding: 50px 20px 20px 20px;
-  }
-  
+  }  
   .footer-about p{
     color: var(--bg-gray);
   }
@@ -4269,8 +4297,9 @@ body{
  a{
     text-decoration: none;
  }
+ 
  .select{
-    padding: 15px 0px 15px 5px;
+    padding: 15px 0px -5px 5px;
     outline: none;
     border: none;
     font-size: 16px;
@@ -4354,17 +4383,6 @@ body{
      margin-top: -3px;
      margin-right: 3px
  }
-
- .blog .blog-box .heading h4 a {
-     display: inline-block;
-     font-size: 20px;
-     line-height: 28px;
-     font-weight: 700;
-     color: var(--ztc-text-text-1);
-     padding: 16px 0;
-     transition: all .4s
- }
-
  .blog .blog-box .heading h4 a:hover {
      color: var(--bg-yellow) !important
  }
@@ -4537,17 +4555,6 @@ body{
      margin-top: -3px;
      margin-right: 3px
  }
-
- .blog .blog-box .heading h4 a {
-     display: inline-block;
-     font-size: var(--f-fs-font-fs20);
-     line-height: var(--f-fs-font-fs28);
-     font-weight: var(--f-fw-blod);
-     color: var(--ztc-text-text-1);
-     padding: 16px 0;
-     transition: all .4s
- }
-
  .blog .blog-box .heading h4 a:hover {
      color: var(--ztc-bg-main-bg-1)
  }
@@ -4655,8 +4662,14 @@ body{
      transition: all .6s linear;
      background-color: transparent
  }
- .card-container h2:hover{
+ .card-container h3:hover{
     color:var(--bg-yellow);
+ }
+ .srp-listing .categories a,.what-to-do h6, .card-container h3,.resta-content,#search-filter-and-sort .sort, .sidebar-brand,.sidebar-nav li a {
+    color: var(--heading-sub);
+ }
+ .card-box h5{
+    color: var(--text-gray);
  }
 .b-image{
     background-image: url('https://buyphpcode.com/justdialclone/assets/front/images/patt-bg.png') ;
@@ -4681,4 +4694,20 @@ body{
 }
 .exp-category-head span{
     background: var(--bg-yellow) !important;
+}
+.bor_head,#food-search-form .yellow-btn,.rank_name > div,.submit-btn button,.srp-listing .action{
+    background: var(--bg-yellow) !important;
+}
+.business-name,.srp-listing .n,.custom-filters,.blog .blog-box .heading h4 a,.what-to-do h4 a,.resta-name h6 a,.category-head h3,.exp-category-head h3,#search-filter-and-sort a,.filters-component .slim-filters .buttons label>span {
+    color: var(--heading-gray) !important;
+}
+.cate-txt,.title_acc{
+    color: var(--text-gray) !important;
+}
+.open-status ,.custom-filters a,.srp-listing .links a , .menu,#main-aside .search-disclosure .trigger-btn{
+    color: var(--bg-yellow);
+}
+.submit-btn button:hover{
+    background-color: var(--bg-white) !important;
+    color: var(--bg-yellow) !important;
 }

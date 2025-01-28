@@ -5,22 +5,7 @@ import { Col, Container, Row } from 'react-bootstrap'
 
 const Subcategories = () => {
   return (
-    <div className="gry_container">
-      <Container>
-        <div className="row">
-          <div className="col-sm-12 col-md-12 col-lg-12">
-            <ol className="breadcrumb">
-              <span>You are here:</span>
-              <li>
-                <a href="https://buyphpcode.com/justdialclone">Home</a>
-              </li>
-              <li className="active">Auto care </li>
-            </ol>
-          </div>
-        </div>
-      </Container>
-      <hr />
-
+    <div className="gry_container mb-5" >
       <Container>
         <Row>
           <Col lg='1'>&nbsp;</Col>

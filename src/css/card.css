@@ -9,12 +9,11 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.card-container h2 {
+.card-container h3 {
     text-align: left;
     cursor: pointer;
     padding: 10px 10px 0px 20px;
     font-size: 2rem;
-    color: #333;
 }
 
 .card-container hr{
@@ -55,6 +54,5 @@
 
 .card-box h5 {
     font-size: 1.2rem;
-    color: #333;
     font-weight: 400;
 }

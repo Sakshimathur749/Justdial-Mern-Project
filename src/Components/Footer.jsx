@@ -13,12 +13,12 @@ Footer = () => {
         <span className="sitename">Shuffle</span>
       </a>
       <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
-      <div className="social-links d-flex mt-4">
+      {/* <div className="social-links d-flex mt-4">
         <a href=""><i className="bi bi-twitter-x"></i></a>
         <a href=""><i className="bi bi-facebook"></i></a>
         <a href=""><i className="bi bi-instagram"></i></a>
         <a href=""><i className="bi bi-linkedin"></i></a>
-      </div>
+      </div> */}
     </Col>
 
     <Col className="footer-links">

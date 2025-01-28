@@ -43,7 +43,7 @@ const Blogs = () => {
               </div>
             </div>
           </Col>
-          <Col lg="4">
+          {/* <Col lg="4">
             <div
               className="blog-box"
               data-aos="zoom-in-up"
@@ -112,7 +112,7 @@ const Blogs = () => {
                 </a>
               </div>
             </div>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </div>

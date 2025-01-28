@@ -7,6 +7,7 @@ import Homepage from './pages/Homepage'
 import Categories from './pages/categories'
 import Subcategories from './pages/subcategories'
 import Products from './pages/product'
+import Productalldetails from './pages/productalldetails'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path='/categories' element={<Categories/>}></Route>
       <Route path='/categories/subcategories' element={<Subcategories/>}></Route>
       <Route path='/categories/product' element={<Products/>}></Route>
+      <Route path='/state/location' element={<Productalldetails/>}></Route>
     </Routes>
     <Footer/>
     </BrowserRouter>

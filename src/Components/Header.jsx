@@ -8,6 +8,7 @@ import ReactLanguageSelect from "react-languages-select";
 import "react-languages-select/css/react-languages-select.css";
 import "../css/header.css";
 import '../css/common.css';
+import logo from '../assets/logo.png'
 
 function Header() {
   const [show, setShow] = useState(false);
@@ -30,7 +31,7 @@ function Header() {
         <Container fluid style={{ height: "70px" }}>
           <Navbar.Brand href="/" onClick={() => window.location.reload()}>
             <img
-              src="	https://techxen-react.vercel.app/assets/img/logo/header-logo1.png"
+              src={logo}
               alt=""
             />
           </Navbar.Brand>
@@ -73,7 +74,7 @@ function Header() {
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
             <img
-              src="	https://techxen-react.vercel.app/assets/img/logo/header-logo1.png"
+              src={logo}
               alt=""
             />
           </Offcanvas.Title>
@@ -87,92 +88,23 @@ function Header() {
             </div>
             <div style={{ padding: "1rem 1.3rem" }}>
               <a
-                href="/about"
+                href=""
                 style={{ border: "none", color: "darkslategray" }}
               >
-                About Us
+                  We are hiring
               </a>
             </div>
             <div style={{ padding: "1rem 1.3rem" }}>
               <a
-                href="/contact"
+                href=""
                 style={{ border: "none", color: "darkslategray" }}
               >
-                Contact
+                Investor Relationship
               </a>
             </div>
-            <Accordion.Item eventKey="1" style={{ border: "none" }}>
-              <Accordion.Header>Services</Accordion.Header>
-              <Accordion.Body>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/Web-Development"
-                >
-                  Web Developnment
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/App-Development"
-                >
-                  App Development
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/E-commerce-Development"
-                >
-                  E-commerce Development
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/Graphic-Designings"
-                >
-                  Graphic Designing
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/Data-Analytics"
-                >
-                  Data Analytics
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/SEO"
-                >
-                  SEO
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/Pay-Per-Click"
-                >
-                  Pay-Per-Click(PPC)
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/Social-Media"
-                >
-                  Social Media
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{ padding: "10px 20px", cursor: "pointer" }}
-                  href="/service/Digital-Card"
-                >
-                  Digital Card Services
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  style={{
-                    padding: "10px 20px",
-                    cursor: "pointer",
-                    textWrap: "wrap",
-                  }}
-                  href="/service/Ecommerce-Market-Place"
-                >
-                  Ecommerce Market Place
-                </NavDropdown.Item>
-              </Accordion.Body>
-            </Accordion.Item>
             <div style={{ padding: "1rem 1.3rem" }}>
               <a
-                href="/product"
+                href=""
                 style={{ border: "none", color: "darkslategray" }}
               >
                 {" "}
@@ -181,18 +113,10 @@ function Header() {
             </div>
             <div style={{ padding: "1rem 1.3rem" }}>
               <a
-                href="/portfolio"
+                href=""
                 style={{ border: "none", color: "darkslategray" }}
               >
-                Portfolio{" "}
-              </a>
-            </div>
-            <div style={{ padding: "1rem 1.3rem" }}>
-              <a
-                href="/blog"
-                style={{ border: "none", color: "darkslategray" }}
-              >
-                Blog
+               Contact{" "}
               </a>
             </div>
           </Accordion>
