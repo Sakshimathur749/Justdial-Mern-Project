@@ -16,6 +16,7 @@ import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import EditCategory from './pages/Category/editcategory';
 import ProductPostPage from './pages/Product/postproduct';
+import PostedProductsPage from './pages/Product/product';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -76,6 +77,15 @@ function App() {
             <>
               <PageTitle title="Posting Product" />
               <ProductPostPage />
+            </>
+          }
+        />
+        <Route
+          path="/posted-product"
+          element={
+            <>
+              <PageTitle title="Product" />
+              <PostedProductsPage />
             </>
           }
         />

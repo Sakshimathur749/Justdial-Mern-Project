@@ -4,8 +4,8 @@ import "../../css/app.css";
 
 const ProductPostPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [productData, setProductData] = useState({
-    image: null as File | null,
+  const [productData, setProductData] = useState<any>({
+    image: 'https://img.freepik.com/premium-vector/chef-restaurant-logo-stock-illustrations-template_83529-158.jpg',
     category: "Restaurants",
     title: "Dilip Fast Food",
     location: "10922 Kinross Ave Los Angeles, CA 90024",
@@ -31,7 +31,7 @@ const ProductPostPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setProductData((prevData) => ({ ...prevData, [name]: value }));
+    setProductData((prevData:any) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
