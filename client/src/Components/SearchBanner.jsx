@@ -1,0 +1,70 @@
+import React from 'react'
+import { Col, Container, Row } from 'react-bootstrap'
+import '../css/common.css'
+import '../css/components.css'
+
+const SearchBanner = () => {
+  return (
+    <div className="search_bg py-4">
+      <Container>
+        <Row>
+          <Col lg="12" md="12" sm="12">
+          <ul className="list-inline search_list">
+                <li>
+                  <div className="form-group form-control">
+                    <input
+                      type="hidden"
+                      name="_token"
+                      value="k90CgGLurJz55qzyHp5Wu2g0DzxV83KxnKfSNYp9"
+                    />
+                    <input
+                      type="text"
+                      className="search-txt city_finder ui-autocomplete-input"
+                      id="city_search"
+                      placeholder="Enter City "
+                      value="Delhi"
+                    />
+                    <input
+                      type="hidden"
+                      id="city_id"
+                      name="city_id"
+                      value="/"
+                    />
+                    <div className="has-feedback">
+                      <input
+                        type="text"
+                        className="search-txt ui-autocomplete-input"
+                        placeholder="Search Any Things Like Business ,Category &amp; Deals"
+                        id="category_search"
+                        name="category_search"
+                        value=""
+                      />
+                      <input
+                        type="hidden"
+                        id="category_id"
+                        name="category_id"
+                        value="0"
+                      />
+
+                      <button
+                        className="form-control-feedback search_home_buisness"
+                        aria-hidden="true"
+                        type="submit"
+                      >
+                        <img
+                          src="https://buyphpcode.com/justdialclone/assets/front/images/home_search.png"
+                          alt=""
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
+}
+
+export default SearchBanner
