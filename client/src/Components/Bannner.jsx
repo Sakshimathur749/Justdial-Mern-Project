@@ -15,9 +15,9 @@ const Bannner = () => {
                 <br />
                 <span></span>
               </h1>
-              <ul class="list-inline">
+              <ul className="list-inline">
                 <li>
-                  <div class="form-group form-control">
+                  <div className="form-group form-control">
                     <input
                       type="hidden"
                       name="_token"
@@ -25,7 +25,7 @@ const Bannner = () => {
                     />
                     <input
                       type="text"
-                      class="search-txt city_finder ui-autocomplete-input"
+                      className="search-txt city_finder ui-autocomplete-input"
                       id="city_search"
                       placeholder="Enter City "
                       value="Delhi"
@@ -36,10 +36,10 @@ const Bannner = () => {
                       name="city_id"
                       value="/"
                     />
-                    <div class="has-feedback">
+                    <div className="has-feedback">
                       <input
                         type="text"
-                        class="search-txt ui-autocomplete-input"
+                        className="search-txt ui-autocomplete-input"
                         placeholder="Search Any Things Like Business ,Category &amp; Deals"
                         id="category_search"
                         name="category_search"
@@ -53,7 +53,7 @@ const Bannner = () => {
                       />
 
                       <button
-                        class="form-control-feedback search_home_buisness"
+                        className="form-control-feedback search_home_buisness"
                         aria-hidden="true"
                         type="submit"
                       >

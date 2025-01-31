@@ -1,20 +1,19 @@
 import { useState } from "react";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"; // Adjust if needed
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import "../../css/app.css";
 
 const ProductPostPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [productData, setProductData] = useState<any>({
-    image: 'https://img.freepik.com/premium-vector/chef-restaurant-logo-stock-illustrations-template_83529-158.jpg',
-    category: "Restaurants",
-    title: "Dilip Fast Food",
-    location: "10922 Kinross Ave Los Angeles, CA 90024",
-    rating: 1,
-    number: "9123456780",
-    status: "active",
-    relevantTags: "#opened",
+    image: null,
+    category: "",
+    title: "",
+    location: "",
+    rating: 1, 
+    number: "",
+    status: "Open", 
+    relevantTags: "",
   });
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
@@ -28,17 +27,59 @@ const ProductPostPage = () => {
       setImagePreview(null);
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setProductData((prevData:any) => ({ ...prevData, [name]: value }));
+    setProductData((prevData: any) => ({ ...prevData, [name]: value }));
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Product Data Submitted:", productData);
-    };
-    const phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
+   const phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
+    if (!productData.number || !phoneRegex.test(productData.number)) {
+      alert('Please provide a valid phone number');
+      return;
+    }
+    const formData = new FormData();
+    formData.append("title", productData.title);
+    formData.append("category", productData.category);
+    formData.append("location", productData.location);
+    formData.append("rating", productData.rating.toString());
+    formData.append("phoneNumber", productData.number);
+    formData.append("status", productData.status);
+    formData.append("relevantTags", productData.relevantTags);
+    if (productData.image instanceof File) {
+      formData.append("image", productData.image);
+    }
+    try {
+      const response = await fetch('http://localhost:5000/api/products/create', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create product');
+      }
+  
+      const result = await response.json();
+      console.log('Product created successfully:', result);
+      alert('Product created successfully!');
+      setProductData({
+        image: null,
+        category: "",
+        title: "",
+        location: "",
+        rating: 1,
+        number: "",
+        status: "Open",
+        relevantTags: "",
+      });
+      setImagePreview(null); 
+   } catch (error) {
+      console.error('Error submitting product:', error);
+      alert('Error submitting the product!');
+    }
+  };
+  
+
   return (
     <div className="container mx-auto p-6">
       <Breadcrumb pageName="Create Product Post" />
@@ -52,7 +93,7 @@ const ProductPostPage = () => {
           />
           {imagePreview && (
             <div className="mt-2">
-              <img src={imagePreview} alt="Product Preview" className="w-full max-w-xs  object-cover rounded-md" />
+              <img src={imagePreview} alt="Product Preview" className="w-full max-w-xs object-cover rounded-md" />
             </div>
           )}
         </div>
@@ -130,14 +171,14 @@ const ProductPostPage = () => {
             value={productData.number}
             onChange={handleChange}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-            placeholder="Enter phone number "
+            placeholder="Enter phone number"
             required
           />
-          {!phoneRegex.test(productData.number) && productData.number.length > 0 && (
+          {/* Show validation message if number is not valid */}
+          {!/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(productData.number) && productData.number.length > 0 && (
             <p className="text-red-500 text-sm">Please enter a valid phone number.</p>
           )}
         </div>
-
 
         <div className="mb-4">
           <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-white">Status</label>
@@ -166,13 +207,12 @@ const ProductPostPage = () => {
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
-          disabled={!phoneRegex.test(productData.number)} 
+          disabled={!/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(productData.number)} 
           className="w-full mt-6 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
         >
-          Submit 
+          Submit
         </button>
       </form>
     </div>

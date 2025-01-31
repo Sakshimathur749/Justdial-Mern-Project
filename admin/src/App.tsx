@@ -17,6 +17,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import EditCategory from './pages/Category/editcategory';
 import ProductPostPage from './pages/Product/postproduct';
 import PostedProductsPage from './pages/Product/product';
+import EditProductPage from './pages/Product/editproduct';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,7 +63,7 @@ function App() {
             </>
           }
         />
-                <Route
+        <Route
           path="/edit-category/:id"
           element={
             <>
@@ -71,7 +72,7 @@ function App() {
             </>
           }
         />
-                <Route
+        <Route
           path="/posting-product"
           element={
             <>
@@ -86,6 +87,15 @@ function App() {
             <>
               <PageTitle title="Product" />
               <PostedProductsPage />
+            </>
+          }
+        />
+        <Route
+          path="/edit-product/:id"
+          element={
+            <>
+              <PageTitle title="Edit" />
+              <EditProductPage/>
             </>
           }
         />

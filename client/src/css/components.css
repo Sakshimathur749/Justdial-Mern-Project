@@ -439,7 +439,7 @@ transform: rotate(-135deg);
     transform: translateY(-50%);
     position: absolute;
     display: block;
-    top: 50%;
+    top: 14%;
     right: 8px;
     width: 17px;
     height: 17px;
@@ -1429,7 +1429,6 @@ hr.nn {
 
 /* Banner components css */
 .intro-header {
-    padding-top: 120px;
     background: url('https://buyphpcode.com/justdialclone/assets/front/images/intro-bg.jpg') no-repeat center center;
     background-size: cover;
     text-align: center;
@@ -1459,7 +1458,6 @@ hr.nn {
 
 .list-inline {
     margin-top: 60px;
-    margin-left: 15%;
 }
 
 .list-inline>li {
@@ -1890,7 +1888,6 @@ hr.nn {
         width: 70% !important;
     }
     .custom-filters .close{
-        position: absolute;
         top: 13% !important;
     }
 }

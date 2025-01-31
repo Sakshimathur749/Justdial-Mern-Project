@@ -1,46 +1,70 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import '../../css/app.css';
 import { Link } from 'react-router-dom';
 
 const Postingcategory = () => {
-  const [tableData, setTableData] = useState([
-    {
-      id: '1',
-      category: 'Restaurant',
-      imageUrl: 'https://img.freepik.com/premium-vector/chef-restaurant-logo-stock-illustrations-template_83529-158.jpg',
-      subcategories: ['Italian', 'Chinese'], 
-    },
-  ]);
+  const [tableData, setTableData] = useState<any[]>([]);
   const [message, setMessage] = useState({ text: '', type: '' });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/categories');
+        if (response.ok) {
+          const data = await response.json();
+          setTableData(data); 
+        } else {
+          setMessage({ text: 'Failed to fetch categories', type: 'error' });
+        }
+      } catch (error:any) {
+        setMessage({ text: 'Error: ' + error.message, type: 'error' });
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const handleEdit = (id: any) => {
     console.log(`Edit row with ID: ${id}`);
   };
 
-  const handleDelete = (id:any) => {
-    const updatedData = tableData.filter(item => item.id !== id);
-    setTableData(updatedData);
-    setMessage({ text: 'Category deleted successfully!', type: 'success' });
+  const handleDelete = async (id: any) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/categories/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        const updatedData = tableData.filter(item => item._id !== id);
+        setTableData(updatedData);
+        setMessage({ text: 'Category deleted successfully!', type: 'success' });
+      } else {
+        setMessage({ text: 'Failed to delete category', type: 'error' });
+      }
+    } catch (error: any) {
+      setMessage({ text: 'Error: ' + error.message, type: 'error' });
+    }
   };
+  
 
   const columns = [
     {
       name: 'S.no',
-      selector: (row: any) => row.id,
+      selector: (row: any, index: any) => index + 1,
       sortable: true,
     },
     {
       name: 'Category',
-      selector: (row: any) => row.category,
+      selector: (row: any) => row.name,
       sortable: true,
     },
     {
       name: 'Category Image',
       selector: (row: any) => (
         <img
-          src={row.imageUrl}
-          alt={row.category}
+          src={row.image ? `http://localhost:5173/src/images/uploads/${row.image}` : ''}
+          alt={row.name}
           style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
         />
       ),
@@ -48,26 +72,28 @@ const Postingcategory = () => {
     },
     {
       name: 'Subcategories',
-      selector: (row:any) => row.subcategories.join(', '),
+      selector: (row: any) => row.subcategories.map((sub: any) => sub.name).join(', '),
       sortable: false,
     },
     {
       name: 'Action',
       cell: (row: any) => (
         <div className="mb-7.5 flex flex-wrap gap-2">
-           <Link to={`/edit-category/${row.id}`}>
+          <Link to={`/edit-category/${row._id}`}>
             <button
-              className="inline-flex items-center justify-center rounded-full bg-meta-3 py-4 px-6 text-center font-medium text-white hover:bg-opacity-90" onClick={handleEdit}
+              className="inline-flex items-center justify-center rounded-full bg-meta-3 py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
+              onClick={handleEdit}
             >
               Edit
-              </button>
-              </Link>
-              <button 
-              className="inline-flex items-center justify-center rounded-full bg-red py-4 px-6 text-center font-medium text-white hover:bg-opacity-90" onClick={handleDelete}
-            >
-              Delete
-              </button>
-          </div>
+            </button>
+          </Link>
+          <button
+            className="inline-flex items-center justify-center rounded-full bg-red py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
+            onClick={() => handleDelete(row._id)}
+          >
+            Delete
+          </button>
+        </div>
       ),
       sortable: false,
     },

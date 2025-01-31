@@ -1,52 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; // Import your Breadcrumb component
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'; 
 import '../../css/app.css';
+import { useNavigate } from 'react-router-dom';
 
 const PostedProductsPage = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setProducts([
-        {
-          id: '1',
-          image: 'https://img.freepik.com/premium-vector/chef-restaurant-logo-stock-illustrations-template_83529-158.jpg',
-          category: "Restaurants",
-          title: "Dilip Fast Food",
-          location: "10922 Kinross Ave Los Angeles, CA 90024",
-          rating: 1,
-          number: "9123456780",
-          status: "active",
-          relevantTags: "#opened",
-        },
-      ]);
-      setLoading(false);
-    }, 2000);
-  }, []);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        console.log(data)
+        setProducts(data); 
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchProducts();
+  }, []); 
   const handleEdit = (id: string) => {
-    console.log(`Edit product with ID: ${id}`);
+    navigate(`/edit-product/${id}`);
   };
 
-  const handleDelete = (id: string) => {
-    console.log(`Delete product with ID: ${id}`);
-    setProducts(products.filter((product) => product.id !== id));
+  const handleDelete = async (id: string) => {
+    const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      setProducts(products.filter((product) => product._id !== id)); 
+    } else {
+      console.error('Failed to delete product');
+    }
   };
+
 
   const columns = [
     {
       name: 'S.no',
-      selector: (row: any) => row.id,
+      selector: (row: any, index: any) => index + 1,
       sortable: true,
     },
     {
       name: 'Product Image',
       selector: (row: any) => (
         <img
-          src={row.image}
+          src={row.image ? `http://localhost:5173/src/images/uploads/${row.image}` : ''}
           alt={row.heading}
           style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
         />
@@ -83,7 +92,7 @@ const PostedProductsPage = () => {
       cell: (row: any) => (
         <button
           className="inline-flex items-center justify-center rounded bg-meta-3 p-4 text-center font-medium text-white hover:bg-opacity-90"
-          onClick={() => handleEdit(row.id)}
+          onClick={() => handleEdit(row._id)}
         >
           Edit
         </button>
@@ -95,7 +104,7 @@ const PostedProductsPage = () => {
       cell: (row: any) => (
         <button
           className="inline-flex items-center justify-center rounded bg-red p-4 text-center font-medium text-white hover:bg-opacity-90"
-          onClick={() => handleDelete(row.id)}
+          onClick={() => handleDelete(row._id)}
         >
           Delete
         </button>
