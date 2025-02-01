@@ -1,9 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import '../css/common.css'
 import '../css/components.css'
 import { Col, Container, Row } from 'react-bootstrap'
-
 const Category = () => {
+    const [categories, setCategories] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null); 
+  
+    useEffect(() => {
+      const fetchCategories = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/categories'); 
+          if (!response.ok) {
+            throw new Error('Failed to fetch categories');
+          }
+          const data = await response.json();
+          setCategories(data); 
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false); 
+        }
+      };
+      
+      fetchCategories();
+    }, []); 
+    if (loading) {
+      return <div>Loading...</div>; 
+    }
+    if (error) {
+      return <div>Error: {error}</div>; 
+    }
   return (
     <div className="gry_container mb-5">
       <Container>
@@ -14,58 +41,25 @@ const Category = () => {
           </div>
           <div className="cate-count-block">
             <ul className="category_list">
-              <li>
-                <a href="/categories/subcategories">
+            {categories.length > 0 ? (
+              categories.map((category) => (
+            <li key={category._id}>
+                <a href={`/categories/${category.name}/subcategories`}>
                   <span className="cate-img">
                     <img
-                      src="https://buyphpcode.com/justdialclone/uploads/category/10287d42b8708f70144942dd8cc82f12762ce9bb.jpeg"
+                      src={`http://localhost:5173/src/images/uploads/${category.image}`}
                       alt=""
                       height="30px"
                       width="30px"
                     />
                   </span>
-                  <span className="cate-txt">Shopping</span>
+                  <span className="cate-txt">{category.name}</span>
                 </a>
               </li>
-              {/* <li>
-                <a href="/categories/subcategories">
-                  <span className="cate-img">
-                    <img
-                      src="https://buyphpcode.com/justdialclone/uploads/category/1625817f150972bb60d9c15cab3106484308cb46.png"
-                      alt=""
-                      height="30px"
-                      width="30px"
-                    />
-                  </span>
-                  <span className="cate-txt">Security Services</span>
-                </a>
-              </li> */}
-              {/* <li>
-                <a href="/categories/subcategories">
-                  <span className="cate-img">
-                    <img
-                      src="https://buyphpcode.com/justdialclone/uploads/category/default_category.png"
-                      alt=""
-                      height="30px"
-                      width="30px"
-                    />
-                  </span>
-                  <span className="cate-txt">Choclates</span>
-                </a>
-              </li>
-              <li>
-                <a href="/categories/subcategories">
-                  <span className="cate-img">
-                    <img
-                      src="https://buyphpcode.com/justdialclone/uploads/category/default_category.png"
-                      alt=""
-                      height="30px"
-                      width="30px"
-                    />
-                  </span>
-                  <span className="cate-txt">TestCat</span>
-                </a>
-              </li> */}
+               ))
+              ) : (
+                <li>No categories available</li>
+              )}
             </ul>
             <div className="clearfix"></div>
           </div>

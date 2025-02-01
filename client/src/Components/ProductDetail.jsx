@@ -1,13 +1,113 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Container, Row } from "react-bootstrap";
 import '../css/common.css'
 import '../css/components.css'
 
-const ProductDetail = () => {
+const ProductDetail = ({ productId }) => {
   const [activeTab, setActiveTab] = useState('rating');
+  const [review, setReview] = useState('');
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0); 
+  const [name, setName] = useState('');   
+  const [email, setEmail] = useState('');  
+  const [mobileNo, setMobileNo] = useState('');
+  const [error, setError] = useState(''); 
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const handleTabClick = (tab) => {
     setActiveTab(tab); 
   };
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+        if (!response.ok) {
+          throw new Error('Product not found');
+        }
+        const data = await response.json();
+        setProduct(data); 
+        console.log(data,"data")
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductData();
+  }, [productId]); 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (!rating || !review || !name || !email || !mobileNo) {
+      setError("All fields are required.");
+      return;
+    }
+  
+    try {
+      const newReview = {
+        rating,
+        review,
+        name,
+        email,
+        mobileNo,
+      };
+      const response = await fetch("http://localhost:5000/api/review", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReview),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to submit the review.");
+      }
+  
+      const data = await response.json();
+      setReviews([...reviews, data]); 
+      setRating(0);
+      setReview('');
+      setName('');
+      setEmail('');
+      setMobileNo('');
+      setError('');
+    } catch (error) {
+      setError("Failed to submit the review.");
+    }
+  };  
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/review?productId=${productId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch reviews.');
+        }
+        const data = await response.json();
+        setReviews(data);
+        console.log(data, "data Reviews", productId, "productId");
+      } catch (error) {
+        setError("Failed to fetch reviews.");
+      }
+    };   
+
+    fetchReviews();
+  }, [productId]);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!product) {
+    return <div>No product data available.</div>;
+  } 
+
   return (
     <div>
       <Container>
@@ -16,10 +116,11 @@ const ProductDetail = () => {
             <div className="p_detail_view">
               <div
                 style={{
-                  background:
-                    "url(https://buyphpcode.com/justdialclone/uploads/business/main_image/6abd1ce27de9e6b4e7575753c4774fc225a22b8e.png)",
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "100% auto",
+                  background: `url(http://localhost:5173/src/images/uploads/${
+                    product.image || "default_image_url"
+                  })`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "contain",
                 }}
               >
                 <div
@@ -27,65 +128,24 @@ const ProductDetail = () => {
                   style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
                 >
                   <div className="product_title etd">
-                    <a href="#">Crown Place</a>
+                    <a href="#">{product.title}</a>
                   </div>
 
                   <div className="resta-rating-block12 d-flex gap-2 pb-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={17}
-                      width={17}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#ffffff"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={17}
-                      width={17}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#ffffff"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={17}
-                      width={17}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#ffffff"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={17}
-                      width={17}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#ffffff"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={17}
-                      width={17}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#ffffff"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
+                    {[...Array(5)].map((_, index) => (
+                      <svg
+                        key={index}
+                        xmlns="http://www.w3.org/2000/svg"
+                        height={17}
+                        width={17}
+                        viewBox="0 0 576 512"
+                      >
+                        <path
+                          fill={index < product.rating ? "#FFD700" : "#7f7f7f"}
+                          d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
+                        />
+                      </svg>
+                    ))}
                   </div>
                   <div className="p_details d-flex gap-3 py-2">
                     <svg
@@ -99,7 +159,7 @@ const ProductDetail = () => {
                         d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"
                       />
                     </svg>
-                    <span> 0255056985 &nbsp; 8989898989</span>
+                    <span>{product.phoneNumber}</span>
                   </div>
                   <div className="p_details d-flex gap-3 py-2">
                     <svg
@@ -114,8 +174,8 @@ const ProductDetail = () => {
                       />
                     </svg>{" "}
                     <span>
-                      hotel dwarka nashik (
-                      <a href="javascript:void(0);"> map</a>)
+                      {product.location} (<a href="javascript:void(0);"> map</a>
+                      )
                     </span>
                   </div>
                   <input type="hidden" name="set_loc_info" id="set_loc_info" />
@@ -145,9 +205,9 @@ const ProductDetail = () => {
                           d="M51.7 295.1l31.7 6.3c7.9 1.6 16-.9 21.7-6.6l15.4-15.4c11.6-11.6 31.1-8.4 38.4 6.2l9.3 18.5c4.8 9.6 14.6 15.7 25.4 15.7c15.2 0 26.1-14.6 21.7-29.2l-6-19.9c-4.6-15.4 6.9-30.9 23-30.9l2.3 0c13.4 0 25.9-6.7 33.3-17.8l10.7-16.1c5.6-8.5 5.3-19.6-.8-27.7l-16.1-21.5c-10.3-13.7-3.3-33.5 13.4-37.7l17-4.3c7.5-1.9 13.6-7.2 16.5-14.4l16.4-40.9C303.4 52.1 280.2 48 256 48C141.1 48 48 141.1 48 256c0 13.4 1.3 26.5 3.7 39.1zm407.7 4.6c-3-.3-6-.1-9 .8l-15.8 4.4c-6.7 1.9-13.8-.9-17.5-6.7l-2-3.1c-6-9.4-16.4-15.1-27.6-15.1s-21.6 5.7-27.6 15.1l-6.1 9.5c-1.4 2.2-3.4 4.1-5.7 5.3L312 330.1c-18.1 10.1-25.5 32.4-17 51.3l5.5 12.4c8.6 19.2 30.7 28.5 50.5 21.1l2.6-1c10-3.7 21.3-2.2 29.9 4.1l1.5 1.1c37.2-29.5 64.1-71.4 74.4-119.5zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm144.5 92.1c-2.1 8.6 3.1 17.3 11.6 19.4l32 8c8.6 2.1 17.3-3.1 19.4-11.6s-3.1-17.3-11.6-19.4l-32-8c-8.6-2.1-17.3 3.1-19.4 11.6zm92-20c-2.1 8.6 3.1 17.3 11.6 19.4s17.3-3.1 19.4-11.6l8-32c2.1-8.6-3.1-17.3-11.6-19.4s-17.3 3.1-19.4 11.6l-8 32zM343.2 113.7c-7.9-4-17.5-.7-21.5 7.2l-16 32c-4 7.9-.7 17.5 7.2 21.5s17.5 .7 21.5-7.2l16-32c4-7.9 .7-17.5-7.2-21.5z"
                         />
                       </svg>
-                      <a href="http://testsell4cell.com" target="_blank">
+                      <a href="" target="_blank">
                         {" "}
-                        testsell4cell.com
+                        {product.websiteUrl}
                       </a>
                     </div>
 
@@ -176,9 +236,7 @@ const ProductDetail = () => {
                     <span>
                       <a
                         className="d-flex gap-3 "
-                        href="javascript:void(0);"
-                        data-target="#login_poup"
-                        data-toggle="modal"
+                        href=""
                         style={{ borderRight: "0", display: "inline-block" }}
                       >
                         <svg
@@ -199,99 +257,6 @@ const ProductDetail = () => {
                 </div>
               </div>{" "}
               <input type="hidden" name="history" id="history" />
-              {/* <div className="modal fade" id="share" role="dialog">
-                  <div className="modal-dialog">
-                    Modal content
-                    <div className="modal-content">
-                      <button type="button" className="close" data-dismiss="modal">
-                        ×
-                      </button>
-                      <div className="modal-body">
-                        <p>Share With Friends</p>
-                        <div className="soc-menu-top">
-                          <ul>
-                            <li>
-                              <a
-                                href="https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.mynide.com%2Fdeals%2Fdetails%2FMQ%3D%3D&amp;t=1+Cocktail"
-                                target="_blank"
-                                style={{cursor:'pointer'}}
-                              ></a>
-                              <a
-                                href="https://www.facebook.com/sharer.php?https://buyphpcode.com/justdialclone/411/crown-place@hotel-dwarka-nashik/NDc="
-                                target="_blank"
-                                style={{cursor:'pointer'}}
-                              >
-                                <img
-                                  src="https://buyphpcode.com/justdialclone/assets/front/images/facebook-so.png"
-                                  alt="facebook"
-                                />
-                                <span className="socail_name">Facebook</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="http://twitter.com/share?url=https://buyphpcode.com/justdialclone/411/crown-place@hotel-dwarka-nashik/NDc="
-                                target="_blank"
-                                style={{cursor:'pointer'}}
-                              >
-                                <img
-                                  src="https://buyphpcode.com/justdialclone/assets/front/images/twitter-so.png"
-                                  alt="twitter"
-                                />
-                                <span className="socail_name">Twitter</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="https://plus.google.com/share?url=https://buyphpcode.com/justdialclone/411/crown-place@hotel-dwarka-nashik/NDc="
-                                target="_blank"
-                                style={{cursor:'pointer'}}
-                              >
-                                <img
-                                  src="https://buyphpcode.com/justdialclone/assets/front/images/googlepls-soc.png"
-                                  alt="googlepls"
-                                />
-                                <span className="socail_name">Google +</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://buyphpcode.com/justdialclone/411/crown-place@hotel-dwarka-nashik/NDc="
-                                target="_blank"
-                                style={{cursor:'pointer'}}
-                              >
-                                <img
-                                  src="https://buyphpcode.com/justdialclone/assets/front/images/linkind-soc.png"
-                                  alt="linkind"
-                                />
-                                <span className="socail_name">Linkedin</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="mailto:to@email.com?subject=Share Business Crown Place&amp;body=[sub]"
-                              >
-                                <img
-                                  src="https://buyphpcode.com/justdialclone/assets/front/images/email-soc.png"
-                                  alt="linkind"
-                                />
-                                <span className="socail_name">Email</span>
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="whatsapp://send?text=The text to share!"
-                                data-action="share/whatsapp/share"
-                              >
-                                What'sApp
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               <div id="map_show" style={{ display: "none", marginTop: "5px" }}>
                 <div
                   id="location_map"
@@ -337,61 +302,20 @@ const ProductDetail = () => {
                 </div>
                 <div className="img_icons resta-rating-block11 det-rates ">
                   <div className="d-flex gap-1 pb-3 justify-content-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={20}
-                      width={20}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#7f7f7f"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={20}
-                      width={20}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#7f7f7f"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={20}
-                      width={20}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#7f7f7f"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={20}
-                      width={20}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#7f7f7f"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height={20}
-                      width={20}
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        fill="#7f7f7f"
-                        d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                      />
-                    </svg>
+                    {[...Array(5)].map((_, index) => (
+                      <svg
+                        key={index}
+                        xmlns="http://www.w3.org/2000/svg"
+                        height={17}
+                        width={17}
+                        viewBox="0 0 576 512"
+                      >
+                        <path
+                          fill={index < product.rating ? "#FFD700" : "#7f7f7f"} 
+                          d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
+                        />
+                      </svg>
+                    ))}
                   </div>
                   Total Rating
                 </div>
@@ -468,7 +392,6 @@ const ProductDetail = () => {
                   <div className="clearfix"></div>
                 </ul>
                 <div className="resp-tabs-container">
-                  {/* Reviews & Ratings Tab */}
                   {activeTab === "rating" && (
                     <div
                       id="review_rank"
@@ -503,86 +426,59 @@ const ProductDetail = () => {
                           0%
                         </div>
                       </div>
-                      <div className="rating_views_main-dv">
-                        <div className="testimo-one">
-                          <div className="img-div-testi">
-                            <img
-                              src="https://buyphpcode.com/justdialclone/assets/front/images/testi-user.png"
-                              alt=""
-                            />
-                          </div>
-                          <div className="testimo-content">
-                            <div className="user-name-testio">gsdfgsdfg</div>
-                            <div className="testimo-user-mess">dfgsdfgdsf</div>
-                            <div className="acad-rating-block">
-                              <span className="stars-block resta-rating-block d-flex gap-1 pb-3 justify-content-center">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  height={20}
-                                  width={20}
-                                  viewBox="0 0 576 512"
-                                >
-                                  <path
-                                    fill="#7f7f7f"
-                                    d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                                  />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  height={20}
-                                  width={20}
-                                  viewBox="0 0 576 512"
-                                >
-                                  <path
-                                    fill="#7f7f7f"
-                                    d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                                  />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  height={20}
-                                  width={20}
-                                  viewBox="0 0 576 512"
-                                >
-                                  <path
-                                    fill="#7f7f7f"
-                                    d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                                  />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  height={20}
-                                  width={20}
-                                  viewBox="0 0 576 512"
-                                >
-                                  <path
-                                    fill="#7f7f7f"
-                                    d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                                  />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  height={20}
-                                  width={20}
-                                  viewBox="0 0 576 512"
-                                >
-                                  <path
-                                    fill="#7f7f7f"
-                                    d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
-                                  />
-                                </svg>
-                              </span>
-                              <span className="label-block">March 2016</span>
+                      {reviews.length > 0 ? (
+                        reviews.map((review) => (
+                          <div className="rating_views_main-dv">
+                            <div className="testimo-one">
+                              <div className="img-div-testi">
+                                <img
+                                  src="https://buyphpcode.com/justdialclone/assets/front/images/testi-user.png"
+                                  alt=""
+                                />
+                              </div>
+                              <div className="testimo-content">
+                                <div className="user-name-testio">
+                                  {review.name}
+                                </div>
+                                <div className="testimo-user-mess">
+                                  {review.comment}
+                                </div>
+                                <div className="acad-rating-block">
+                                  <span className="stars-block resta-rating-block d-flex gap-1 pb-3 justify-content-center">
+                                    {[...Array(5)].map((_, index) => (
+                                      <svg
+                                        key={index}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height={20}
+                                        width={20}
+                                        viewBox="0 0 576 512"
+                                        fill={
+                                          index < review.rating
+                                            ? "#f39c12"
+                                            : "#7f7f7f"
+                                        }
+                                      >
+                                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+                                      </svg>
+                                    ))}
+                                  </span>
+                                  <span className="label-block">
+                                    {new Date(
+                                      review.createdAt
+                                    ).toLocaleDateString()}
+                                  </span>
+                                  <div className="clearfix"></div>
+                                </div>
+                              </div>
                               <div className="clearfix"></div>
                             </div>
                           </div>
-                          <div className="clearfix"></div>
-                        </div>
-                      </div>
+                        ))
+                      ) : (
+                        <p>No reviews yet.</p>
+                      )}
                     </div>
                   )}
-
-                  {/* Add a Review Tab */}
                   {activeTab === "review" && (
                     <div
                       id="review_rating"
@@ -595,110 +491,29 @@ const ProductDetail = () => {
                         <form
                           className="form-horizontal"
                           id="review-form"
-                          // method="POST"
-                          // action="https://buyphpcode.com/justdialclone/listing/store_reviews"
-                          // encType="multipart/form-data"
+                          onSubmit={handleSubmit}
+                          method="POST"
                         >
                           <input type="hidden" name="_token" />
                           <div className="review-title" id="review_set">
-                            <div className="your-rating"> Your rating </div>
-                            <input type="hidden" name="business_id" />
-                            <div className="yr_rating-over">
-                              <span className="star-rating-control">
-                                <div
-                                  className="rating-cancel"
-                                  style={{ display: "none" }}
-                                >
-                                  <a title="Cancel Rating"></a>
-                                </div>
-                                <div
-                                  role="text"
-                                  aria-label="1 Star"
-                                  className="star-rating rater-0 star required star-rating-applied star-rating-live"
-                                  id="rating"
-                                >
-                                  <a title="1 Star">1</a>
-                                </div>
-                                <div
-                                  role="text"
-                                  aria-label="2 Star"
-                                  className="star-rating rater-0 star star-rating-applied star-rating-live"
-                                  id="rating"
-                                >
-                                  <a title="2 Star">2</a>
-                                </div>
-                                <div
-                                  role="text"
-                                  aria-label="3 Star"
-                                  className="star-rating rater-0 star star-rating-applied star-rating-live"
-                                  id="rating"
-                                >
-                                  <a title="3 Star">3</a>
-                                </div>
-                                <div
-                                  role="text"
-                                  aria-label="4 Star"
-                                  className="star-rating rater-0 star star-rating-applied star-rating-live"
-                                  id="rating"
-                                >
-                                  <a title="4 Star">4</a>
-                                </div>
-                                <div
-                                  role="text"
-                                  aria-label="5 Star"
-                                  className="star-rating rater-0 star star-rating-applied star-rating-live"
-                                  id="rating"
-                                >
-                                  <a title="5 Star">5</a>
-                                </div>
-                              </span>
-                              <input
-                                className="star required star-rating-applied"
-                                type="radio"
-                                name="rating"
-                                id="rating"
-                                title="1 Star"
-                                style={{ display: "none" }}
-                              />
-                              <input
-                                className="star star-rating-applied"
-                                type="radio"
-                                name="rating"
-                                id="rating"
-                                title="2 Star"
-                                style={{ display: "none" }}
-                              />
-                              <input
-                                className="star star-rating-applied"
-                                type="radio"
-                                name="rating"
-                                id="rating"
-                                title="3 Star"
-                                style={{ display: "none" }}
-                              />
-                              <input
-                                className="star star-rating-applied"
-                                type="radio"
-                                name="rating"
-                                id="rating"
-                                title="4 Star"
-                                style={{ display: "none" }}
-                              />
-                              <input
-                                className="star star-rating-applied"
-                                type="radio"
-                                name="rating"
-                                id="rating"
-                                title="5 Star"
-                                style={{ display: "none" }}
-                              />
+                            <div className="your-rating">
+                              {" "}
+                              <label>Your rating:</label>
+                              <div>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span
+                                    key={star}
+                                    onClick={() => handleRatingChange(star)}
+                                    style={{
+                                      cursor: "pointer",
+                                      color: rating >= star ? "gold" : "gray",
+                                    }}
+                                  >
+                                    ★
+                                  </span>
+                                ))}{" "}
+                              </div>
                             </div>
-                            <div
-                              className="error_msg"
-                              id="err_rating"
-                              name="err_rating"
-                            ></div>
-
                             <div className="clearfix"></div>
                           </div>
 
@@ -707,17 +522,14 @@ const ProductDetail = () => {
                             <div className="title-rev-field">
                               <textarea
                                 className="message-review"
-                                placeholder="Add review"
                                 rows=""
                                 cols=""
-                                name="review"
+                                name="comment"
                                 id="review"
+                                value={review}
+                                onChange={(e) => setReview(e.target.value)}
+                                placeholder="Add your review"
                               ></textarea>
-                              <div
-                                className="error_msg"
-                                id="err_review"
-                                name="err_review"
-                              ></div>
                             </div>
                             <div className="clearfix"></div>
                           </div>
@@ -728,13 +540,10 @@ const ProductDetail = () => {
                                 type="text"
                                 name="name"
                                 id="name"
-                                placeholder="Name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Your name"
                               />
-                              <div
-                                className="error_msg"
-                                id="err_name"
-                                name="err_name"
-                              ></div>
                             </div>
                             <div className="clearfix"></div>
                           </div>
@@ -748,14 +557,11 @@ const ProductDetail = () => {
                                   name="mobile_no"
                                   id="mobile_no"
                                   className="form-control"
-                                  placeholder="Mobile Number"
+                                  value={mobileNo}
+                                  onChange={(e) => setMobileNo(e.target.value)}
+                                  placeholder="Your mobile number"
                                 />
                               </div>
-                              <div
-                                className="error_msg"
-                                id="err_mobile_no"
-                                name="err_mobile_no"
-                              ></div>
                             </div>
                             <div className="clearfix"></div>
                           </div>
@@ -766,13 +572,10 @@ const ProductDetail = () => {
                                 type="text"
                                 name="email"
                                 id="email"
-                                placeholder="Email Id"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Your email"
                               />
-                              <div
-                                className="error_msg"
-                                id="err_email"
-                                name="err_email"
-                              ></div>
                             </div>
                             <div className="clearfix"></div>
                           </div>
@@ -789,9 +592,7 @@ const ProductDetail = () => {
                       </div>
                     </div>
                   )}
-
-                  {/* Gallery Tab */}
-                  {activeTab === "gallery" && (
+                  {activeTab === "gallery" && product.gallery && (
                     <div
                       id="gallery"
                       className="resp-tab-content resp-tab-content-active"
@@ -800,41 +601,25 @@ const ProductDetail = () => {
                       <div className="gallery_view">
                         <div className="gallery">
                           <div className="prod_img">
-                            <a
-                              href="https://buyphpcode.com/justdialclone/uploads/business/business_upload_image/resize_cache/8ca94dfa7ec9903c2fd81ff705b9b829fae54363-1000x500.png"
-                              className="gal img_inner"
-                            >
-                              <img
-                                src="https://buyphpcode.com/justdialclone/uploads/business/business_upload_image/resize_cache/8ca94dfa7ec9903c2fd81ff705b9b829fae54363-1000x500.png"
-                                alt=""
-                              />
-                              <img
-                                src="https://buyphpcode.com/justdialclone/uploads/business/business_upload_image/resize_cache/8ca94dfa7ec9903c2fd81ff705b9b829fae54363-1000x500.png"
-                                alt=""
-                              />
-                            </a>
-                            <a
-                              href="https://buyphpcode.com/justdialclone/uploads/business/business_upload_image/8ca94dfa7ec9903c2fd81ff705b9b829fae54363.png"
-                              className="gal img_inner"
-                            >
-                              <img
-                                src="https://buyphpcode.com/justdialclone/uploads/business/business_upload_image/8ca94dfa7ec9903c2fd81ff705b9b829fae54363.png"
-                                alt=""
-                              />
-                              <img
-                                src="https://buyphpcode.com/justdialclone/uploads/business/business_upload_image/resize_cache/8ca94dfa7ec9903c2fd81ff705b9b829fae54363-464x367.png"
-                                alt=""
-                              />
-                            </a>
+                            {product.gallery.map((image, index) => (
+                              <a
+                                href={`http://localhost:5173/src/images/uploads/${image}`}
+                                key={index}
+                                className="gal img_inner"
+                              >
+                                <img
+                                  src={`http://localhost:5173/src/images/uploads/${image}`}
+                                  alt={`Gallery image ${index + 1}`}
+                                />
+                              </a>
+                            ))}
                           </div>
                         </div>
                         <div className="clr"></div>
                       </div>
                     </div>
                   )}
-
-                  {/* About Tab */}
-                  {activeTab === "about" && (
+                  {activeTab === "about" && product.about && (
                     <div
                       className="resp-tab-content resp-tab-content-active"
                       aria-labelledby="tab_item-3"
@@ -842,9 +627,14 @@ const ProductDetail = () => {
                       <div
                         className="company_info "
                         style={{ textAlign: "justify" }}
-                      >
-                        test
-                      </div>
+                      ></div>
+                      {product.about ? (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: product.about }}
+                        />
+                      ) : (
+                        <p>No description available</p>
+                      )}
                     </div>
                   )}
                 </div>

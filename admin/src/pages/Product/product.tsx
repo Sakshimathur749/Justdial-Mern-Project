@@ -25,6 +25,7 @@ const PostedProductsPage = () => {
         setLoading(false);
       }
     };
+    
 
     fetchProducts();
   }, []); 
@@ -55,7 +56,7 @@ const PostedProductsPage = () => {
       name: 'Product Image',
       selector: (row: any) => (
         <img
-          src={row.image ? `http://localhost:5173/src/images/uploads/${row.image}` : ''}
+          src={`http://localhost:5173/src/images/uploads/${row.image}`}
           alt={row.heading}
           style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
         />

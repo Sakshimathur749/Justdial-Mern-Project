@@ -9,7 +9,6 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, "../../admin/src/images/uploads");
-    console.log("Uploading file to:", uploadDir);
     if (!fs.existsSync(uploadDir)) {
    fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -17,7 +16,6 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     if (!file || !file.originalname) {
-      console.log("File is missing or invalid");
       return cb(new Error("Invalid file"));
   }
   const filename = Date.now() + '-' + file.originalname;

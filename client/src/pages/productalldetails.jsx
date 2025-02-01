@@ -5,7 +5,9 @@ import ContactDetail from '../Components/ContactDetail';
 import ProductDetail from '../Components/ProductDetail';
 import Relatedproduct from '../Components/Relatedproduct';
 import '../css/components.css'
+import { useParams } from 'react-router';
 const Productalldetails = () => {
+  const { id } = useParams();
   const breadcrumbs = [
     { label: 'Home', link: '/' },
     { label: 'Category', link: '/categories' },
@@ -21,8 +23,8 @@ const Productalldetails = () => {
       <ContactDetail/>
       </div>
       <div className="col-8 col-md-12 product-left">
-      <ProductDetail/>
-      <Relatedproduct/>
+      <ProductDetail productId={id}/>
+      {/* <Relatedproduct/> */}
       </div>
       </div>
     </div>

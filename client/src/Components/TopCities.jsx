@@ -17,7 +17,7 @@ const TopCities = () => {
           <div className="resp-tab-content resp-tab-content-active">
             <Row  >
              <Col lg='3' md='4' sm='4'>
-             <a href="">
+             <a href="/categories/product">
             <div className="col-bott-mar blog-box">
               <div className="first-cate-img image-anime image">
                 <img
@@ -47,7 +47,7 @@ const TopCities = () => {
             </div>
           </a></Col>
           <Col lg='3' md='4' sm='4'>
-             <a href="">
+             <a href="/categories/product">
             <div className="col-bott-mar blog-box">
               <div className="first-cate-img image-anime image">
                 <img

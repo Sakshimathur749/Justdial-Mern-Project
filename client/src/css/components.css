@@ -1,3 +1,96 @@
+/* Footer Styles */
+.footer {
+    background-color: #212121;
+    color: white;
+    padding-top: 40px;
+  }
+  .f-wrap{
+    flex-wrap:nowrap !important;
+}
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  
+  .footer-section {
+    width: 23%;
+    margin-bottom: 30px;
+  }
+  
+  .footer-section h3 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #f39c12;
+  }
+  
+  .footer-section p {
+    font-size: 1em;
+    margin-bottom: 10px;
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-section ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .footer-section ul li a:hover {
+    color: #f39c12;
+  }
+  
+  .footer-section .social-icons a {
+    color: white;
+    margin-right: 15px;
+    font-size: 1.5em;
+    transition: color 0.3s;
+  }
+  
+  .footer-section .social-icons a:hover {
+    color: #f39c12;
+  }
+  
+  .footer-section input[type="email"] {
+    padding: 10px;
+    width: 80%;
+    border: none;
+  }
+  
+  .footer-section button {
+    padding: 10px 20px;
+    background-color: #f39c12;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .footer-section button:hover {
+    background-color: #e67e22;
+  }
+  
+  .footer-bottom {
+    background-color: #333;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+  }
+  
+  .footer-bottom p {
+    margin: 0;
+    color: #ccc;
+  }
 /* Relatedproduct css */
 .title_main { color: #3a3a3a; font-size: 22px; margin-bottom: 11px;}.product_info { margin-bottom: 15px;}
 .p_images-detail{display: block; position: relative; overflow: hidden;}.name_product { bottom: 0px;color: #fff;font-size: 20px;padding: 0 0 5px 10px;position: absolute; z-index: 9; background-image: url("https://buyphpcode.com/justdialclone/assets/front/images/pdt-ftr_1.png"); background-position: 0 0; width: 100%;}
@@ -116,7 +209,6 @@
     list-style: none;
     cursor: pointer;
     float: left;
-    font-family:"noto_sansregular",serif;
     font-size: 16px;
     color: #3a3a3a;
     max-width: inherit;
@@ -766,7 +858,7 @@ transform: rotate(-135deg);
     line-height: 0;
 }
 .srp-listing .info .info-primary {
-    width: 75%;
+    width: 50%;
 }
 .srp-listing .info .info-section {
     float: left;
@@ -823,11 +915,8 @@ transform: rotate(-135deg);
 }
 .rating-stars, .result-rating {
     display: inline-block;
-    width: 120px;
-    height: 22px;
-    background: url('https://i1.ypcdn.com/ypu/images/svgs/star-ratings-sprite.svg?v=0cb52bd') no-repeat;
-    background-size: 100%;
-    margin-right: 5px;
+    height: 20px;
+    margin-right: 20px;
     vertical-align: middle;
 }
 .rating .count, .rating-stars .count, .result-rating .count {
@@ -1877,6 +1966,12 @@ hr.nn {
 /* Responsive CSS */
 /* Large Desktops (up to 1200px) */
 @media (max-width: 1200px) {
+    .footer-section {
+        width: 45%;
+      }
+      .f-wrap{
+        flex-wrap:nowrap !important;
+    }
     .intro-message > h1 {
         font-size: 45px;
     }
@@ -1944,6 +2039,20 @@ hr.nn {
 
 /* Tablets (576px to 768px) */
 @media (max-width: 768px) {
+    .footer-section {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    .f-wrap{
+        flex-wrap:wrap !important;
+    }
+      .footer-section input[type="email"] {
+        width: 80%;
+      }
+    
+      .footer-section button {
+        width: 80%;
+      }
     /* Banner Component */
     .intro-message > h1 {
         font-size: 40px;
@@ -2013,6 +2122,9 @@ hr.nn {
     max-width: 90% !important;
     border-bottom: 1px solid #bbbbbb !important ;
    }
+   .f-wrap{
+    flex-wrap:wrap !important;
+}
    .form-group{
     flex-wrap: wrap;
    }
@@ -2058,4 +2170,29 @@ hr.nn {
     .all-cate-btn {
         max-width: 100%; 
     }
+    .footer {
+        padding: 20px 0;
+      }
+    
+      .footer-content {
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .footer-section {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    
+      .footer-section h3 {
+        font-size: 1.2em;
+      }
+    
+      .footer-section input[type="email"] {
+        width: 70%;
+      }
+    
+      .footer-section button {
+        width: 70%;
+      }
 }
