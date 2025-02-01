@@ -2,6 +2,7 @@ const Product = require('../modals/product-modal');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const slugify = require('slugify'); 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     let uploadDir = path.join(__dirname, '../../admin/src/images/uploads'); 
@@ -21,29 +22,41 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+const generateUniqueSlug = async (title) => {
+  let slug = slugify(title, { lower: true, strict: true });
+  const existingProduct = await Product.findOne({ slug });
+  if (existingProduct) {
+    slug = `${slug}-${Date.now()}`;
+  }
+  return slug;
+};
+
 const createProduct = async (req, res) => {
   const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about } = req.body;
+
+  let slug = await generateUniqueSlug(title);
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
   const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
 
   try {
     const newProduct = new Product({
       title,
+      slug,  
       category,
       location,
       rating,
       phoneNumber,
       status,
-      relevantTags: relevantTags.split(',').map(tag => tag.trim()), 
-      image, 
-      gallery, 
+      relevantTags: relevantTags.split(',').map(tag => tag.trim()),
+      image,
+      gallery,
       websiteUrl,
       email,
       about
     });
 
     await newProduct.save();
-    res.status(201).json(newProduct); 
+    res.status(201).json(newProduct);
   } catch (error) {
     console.error('Error creating product:', error);
     res.status(500).json({ message: 'Server Error', error });
@@ -135,7 +148,7 @@ const getProductById = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.status(200).json(product);
+    res.status(200).json(product); 
   } catch (error) {
     console.error('Error fetching product:', error);
     res.status(500).json({ message: 'Server Error', error });

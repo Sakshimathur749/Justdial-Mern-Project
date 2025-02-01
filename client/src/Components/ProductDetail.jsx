@@ -29,7 +29,6 @@ const ProductDetail = ({ productId }) => {
         }
         const data = await response.json();
         setProduct(data); 
-        console.log(data,"data")
       } catch (err) {
         setError(err.message);
       } finally {
@@ -88,7 +87,6 @@ const ProductDetail = ({ productId }) => {
         }
         const data = await response.json();
         setReviews(data);
-        console.log(data, "data Reviews", productId, "productId");
       } catch (error) {
         setError("Failed to fetch reviews.");
       }
@@ -265,7 +263,7 @@ const ProductDetail = ({ productId }) => {
               </div>
               <input type="hidden" name="lat" id="lat" />
               <input type="hidden" name="lng" id="lng" />
-              <div className="icons">
+              <div className="icons d-flex">
                 <div className="img_icons popup-v">
                   <a data-toggle="modal" data-target="#share">
                     <img
@@ -334,7 +332,7 @@ const ProductDetail = ({ productId }) => {
                   margin: "0px",
                 }}
               >
-                <ul className="resp-tabs-list ">
+                <ul className="resp-tabs-list d-flex">
                   <li
                     id="rating"
                     className={`resp-tab-item ${

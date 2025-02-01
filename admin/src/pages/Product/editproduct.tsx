@@ -61,7 +61,6 @@ const EditProductPage = () => {
   
       if (response.ok) {
         const updatedProduct = await response.json();
-        console.log('Image deleted successfully:', updatedProduct);
         setGalleryImages((prevImages) => prevImages.filter((_, i) => i !== index));
         setGalleryImagePreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
       } else {
@@ -108,12 +107,13 @@ const EditProductPage = () => {
     formData.append('location', product.location);
     formData.append('rating', product.rating.toString());
     formData.append('phoneNumber', product.phoneNumber);
+    formData.append('websiteUrl', product.websiteUrl);
+    formData.append('about', product.about);
     formData.append('status', product.status);
     formData.append('relevantTags', product.relevantTags.join(','));
     galleryImages.forEach((image: any) => {
       formData.append('galleryImages', image);
     });
-  
     try {
       const response = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: 'PUT',
@@ -122,7 +122,6 @@ const EditProductPage = () => {
   
       if (response.ok) {
         const updatedProduct = await response.json();
-        console.log('Product updated:', updatedProduct);
         setImagePreview(
           updatedProduct.image
             ? `http://localhost:5173/src/images/uploads/${updatedProduct.image}`
@@ -300,7 +299,7 @@ const EditProductPage = () => {
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             About
           </label>
-          <ReactQuill value={product.about} onChange={handleQuillChange} />
+          <ReactQuill value={product.about}  onChange={handleQuillChange} />
         </div>
         <button
           type="submit"

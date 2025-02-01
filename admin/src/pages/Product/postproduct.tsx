@@ -81,7 +81,6 @@ const ProductPostPage = () => {
       }
   
       const result = await response.json();
-      console.log('Product created successfully:', result);
       alert('Product created successfully!');
       setProductData({
         image: '',

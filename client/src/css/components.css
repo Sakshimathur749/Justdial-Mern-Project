@@ -2039,6 +2039,15 @@ hr.nn {
 
 /* Tablets (576px to 768px) */
 @media (max-width: 768px) {
+    /* ProductDetails css */
+    .p_detail_view .p_details{
+       flex-wrap: wrap;
+    }
+    .add_det, .enquiry{
+        border-left: none !important;
+        margin-left: 0px !important;
+        padding-left: 0px !important;
+    }
     .footer-section {
         width: 100%;
         margin-bottom: 20px;

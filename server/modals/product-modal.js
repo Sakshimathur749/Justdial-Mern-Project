@@ -1,24 +1,26 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');  
+const slugify = require('slugify'); 
 const productSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: String,
   slug: { type: String, unique: true, required: true },
-  category: { type: String, required: true },
-  location: { type: String, required: true },
-  rating: { type: Number, required: true, min: 0, max: 5 },
-  phoneNumber: { type: String, required: true },
-  status: { type: String, enum: ['Open', 'Closed'], required: true },
+  category: String,
+  location: String,
+  rating: Number,
+  phoneNumber: String,
+  status: String,
   relevantTags: [String],
-  image: { type: String, required: false },  
-  gallery: { type: [String], required: false }, 
-  websiteUrl: { type: String, required: false },
-  email: { type: String, required: false },
-  about: { type: String, required: false },
-}, { timestamps: true });
-productSchema.pre('save', function (next) {
-  if (this.title) {
+  image: String,
+  gallery: [String],
+  websiteUrl: String,
+  about: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+productSchema.pre('save', function(next) {
+  if (!this.slug && this.title) {
     this.slug = slugify(this.title, { lower: true, strict: true });
   }
   next();
 });
+
 module.exports = mongoose.model('Product', productSchema);
