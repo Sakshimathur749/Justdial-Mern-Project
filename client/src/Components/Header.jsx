@@ -3,7 +3,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useEffect, useState } from "react";
-import { Accordion, Offcanvas } from "react-bootstrap";
+import { Accordion, Button, Form, Modal, Offcanvas } from "react-bootstrap";
 import ReactLanguageSelect from "react-languages-select";
 import "react-languages-select/css/react-languages-select.css";
 import "../css/header.css";
@@ -12,11 +12,14 @@ import logo from '../assets/logo.png'
 
 function Header() {
   const [show, setShow] = useState(false);
+  const [loginShow, setLoginShow] = useState(false); 
   useEffect(() => {
     window.scrollTo(0, 0.5);
   }, [location]);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleLoginClose = () => setLoginShow(false); 
+  const handleLoginOpen = () => setLoginShow(true);  
   return (
     <>
       <Navbar
@@ -38,7 +41,6 @@ function Header() {
           <div
             className="nav-right"
             style={{ display: "flex", gap: "20px" }}
-            onClick={() => window.location.reload()}
           >
             <Nav
             className="my-2 my-lg-0 navbar-nav"
@@ -56,8 +58,8 @@ function Header() {
             <div className="nav-link" onClick={() => window.location.reload()}>
               Product{" "}
             </div>
-            <div className="nav-link" onClick={() => window.location.reload()}>
-              Contact{" "}
+            <div className="nav-link" onClick={handleLoginOpen}>
+              Login/Register{" "}
             </div>
           </Nav>
             <div className="button">
@@ -122,6 +124,41 @@ function Header() {
           </Accordion>
         </Offcanvas.Body>
       </Offcanvas>
+      <Modal show={loginShow}  onHide={handleLoginClose}>
+        <Modal.Header className="bg-white" closeButton>
+          <Modal.Title>Login / Register</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="bg-white">
+          <Form>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control type="email" style={{padding:'20px', fontWeight:'500'}} placeholder="Enter email" />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" style={{padding:'20px', fontWeight:'500'}} placeholder="Password" />
+            </Form.Group>
+            <div className="d-flex justify-content-between px-3 py-2">
+            <div >
+              <div className="py-1 px-2"><a href="" className="resta-content "> Forget Password</a></div>
+              <div className="py-1 px-2"><a href="" className="open-status text-decoration-underline">Sign up</a></div>
+            </div>
+            <div>
+            <Button variant="primary" className="px-2 px-4" type="submit" block>
+              Login
+            </Button>
+            </div>
+            </div>
+          </Form>
+          <div style={{ marginTop: "10px", textAlign:'center' , padding:'20px'}}>
+            <span className="resta-content">Don't have an account? </span>
+            <a href="/register" className="open-status">
+              Register here
+            </a>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

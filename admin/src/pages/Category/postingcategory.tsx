@@ -6,7 +6,15 @@ import { Link } from 'react-router-dom';
 const Postingcategory = () => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [message, setMessage] = useState({ text: '', type: '' });
+  const handleViewSubcategories = (categoryId: string) => {
+    // Navigate to subcategory management page for the category
+    console.log(`View subcategories for category with ID: ${categoryId}`);
+  };
 
+  const handleCreateSubcategory = (categoryId: string) => {
+    // Navigate to the create subcategory page
+    console.log(`Create subcategory for category with ID: ${categoryId}`);
+  };
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -72,7 +80,22 @@ const Postingcategory = () => {
     },
     {
       name: 'Subcategories',
-      selector: (row: any) => row.subcategories.map((sub: any) => sub.name).join(', '),
+      selector: (row: any) => (
+        <div className="mb-7.5 flex flex-wrap gap-2">
+          <button
+            className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
+            onClick={() => handleViewSubcategories(row._id)}
+          >
+            View 
+          </button>
+          <button
+            className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
+            onClick={() => handleCreateSubcategory(row._id)}
+          >
+            Create
+          </button>
+        </div>
+      ),
       sortable: false,
     },
     {

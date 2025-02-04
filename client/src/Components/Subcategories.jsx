@@ -13,13 +13,13 @@ const Subcategories = () => {
   useEffect(() => {
     const fetchSubcategories = async () => {
       try {
+        const formattedCategoryName = categoryName.replace(/\s+/g, '-');
         const response = await fetch(`http://localhost:5000/api/categories`);
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }
         const data = await response.json();
-
-        const category = data.find(cat => cat.name.toLowerCase() === categoryName.toLowerCase());
+        const category = data.find(cat => cat.name.replace(/\s+/g, '-').toLowerCase() === formattedCategoryName.toLowerCase());
         if (category) {
           setSubcategories(category.subcategories);
         } else {
@@ -76,8 +76,6 @@ const Subcategories = () => {
                   ) : (
                     <li>No subcategories available</li>
                   )}
-                  <hr className="nn" />
-                  
                 </ul>
                 <div className="clearfix"></div>
               </div>

@@ -5,7 +5,7 @@ import { Container, Row } from 'react-bootstrap';
 
 const Emailblock = () => {
   return (
-    <div className='sp'>
+    <div className=''>
       <Container fluid>
          <Row>
          <div className="email-block">

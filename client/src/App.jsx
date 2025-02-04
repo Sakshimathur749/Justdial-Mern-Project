@@ -19,7 +19,7 @@ function App() {
       <Route path='/categories' element={<Categories/>}></Route>
       <Route path="/categories/:categoryName/subcategories" element={<Subcategories />} />
       <Route path='/categories/product' element={<Products/>}></Route>
-      <Route path='/state/location/:id' element={<Productalldetails/>}></Route>
+      <Route path='/categories/product/:slug' element={<Productalldetails />} />
     </Routes>
     <Footer/>
     </BrowserRouter>

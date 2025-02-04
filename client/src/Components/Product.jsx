@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../css/common.css";
 import "../css/components.css";
 import { Container, Row, Col} from "react-bootstrap";
+import { Link } from "react-router";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -9,12 +10,15 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showMap, setShowMap] = useState(false); 
 
   useEffect(() => {
     fetch('http://localhost:5000/api/products')  
       .then(response => response.json())
       .then(data => {
         setProducts(data);
+        console.log(data,"Product.jsx")
         setLoading(false);
       })
       .catch(err => {
@@ -32,7 +36,8 @@ const Product = () => {
       setFilteredProducts(filtered); 
     }
   }, [selectedCategory, products]);
- const handleCategoryChange = (category) => {
+
+  const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
   if (loading) return <div>Loading...</div>;
@@ -185,34 +190,27 @@ const Product = () => {
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="17"
-                              height="17"
-                              viewBox="0 0 17 17"
+                              height={17}
+                              width={17}
+                              viewBox="0 0 576 512"
                             >
-                              <use xlinkHref="#icon-map-view-button"></use>
+                              <path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z" />
                             </svg>
                             Map View
                           </a>
                           <a
-                            className="all-filters"
+                            className="map-view-button"
                             href="#"
                             data-analytics='{"click_id":1070}'
                             data-impressed="1"
                           >
                             <svg
-                              className="sliders-svg"
                               xmlns="http://www.w3.org/2000/svg"
-                              width="14"
-                              height="11"
-                              viewBox="0 0 14 11"
+                              height={17}
+                              width={17}
+                              viewBox="0 0 512 512"
                             >
-                              <use
-                                xlinkHref="#slider-icon"
-                                fill="none"
-                                fillRule="evenodd"
-                                strokeWidth="1"
-                                stroke="currentColor"
-                              ></use>
+                              <path d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z" />
                             </svg>
                             All
                           </a>
@@ -263,7 +261,7 @@ const Product = () => {
                 View all businesses that are{" "}
                 <a
                   id="open24"
-                  href="/los-angeles-ca/restaurants/open-24-hours"
+                  href=""
                   data-analytics='{"click_id":2470}'
                   data-impressed="1"
                 >
@@ -308,39 +306,40 @@ const Product = () => {
                     Find
                   </button>
                 </form>
-              </section>
+              </section>              
               {products.map((product) => (
-              <div key={product._id}
-                className="result"
-                id="lid-3697726"
-                data-analytics='{"adclick":true,"events":"event7,event6","category":"8004199","impression_id":"94f4da81-b7c8-416e-92aa-3c38295c5430","listing_id":"3697726","item_id":-1,"listing_type":"free","ypid":"3697726","content_provider":"MDM","srid":"L-webyp-fab686cd-54dc-436d-9f17-7e9e26114bd9-3697726","item_type":"listing","lhc":"8004199","ldir":"LA","rate":4,"hasTripAdvisor":true,"mip_claimed_status":"mip_unclaimed","mip_ypid":"3697726","rating":"free","listing_index":30,"tier":999,"poi":30,"rank":30,"act":1,"features":"reviews,menu,phone,tripadvisor,open-now,orderonline-spm","impression":1,"content_partner_id":"MDM"}'
-                data-ypid="3697726"
-                data-impressionid="94f4da81-b7c8-416e-92aa-3c38295c5430"
-                data-impressed="1"
-              >               
-                <div 
-                  className="srp-listing clickable-area mdm"
-                  data-analytics='{"click_id":1600,"category":"8004199","tier":999}'
-                  data-impressed="1"
+                <Link to={`/categories/product/${product.slug}`}>
+                <div
+                  key={product._id}
+                  className="result"
+                  id="lid-3697726"
                 >
-                    <div  className="v-card">
+                  <div
+                    className="srp-listing clickable-area mdm"
+                  >
+                    <div className="v-card">
                       <div className="media-thumbnail">
-                        <a
-                          className="media-thumbnail-wrapper photo"
-                          href="" 
-                         >
+                        <a className="media-thumbnail-wrapper photo" href="">
                           <img
                             alt={product.title}
                             src={`http://localhost:5173/src/images/uploads/${product.image}`}
                             width={130}
-                            height={130} style={{objectFit:'contain',width:"100%", height:'100%'}}
+                            height={130}
+                            style={{
+                              objectFit: "contain",
+                              width: "100%",
+                              height: "100%",
+                            }}
                           />
                         </a>
                       </div>
                       <div className="info">
                         <div className="info-section info-primary">
                           <h2 className="n">
-                            <a className="business-name" href={`/state/location/${product._id}`}>
+                            <a
+                              className="business-name"
+                              href={`/categories/product/${product.slug}`}
+                            >
                               <span>{product.title}</span>
                             </a>
                           </h2>
@@ -444,11 +443,12 @@ const Product = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
                 </div>
-              </div>
-                ))}
+                </Link>
+              ))}
             </div>
-            <aside id="main-aside">
+            {/* <aside id="main-aside">
               <div className="search-disclosure">
                 <div
                   className="trigger-btn"
@@ -471,52 +471,59 @@ const Product = () => {
                 >
                   <h3>Featured Restaurants</h3>
                   {filteredProducts.map((product) => (
-                  <div
-                    className="srp-listing clickable-area diamond-listing compact astro-fre"
-                    key={product.id}
-                  >
-                    <div className="v-card" >
-                      <div className="info">
-                        <h2 className="n">
-                          <a
-                            className="business-name"
-                            href=""
-                          >
-                            {product.title}
-                          </a>
-                        </h2>
-                        <div className="phone">{product.phoneNumber}</div>
-                        <div className="categories">
-                          <a>
-                            {product.category}
-                          </a>
+                    <div
+                      className="srp-listing clickable-area diamond-listing compact astro-fre"
+                      key={product.id}
+                    >
+                      <div className="v-card">
+                        <div className="info">
+                          <h2 className="n">
+                            <a
+                              className="business-name"
+                              href={`/categories/product/${product.slug}`}
+                            >
+                              {product.title}
+                            </a>
+                          </h2>
+                          <div className="phone">{product.phoneNumber}</div>
+                          <div className="categories">
+                            <a href={`/categories/product/${product.slug}`}>
+                              {product.category}
+                            </a>
+                          </div>
+                          <p className="adr">{product.location}</p>
+                          <div className="links">
+                            <a
+                              href={product.websiteUrl}
+                              target="_blank"
+                              rel="nofollow noopener"
+                            >
+                              Website
+                            </a>
+                            <a
+                              href={`https://www.google.com/maps?q=${encodeURIComponent( product.location)}`}
+                              target="_blank"
+                              rel="nofollow noopener"
+                            >
+                              Directions
+                            </a>
+                            <a
+                              data-analytics='{"click_id":7}'
+                              data-impressed="1"
+                              href={`/categories/product/${product.slug}`}
+                            >
+                              More Info
+                            </a>
+                          </div>
+                          <span className="ad-pill">Ad</span>
                         </div>
-                        <p className="adr">
-                          {product.location}
-                        </p>
-                        <div className="links">
-                          <a
-                            target="_blank"
-                            rel="nofollow noopener"
-                          >
-                            Website
-                          </a>
-                          <a
-                            data-analytics='{"click_id":13}'
-                            data-impressed="1"
-                          >
-                            Directions
-                          </a>
-                          <a data-analytics='{"click_id":7}' data-impressed="1">
-                            More Info
-                          </a>
-                        </div>
-                        <span className="ad-pill">Ad</span>
                       </div>
                     </div>
-                  </div>
                   ))}
                 </section>
+                {showMap && selectedProduct && (
+                  <Map location={selectedProduct.location} />
+                )}
                 <div className="display-ad" id="banner-ad-bottom-right">
                   <div
                     id="div-gpt-ad-1713294895648-0"
@@ -553,6 +560,50 @@ const Product = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </aside> */}
+            <aside id="main-aside">
+              <div class="categories_sect sidebar-nav">
+                <div class="sidebar-brand">
+                  Related Categories
+                  <span class="spe_mobile">
+                    <a href="#"></a>
+                  </span>
+                </div>
+                <div class="bor_head">&nbsp;</div>
+                <ul class="spe_submobile">
+                  <li class="brdr">
+                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-65">
+                      4 Star Hotels
+                    </a>
+                  </li>
+                  <li class="brdr">
+                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-66">
+                      3 Star Hotels
+                    </a>
+                  </li>
+                  <li class="brdr">
+                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-67">
+                      2 Star Hotels
+                    </a>
+                  </li>
+                  <li class="brdr">
+                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-68">
+                      1 Star Hotels
+                    </a>
+                  </li>
+                  <li class="brdr">
+                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-69">
+                      Budget Hotels
+                    </a>
+                  </li>
+                  <li class="brdr">
+                    <a href="https://buyphpcode.com/justdialclone/Delhi/all-options/ct-70">
+                      Premium Hotels
+                    </a>
+                  </li>
+                </ul>
+                <div class="clearfix"></div>
               </div>
             </aside>
           </Col>

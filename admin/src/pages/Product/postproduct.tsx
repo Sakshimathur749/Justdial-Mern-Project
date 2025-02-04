@@ -18,6 +18,7 @@ const ProductPostPage = () => {
     relevantTags: '',
     websiteUrl: '',
     about: '',
+    mapEmbedLink:'',
   });
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -58,14 +59,11 @@ const ProductPostPage = () => {
     formData.append('status', productData.status);
     formData.append('relevantTags', productData.relevantTags);
     formData.append('websiteUrl', productData.websiteUrl);
+    formData.append('mapEmbedLink', productData.mapEmbedLink);
     formData.append('about', productData.about);
-  
-    // Append the image file if available
     if (productData.image instanceof File) {
       formData.append('image', productData.image);
     }
-  
-    // Append the gallery files if any
     gallery.forEach((file) => {
       formData.append('gallery', file);
     });
@@ -92,6 +90,7 @@ const ProductPostPage = () => {
         status: 'Open',
         relevantTags: '',
         websiteUrl: '',
+        mapEmbedLink:'',
         about: '',
       });
       setGallery([]);
@@ -297,6 +296,12 @@ const ProductPostPage = () => {
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             placeholder="Enter relevant tags (comma separated)"
           />
+        </div>
+        <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-white">Map Embed Link:</label>
+        <input type="text" name="mapEmbedLink"  className="mt-2 w-full cursor-pointer rounded-lg border border-gray-300 bg-transparent py-2 px-3 text-sm text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={handleChange}
+            value={productData.mapEmbedLink} />
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Website</label>

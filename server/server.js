@@ -8,6 +8,7 @@ const CategoryRouter= require('./routes/category-router')
 const AdminRoute = require('./routes/admin-router');
 const ProductRoutes = require('./routes/product-router')
 const ReviewRoutes = require('./routes/review-router')
+const SubcategoryRoutes= require('./routes/subcategory-router')
 const path = require('path')
 
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, '../admin/src/images/uploads'))); 
 app.use('/api', CategoryRouter);
+app.use('/api', SubcategoryRoutes);
 app.use('/api', ProductRoutes);
 app.use('/api', ReviewRoutes);
 app.use('/api/auth', AdminRoute);

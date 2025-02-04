@@ -4,11 +4,12 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let uploadDir = path.join(__dirname, '../../admin/src/images/uploads');
-    if (file.fieldname === 'gallery') {
-      uploadDir = path.join(__dirname, '../../admin/src/images/gallery'); 
+    let uploadDir = '';
+    if (req.body.imageType === 'subcategory') {
+      uploadDir = path.join(__dirname, '../../admin/src/images/subcategory_uploads');
+    } else {
+      uploadDir = path.join(__dirname, '../../admin/src/images/category_uploads');
     }
-
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -17,9 +18,10 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const filename = Date.now() + '-' + file.originalname;
     cb(null, filename);
-  }
+    console.log('Saving file as:', filename);
+  },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 }});
 
 module.exports = upload;

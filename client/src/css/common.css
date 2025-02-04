@@ -7,6 +7,7 @@
     --text-gray:#8e8e8e;
     --heading-gray:#5c5c5c;
     --heading-sub:#434343;
+    --bg-component:#f4f4f4;
     /* --bs-yellow: #d89605; */
     --ztc-text-text-1: #0D0E10;
         --ztc-text-text-2: #fff;
@@ -4409,9 +4410,10 @@ body{
  }
  .blog .blog-box {
      margin-top: 30px;
-     border: 1px solid #EEEFF1;
+     box-shadow:0 1px 0 #cacaca;
      border-radius: 7px
  }
+ .explore-category{background: var(--bg-component) ; padding: 30px 0;}
 
  .blog .blog-box .image {
      overflow: hidden;
@@ -4551,7 +4553,7 @@ body{
  .card-container h3:hover{
     color:var(--bg-yellow);
  }
- .srp-listing .categories a,.what-to-do h6, .card-container h3,.resta-content,#search-filter-and-sort .sort, .sidebar-brand,.sidebar-nav li a {
+ .p_details a,.p_detail_view .p_details a,.p_details,.product_detail_banner .product_title a,.product_detail_banner .p_details > span,.srp-listing .categories a,.what-to-do h6, .card-container h3,.resta-content,#search-filter-and-sort .sort, .sidebar-brand,.sidebar-nav li a {
     color: var(--heading-sub);
  }
  .card-box h5{
@@ -4596,4 +4598,11 @@ body{
 .submit-btn button:hover{
     background-color: var(--bg-white) !important;
     color: var(--bg-yellow) !important;
+}
+.navbar-toggler,input{
+    outline: none !important;
+    border: none;
+}
+.navbar-toggler:focus{
+    box-shadow: none !important;
 }

@@ -32,7 +32,7 @@ const generateUniqueSlug = async (title) => {
 };
 
 const createProduct = async (req, res) => {
-  const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about } = req.body;
+  const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink } = req.body;
 
   let slug = await generateUniqueSlug(title);
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
@@ -41,7 +41,7 @@ const createProduct = async (req, res) => {
   try {
     const newProduct = new Product({
       title,
-      slug,  
+      slug,
       category,
       location,
       rating,
@@ -52,7 +52,8 @@ const createProduct = async (req, res) => {
       gallery,
       websiteUrl,
       email,
-      about
+      about,
+      mapEmbedLink 
     });
 
     await newProduct.save();
@@ -62,6 +63,7 @@ const createProduct = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error });
   }
 };
+
 
 const getProducts = async (req, res) => {
   try {
@@ -97,21 +99,25 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const productId = req.params.id;
-  const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about } = req.body;
+  const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink } = req.body;
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
   const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
-
+  
   try {
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    // If new image is uploaded, delete the old image
     if (image && product.image) {
       const oldImagePath = path.join(__dirname, '../../admin/src/images/uploads', product.image);
       if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath); 
+        fs.unlinkSync(oldImagePath);
       }
     }
+
+    // If new gallery images are uploaded, delete the old ones
     if (gallery.length > 0 && product.gallery.length > 0) {
       product.gallery.forEach(file => {
         const oldGalleryPath = path.join(__dirname, '../../admin/src/images/uploads', file);
@@ -120,6 +126,8 @@ const updateProduct = async (req, res) => {
         }
       });
     }
+
+    // Update product fields
     product.title = title;
     product.category = category;
     product.location = location;
@@ -127,12 +135,14 @@ const updateProduct = async (req, res) => {
     product.phoneNumber = phoneNumber;
     product.status = status;
     product.relevantTags = relevantTags ? relevantTags.split(',').map(tag => tag.trim()) : [];
-    if (image) product.image = image; 
-    if (gallery.length > 0) product.gallery = gallery;  
+    if (image) product.image = image;
+    if (gallery.length > 0) product.gallery = gallery;
     product.websiteUrl = websiteUrl;
     product.email = email;
     product.about = about;
+    if (mapEmbedLink) product.mapEmbedLink = mapEmbedLink;  
 
+    // Save the updated product
     await product.save();
     res.status(200).json(product);
   } catch (error) {
@@ -141,22 +151,23 @@ const updateProduct = async (req, res) => {
   }
 };
 
-const getProductById = async (req, res) => {
-  const productId = req.params.id;
+const getProductBySlug = async (req, res) => {
+  const { slug } = req.params;
   try {
-    const product = await Product.findById(productId);
+    const product = await Product.findOne({ slug });
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.status(200).json(product); 
+    res.status(200).json(product);  
   } catch (error) {
     console.error('Error fetching product:', error);
-    res.status(500).json({ message: 'Server Error', error });
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
+
 module.exports = {
-  getProductById,
+  getProductBySlug,
   updateProduct,
   createProduct,
   getProducts,

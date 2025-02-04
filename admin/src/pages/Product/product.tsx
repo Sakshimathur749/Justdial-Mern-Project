@@ -5,9 +5,10 @@ import '../../css/app.css';
 import { useNavigate } from 'react-router-dom';
 
 const PostedProductsPage = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -28,9 +29,9 @@ const PostedProductsPage = () => {
 
     fetchProducts();
   }, []); 
-  const handleEdit = (id: string) => {
-    navigate(`/edit-product/${id}`);
-  };
+  const handleEdit = (slug: string, _id: string) => {
+    navigate(`/edit-product/${slug}/${_id}`);
+  };  
 
   const handleDelete = async (id: string) => {
     const response = await fetch(`http://localhost:5000/api/products/${id}`, {
@@ -38,7 +39,7 @@ const PostedProductsPage = () => {
     });
 
     if (response.ok) {
-      setProducts(products.filter((product) => product._id !== id)); 
+      setProducts(products.filter((product:any) => product._id !== id)); 
     } else {
       console.error('Failed to delete product');
     }
@@ -88,11 +89,16 @@ const PostedProductsPage = () => {
       sortable: true,
     },
     {
+      name: 'Phone Number',
+      selector: (row: any) => row.phoneNumber, 
+      sortable: true,
+    },
+    {
       name: 'Edit',
       cell: (row: any) => (
         <button
           className="inline-flex items-center justify-center rounded bg-meta-3 p-4 text-center font-medium text-white hover:bg-opacity-90"
-          onClick={() => handleEdit(row._id)}
+          onClick={() =>handleEdit(row.slug, row._id)}
         >
           Edit
         </button>

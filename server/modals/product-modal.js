@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema({
   gallery: [String],
   websiteUrl: String,
   about: String,
+  mapEmbedLink: String,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

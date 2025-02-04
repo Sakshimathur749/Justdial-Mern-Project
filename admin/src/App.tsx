@@ -11,6 +11,7 @@ import EditCategory from './pages/Category/editcategory';
 import ProductPostPage from './pages/Product/postproduct';
 import PostedProductsPage from './pages/Product/product';
 import EditProductPage from './pages/Product/editproduct';
+import PostSubcategory from './pages/Category/subcategory';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -57,6 +58,14 @@ function App() {
           }
         />
         <Route
+          path="/posting-Subcategory"
+          element={
+            <>
+              <PostSubcategory />
+            </>
+          }
+        />
+        <Route
           path="/posted-category"
           element={
             <>
@@ -88,7 +97,7 @@ function App() {
           }
         />
         <Route
-          path="/edit-product/:id"
+          path="/edit-product/:slug/:id"
           element={
             <>
               <EditProductPage/>

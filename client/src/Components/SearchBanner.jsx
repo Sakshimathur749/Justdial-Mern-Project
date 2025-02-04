@@ -9,26 +9,15 @@ const SearchBanner = () => {
       <Container>
         <Row>
           <Col lg="12" md="12" sm="12">
-          <ul className="list-inline search_list">
+          <ul className="list-inline search_list text-center">
                 <li>
                   <div className="form-group form-control">
-                    <input
-                      type="hidden"
-                      name="_token"
-                      value="k90CgGLurJz55qzyHp5Wu2g0DzxV83KxnKfSNYp9"
-                    />
                     <input
                       type="text"
                       className="search-txt city_finder ui-autocomplete-input"
                       id="city_search"
                       placeholder="Enter City "
                       value="Delhi"
-                    />
-                    <input
-                      type="hidden"
-                      id="city_id"
-                      name="city_id"
-                      value="/"
                     />
                     <div className="has-feedback">
                       <input
@@ -39,22 +28,12 @@ const SearchBanner = () => {
                         name="category_search"
                         value=""
                       />
-                      <input
-                        type="hidden"
-                        id="category_id"
-                        name="category_id"
-                        value="0"
-                      />
-
                       <button
                         className="form-control-feedback search_home_buisness"
                         aria-hidden="true"
                         type="submit"
                       >
-                        <img
-                          src="https://buyphpcode.com/justdialclone/assets/front/images/home_search.png"
-                          alt=""
-                        />
+                          <svg xmlns="http://www.w3.org/2000/svg" height={20} width={20} viewBox="0 0 512 512"><path fill="#e6ab2a" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
                       </button>
                     </div>
                   </div>

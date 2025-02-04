@@ -222,6 +222,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Category
                             </NavLink>
                           </li>
+                          <li>
+                            <NavLink
+                              to="/posting-Subcategory"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Post Subcategory
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
@@ -315,6 +326,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Product
                             </NavLink>
                           </li>
+                          
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}

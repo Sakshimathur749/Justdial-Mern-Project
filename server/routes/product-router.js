@@ -3,7 +3,6 @@ const multer = require('multer');
 const path = require('path');
 const ProductController = require('../controllers/product-controller');
 const Product = require('../modals/product-modal');
-const { uploadImage, uploadGallery } = require('../middleware/multer'); 
 const router = express.Router();
 const fs = require('fs');
 
@@ -25,7 +24,7 @@ const upload = multer({ storage: storage });
 router.post('/products/create', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), ProductController.createProduct);
 router.delete('/products/:id', ProductController.deleteProduct); 
 router.put('/products/:id', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]),ProductController.updateProduct);
-router.get('/products/:id', ProductController.getProductById);
+router.get('/products/slug/:slug', ProductController.getProductBySlug);
 router.get('/products', ProductController.getProducts);
 router.delete('/products/:id/gallery/:imageName', async (req, res) => {
   const { id, imageName } = req.params;
