@@ -22,9 +22,9 @@ const Postcategory = () => {
       setImagePreview(null);
     }
   };
-
   const handleSubmit = async () => {
     const formData = new FormData();
+    formData.append('imageType', 'category');
     if (imageFile) {
       formData.append('image', imageFile); 
     }
@@ -48,7 +48,6 @@ const Postcategory = () => {
       setErrorModal(true); 
     }
   };
-
   return (
     <>
       <Breadcrumb pageName="Post Category" />
@@ -82,7 +81,6 @@ const Postcategory = () => {
           </div>
         </div>
       )}
-
       <div className="grid grid-col gap-9">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

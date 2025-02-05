@@ -18,7 +18,6 @@ const Product = () => {
       .then(response => response.json())
       .then(data => {
         setProducts(data);
-        console.log(data,"Product.jsx")
         setLoading(false);
       })
       .catch(err => {

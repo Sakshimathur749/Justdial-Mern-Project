@@ -6,14 +6,11 @@ import { Link } from 'react-router-dom';
 const Postingcategory = () => {
   const [tableData, setTableData] = useState<any[]>([]);
   const [message, setMessage] = useState({ text: '', type: '' });
-  const handleViewSubcategories = (categoryId: string) => {
-    // Navigate to subcategory management page for the category
-    console.log(`View subcategories for category with ID: ${categoryId}`);
+  const handleViewSubcategories = (categorySlug: string) => {
+    console.log(`View subcategories for category with ID: ${categorySlug}`);
   };
-
-  const handleCreateSubcategory = (categoryId: string) => {
-    // Navigate to the create subcategory page
-    console.log(`Create subcategory for category with ID: ${categoryId}`);
+  const handleCreateSubcategory = (categorySlug: string) => {
+    console.log(`Create subcategory for category with ID: ${categorySlug}`);
   };
   useEffect(() => {
     const fetchCategories = async () => {
@@ -29,24 +26,20 @@ const Postingcategory = () => {
         setMessage({ text: 'Error: ' + error.message, type: 'error' });
       }
     };
-
     fetchCategories();
   }, []);
-
   const handleEdit = (id: any) => {
     console.log(`Edit row with ID: ${id}`);
   };
-
   const handleDelete = async (id: any) => {
     try {
       const response = await fetch(`http://localhost:5000/api/categories/${id}`, {
         method: 'DELETE',
       });
-  
       if (response.ok) {
-        const updatedData = tableData.filter(item => item._id !== id);
+        const updatedData = tableData.filter(item => item._id !== id); 
         setTableData(updatedData);
-        setMessage({ text: 'Category deleted successfully!', type: 'success' });
+        setMessage({ text: 'Category and its subcategories deleted successfully!', type: 'success' });
       } else {
         setMessage({ text: 'Failed to delete category', type: 'error' });
       }
@@ -55,7 +48,6 @@ const Postingcategory = () => {
     }
   };
   
-
   const columns = [
     {
       name: 'S.no',
@@ -71,9 +63,9 @@ const Postingcategory = () => {
       name: 'Category Image',
       selector: (row: any) => (
         <img
-          src={row.image ? `http://localhost:5173/src/images/uploads/${row.image}` : ''}
+          src={row.image ? `http://localhost:5173/src/images/category_uploads/${row.image}` : ''}
           alt={row.name}
-          style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
+          style={{ width: '60px', height: '60px', borderRadius: '5px',margin:'5px',objectFit:'contain' }}
         />
       ),
       sortable: false,
@@ -81,19 +73,23 @@ const Postingcategory = () => {
     {
       name: 'Subcategories',
       selector: (row: any) => (
-        <div className="mb-7.5 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 justify-center items-center">
+          <Link to={`/subcategory/${row.slug}`}>
           <button
             className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
-            onClick={() => handleViewSubcategories(row._id)}
+            onClick={() => handleViewSubcategories(row.slug)}
           >
             View 
           </button>
+          </Link>
+          <Link to='/post-subcategory'>
           <button
             className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
             onClick={() => handleCreateSubcategory(row._id)}
           >
             Create
           </button>
+          </Link>
         </div>
       ),
       sortable: false,
@@ -101,8 +97,8 @@ const Postingcategory = () => {
     {
       name: 'Action',
       cell: (row: any) => (
-        <div className="mb-7.5 flex flex-wrap gap-2">
-          <Link to={`/edit-category/${row._id}`}>
+        <div className="flex flex-wrap gap-2 justify-center items-center">
+          <Link to={`/edit-category/${row.slug}`}>
             <button
               className="inline-flex items-center justify-center rounded-full bg-meta-3 py-4 px-6 text-center font-medium text-white hover:bg-opacity-90"
               onClick={handleEdit}

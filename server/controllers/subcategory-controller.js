@@ -1,21 +1,23 @@
 const SubCategory = require('../modals/subcategory-modal');
 const Category = require('../modals/category-modal');
 const mongoose = require('mongoose');
+const slugify = require('slugify');
+const path = require('path');
+const fs = require('fs');
+
 const createSubCategory = async (req, res) => {
   const { name, categoryId } = req.body;
   const imageFilename = req.file ? req.file.filename : '';
-  if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-    return res.status(400).json({ message: 'Invalid categoryId' });
-  }
   try {
-    const category = await Category.findById(categoryId);  
+    const category = await Category.findById(categoryId);
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
     const newSubCategory = new SubCategory({
       name,
       image: imageFilename,
-      categoryId: categoryId,  
+      categoryId: category._id,
+      slug: slugify(name, { lower: true, strict: true }),
     });
     await newSubCategory.save();
     res.status(201).json(newSubCategory);
@@ -26,19 +28,24 @@ const createSubCategory = async (req, res) => {
 };
 
 const getSubCategories = async (req, res) => {
-  const { categoryId } = req.params;
+  const { categorySlug } = req.params;
   try {
-    const subcategories = await SubCategory.find({ categoryId });
+    const category = await Category.findOne({ slug: categorySlug });
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    const subcategories = await SubCategory.find({ categoryId: category._id });
     res.status(200).json(subcategories);
   } catch (error) {
+    console.error('Error fetching subcategories:', error);
     res.status(500).json({ message: 'Server Error', error });
   }
 };
-
-const getSubCategoryById = async (req, res) => {
-  const { id } = req.params;
+const getSubCategoryBySlug = async (req, res) => {
+  const { slug } = req.params;  // Access slug from the URL
   try {
-    const subcategory = await SubCategory.findById(id);
+    const subcategory = await SubCategory.findOne({ slug });  // Query based on the slug
     if (!subcategory) {
       return res.status(404).json({ message: 'Subcategory not found' });
     }
@@ -51,10 +58,15 @@ const getSubCategoryById = async (req, res) => {
 const deleteSubCategory = async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedSubCategory = await SubCategory.findByIdAndDelete(id);
+    const deletedSubCategory = await SubCategory.findById(id);
     if (!deletedSubCategory) {
       return res.status(404).json({ message: 'Subcategory not found' });
     }
+    const imagePath = path.join(__dirname, '../../admin/src/images/subcategory_uploads', deletedSubCategory.image);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+    await SubCategory.findByIdAndDelete(id);
     res.status(200).json({ message: 'Subcategory deleted successfully' });
   } catch (error) {
     console.error('Error deleting subcategory:', error);
@@ -63,23 +75,32 @@ const deleteSubCategory = async (req, res) => {
 };
 
 const updateSubCategory = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;  
   const { name, categoryId } = req.body;
   const imageFilename = req.file ? req.file.filename : '';
   try {
-    const subcategory = await SubCategory.findById(id);
+    const subcategory = await SubCategory.findOne({ slug }); // Find by slug
     if (!subcategory) {
       return res.status(404).json({ message: 'Subcategory not found' });
     }
+
     const category = await Category.findById(categoryId);
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
+
     subcategory.name = name || subcategory.name;
     subcategory.categoryId = categoryId || subcategory.categoryId;
+    subcategory.slug = slugify(subcategory.name, { lower: true, strict: true });
+
     if (imageFilename) {
-      subcategory.image = imageFilename; 
+      const oldImagePath = path.join(__dirname, '../../admin/src/images/subcategory_uploads', subcategory.image);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+      subcategory.image = imageFilename;
     }
+
     await subcategory.save();
     res.status(200).json(subcategory);
   } catch (error) {
@@ -89,4 +110,4 @@ const updateSubCategory = async (req, res) => {
 };
 
 
-module.exports = { createSubCategory, getSubCategories, getSubCategoryById, deleteSubCategory,updateSubCategory };
+module.exports = { createSubCategory, getSubCategories, getSubCategoryBySlug, deleteSubCategory, updateSubCategory };

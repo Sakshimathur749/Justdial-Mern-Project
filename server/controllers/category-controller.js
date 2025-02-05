@@ -1,5 +1,9 @@
 const Category = require('../modals/category-modal');
-
+const SubCategory = require('../modals/subcategory-modal');
+const mongoose = require('mongoose');
+const slugify = require('slugify');
+const path = require('path');
+const fs = require('fs');
 const createCategory = async (req, res) => {
   const { name } = req.body;
   const imageFilename = req.file ? req.file.filename : '';
@@ -11,6 +15,7 @@ const createCategory = async (req, res) => {
     const newCategory = new Category({
       name,
       image: imageFilename,
+      slug: slugify(name, { lower: true, strict: true }),
     });
     await newCategory.save();
     res.status(201).json(newCategory);  
@@ -29,10 +34,67 @@ const getCategories = async (req, res) => {
   }
 };
 
-const getCategoryById = async (req, res) => {
+const deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
-    const category = await Category.findById(id); 
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    if (category.image) {
+      const categoryImagePath = path.join(__dirname, '../../admin/src/images/category_uploads', category.image);
+      if (fs.existsSync(categoryImagePath)) {
+        fs.unlinkSync(categoryImagePath);
+      }
+    }
+    const subcategories = await SubCategory.find({ categoryId: id });
+    for (const sub of subcategories) {
+      if (sub.image) {
+        const subcategoryImagePath = path.join(__dirname, '../../admin/src/images/subcategory_uploads', sub.image);
+        if (fs.existsSync(subcategoryImagePath)) {
+          fs.unlinkSync(subcategoryImagePath); 
+        }
+      }
+      await SubCategory.findByIdAndDelete(sub._id); 
+    }
+    await Category.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Category and its subcategories deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    res.status(500).json({ message: 'Server Error', error });
+  }
+};
+
+const updateCategory = async (req, res) => {
+  const { slug } = req.params;
+  const { name } = req.body;
+  const imageFilename = req.file ? req.file.filename : '';
+  try {
+    const category = await Category.findOne({ slug: req.params.slug });
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    category.name = name || category.name;
+    category.slug = slugify(category.name, { lower: true, strict: true });  
+    if (imageFilename) {
+      const oldImagePath = path.join(__dirname, '../../admin/src/images/category_uploads', category.image);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+      category.image = imageFilename;
+    }
+    await category.save();
+    res.status(200).json(category);
+  } catch (error) {
+    console.error('Error updating category:', error);
+    res.status(500).json({ message: 'Server Error', error });
+  }
+};
+
+const getCategoryBySlug = async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const category = await Category.findOne({ slug });
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
@@ -43,18 +105,4 @@ const getCategoryById = async (req, res) => {
   }
 };
 
-const deleteCategory = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const deletedCategory = await Category.findByIdAndDelete(id);
-    if (!deletedCategory) {
-      return res.status(404).json({ message: 'Category not found' });
-    }
-    res.status(200).json({ message: 'Category deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting category:', error);
-    res.status(500).json({ message: 'Server Error', error });
-  }
-};
-
-module.exports = { createCategory, getCategories, getCategoryById, deleteCategory };
+module.exports = { createCategory, getCategories, deleteCategory, updateCategory, getCategoryBySlug };

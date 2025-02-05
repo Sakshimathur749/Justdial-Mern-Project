@@ -47,7 +47,7 @@ const Category = () => {
                 <a href={`/categories/${category.name}/subcategories`}>
                   <span className="cate-img">
                     <img
-                      src={`http://localhost:5173/src/images/uploads/${category.image}`}
+                      src={`http://localhost:5173/src/images/category_uploads/${category.image}`}
                       alt=""
                       height="30px"
                       width="30px"

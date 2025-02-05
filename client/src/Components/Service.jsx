@@ -45,10 +45,10 @@ const Service = () => {
           {limitedCategories.length > 0 ? (
               limitedCategories.map((category) => (
                 <li key={category._id}>
-              <a href={`/categories/${category.name}/subcategories`}>
+              <a href={`/categories/${category.slug}`}>
                 <span className="cate-img">
                   <img
-                    src={`http://localhost:5173/src/images/uploads/${category.image}`}
+                    src={`http://localhost:5173/src/images/category_uploads/${category.image}`}
                     alt=""
                     height="30px"
                     width="30px"

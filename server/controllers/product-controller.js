@@ -3,25 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const slugify = require('slugify'); 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    let uploadDir = path.join(__dirname, '../../admin/src/images/uploads'); 
-    if (file.fieldname === 'gallery') {
-      uploadDir = path.join(__dirname, '../../admin/src/images/gallery'); 
-    }
 
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const filename = Date.now() + '-' + file.originalname;
-    cb(null, filename);
-  }
-});
-
-const upload = multer({ storage: storage });
 const generateUniqueSlug = async (title) => {
   let slug = slugify(title, { lower: true, strict: true });
   const existingProduct = await Product.findOne({ slug });
@@ -30,19 +12,18 @@ const generateUniqueSlug = async (title) => {
   }
   return slug;
 };
-
 const createProduct = async (req, res) => {
-  const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink } = req.body;
-
+  const { title, category, subcategory, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink, keywords } = req.body;
   let slug = await generateUniqueSlug(title);
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
   const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
-
+  const productImages = req.files && req.files.productImages ? req.files.productImages.map(file => file.filename) : [];
   try {
     const newProduct = new Product({
       title,
       slug,
       category,
+      subcategory, 
       location,
       rating,
       phoneNumber,
@@ -50,12 +31,13 @@ const createProduct = async (req, res) => {
       relevantTags: relevantTags.split(',').map(tag => tag.trim()),
       image,
       gallery,
+      productImages,
+      keywords: keywords.split(',').map(keyword => keyword.trim()),
       websiteUrl,
       email,
       about,
-      mapEmbedLink 
+      mapEmbedLink,
     });
-
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
@@ -63,7 +45,6 @@ const createProduct = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error });
   }
 };
-
 
 const getProducts = async (req, res) => {
   try {
@@ -96,40 +77,42 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error });
   }
 };
-
 const updateProduct = async (req, res) => {
   const productId = req.params.id;
-  const { title, category, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink } = req.body;
+  const { title, category, subcategory, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink, keywords } = req.body;
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
   const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
-  
+  const productImages = req.files && req.files.productImages ? req.files.productImages.map(file => file.filename) : [];
   try {
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
-    // If new image is uploaded, delete the old image
     if (image && product.image) {
       const oldImagePath = path.join(__dirname, '../../admin/src/images/uploads', product.image);
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       }
     }
-
-    // If new gallery images are uploaded, delete the old ones
     if (gallery.length > 0 && product.gallery.length > 0) {
       product.gallery.forEach(file => {
         const oldGalleryPath = path.join(__dirname, '../../admin/src/images/uploads', file);
         if (fs.existsSync(oldGalleryPath)) {
-          fs.unlinkSync(oldGalleryPath);  
+          fs.unlinkSync(oldGalleryPath);
         }
       });
     }
-
-    // Update product fields
-    product.title = title;
+    if (productImages.length > 0 && product.productImages.length > 0) {
+      product.productImages.forEach(file => {
+        const oldImagePath = path.join(__dirname, '../../admin/src/images/uploads', file);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      });
+    }
+   product.title = title;
     product.category = category;
+    product.subcategory = subcategory; 
     product.location = location;
     product.rating = rating;
     product.phoneNumber = phoneNumber;
@@ -137,12 +120,12 @@ const updateProduct = async (req, res) => {
     product.relevantTags = relevantTags ? relevantTags.split(',').map(tag => tag.trim()) : [];
     if (image) product.image = image;
     if (gallery.length > 0) product.gallery = gallery;
+    if (productImages.length > 0) product.productImages = productImages;
+    product.keywords = keywords.split(',').map(keyword => keyword.trim());
     product.websiteUrl = websiteUrl;
     product.email = email;
     product.about = about;
-    if (mapEmbedLink) product.mapEmbedLink = mapEmbedLink;  
-
-    // Save the updated product
+    if (mapEmbedLink) product.mapEmbedLink = mapEmbedLink;
     await product.save();
     res.status(200).json(product);
   } catch (error) {
@@ -151,10 +134,11 @@ const updateProduct = async (req, res) => {
   }
 };
 
+
 const getProductBySlug = async (req, res) => {
   const { slug } = req.params;
   try {
-    const product = await Product.findOne({ slug });
+    const product = await Product.findOne({ slug }).populate('subcategory');
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }

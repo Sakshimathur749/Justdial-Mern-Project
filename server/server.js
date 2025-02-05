@@ -14,7 +14,8 @@ const path = require('path')
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/uploads', express.static(path.join(__dirname, '../admin/src/images/uploads'))); 
+app.use('/uploads/subcategory', express.static(path.join(__dirname, '../../admin/src/images/subcategory_uploads')));
+app.use('/uploads/category', express.static(path.join(__dirname, '../../admin/src/images/category_uploads')));
 app.use('/api', CategoryRouter);
 app.use('/api', SubcategoryRoutes);
 app.use('/api', ProductRoutes);

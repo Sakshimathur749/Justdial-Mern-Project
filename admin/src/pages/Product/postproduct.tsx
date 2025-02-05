@@ -1,12 +1,12 @@
-import { useState } from "react";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
-import "../../css/app.css";
+import { useState } from 'react';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import '../../css/app.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 const ProductPostPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [gallery, setGallery] = useState<File[]>([]);
+  const [galleryPreview, setGalleryPreview] = useState<string[]>([]);
   const [productData, setProductData] = useState<any>({
     image: '',
     category: '',
@@ -18,38 +18,47 @@ const ProductPostPage = () => {
     relevantTags: '',
     websiteUrl: '',
     about: '',
-    mapEmbedLink:'',
+    mapEmbedLink: '',
+    keywords: '',
+    productImages: [],
   });
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      setGallery(Array.from(files));
-    }
-  };
-  const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMainImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);  
-        setProductData((prevData: any) => ({ ...prevData, image: file })); 
+        setImagePreview(reader.result as string);
+        setProductData((prevData: any) => ({ ...prevData, image: file }));
       };
       reader.readAsDataURL(file);
     }
   };
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newGalleryImages = Array.from(files);
+      setGalleryPreview(
+        newGalleryImages.map((file) => URL.createObjectURL(file)),
+      );
+      setProductData((prevData: any) => ({
+        ...prevData,
+        productImages: newGalleryImages,
+      }));
+    }
+  };
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
     setProductData((prevData: any) => ({ ...prevData, [name]: value }));
   };
-
   const handleQuillChange = (value: string) => {
     setProductData((prevData: any) => ({ ...prevData, about: value }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const formData = new FormData();
     formData.append('title', productData.title);
     formData.append('category', productData.category);
@@ -61,23 +70,27 @@ const ProductPostPage = () => {
     formData.append('websiteUrl', productData.websiteUrl);
     formData.append('mapEmbedLink', productData.mapEmbedLink);
     formData.append('about', productData.about);
+    formData.append('keywords', productData.keywords);
     if (productData.image instanceof File) {
       formData.append('image', productData.image);
     }
-    gallery.forEach((file) => {
-      formData.append('gallery', file);
+    productData.productImages.forEach((file: File) => {
+      formData.append('productImages', file);
     });
-  
+
     try {
-      const response = await fetch('http://localhost:5000/api/products/create', {
-        method: 'POST',
-        body: formData,
-      });
-  
+      const response = await fetch(
+        'http://localhost:5000/api/products/create',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
+
       if (!response.ok) {
         throw new Error('Failed to create product');
       }
-  
+
       const result = await response.json();
       alert('Product created successfully!');
       setProductData({
@@ -90,10 +103,12 @@ const ProductPostPage = () => {
         status: 'Open',
         relevantTags: '',
         websiteUrl: '',
-        mapEmbedLink:'',
+        mapEmbedLink: '',
         about: '',
+        keywords: '',
+        productImages: [],
       });
-      setGallery([]);
+      setGalleryPreview([]);
       setImagePreview(null);
     } catch (error) {
       console.error('Error submitting product:', error);
@@ -105,7 +120,7 @@ const ProductPostPage = () => {
     <div className="container mx-auto p-6">
       <Breadcrumb pageName="Create Product Post" />
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Image
           </label>
@@ -123,35 +138,70 @@ const ProductPostPage = () => {
               />
             </div>
           )}
+        </div> */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Main Image
+          </label>
+          <input
+            type="file"
+            onChange={handleMainImagePreview}
+            className="mt-2 w-full cursor-pointer rounded-lg border border-gray-300 bg-transparent py-2 px-3 text-sm text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+            name="image"
+            required
+          />
+          {imagePreview && (
+            <div className="mt-2">
+              <img
+                src={imagePreview}
+                alt="Product Preview"
+                className="w-[80px] h-[80px] object-cover rounded-md"
+              />
+            </div>
+          )}
         </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Gallery
+            Gallery Images
           </label>
           <input
             type="file"
             className="mt-2 w-full cursor-pointer rounded-lg border border-gray-300 bg-transparent py-2 px-3 text-sm text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
             multiple
-            name="gallery"  onChange={handleFileChange}
+            name="productImages"
+            onChange={handleGalleryChange}
           />
         </div>
-        {gallery.length > 0 && (
-            <div className="mt-4 grid grid-cols-3 gap-4">
-              {gallery.map((file, index) => {
-                const fileUrl = URL.createObjectURL(file);
-                return (
-                  <div key={index} className="w-full max-w-xs">
-                    <img
-                      src={fileUrl}
-                      alt={`Gallery Image ${index + 1}`}
-                      className="w-full h-auto object-cover rounded-md"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
+        {galleryPreview.length > 0 && (
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            {galleryPreview.map((fileUrl, index) => (
+              <div key={index} className="w-full max-w-xs">
+                <img
+                  src={fileUrl}
+                  alt={`Gallery Image ${index + 1}`}
+                  className="w-[80px] h-[80px] object-cover rounded-md"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Keywords (comma separated)
+          </label>
+          <input
+            id="keywords"
+            name="keywords"
+            type="text"
+            value={productData.keywords}
+            onChange={handleChange}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+            placeholder="Enter keywords"
+          />
+        </div>
         <div className="mb-4">
           <label
             htmlFor="category"
@@ -298,13 +348,21 @@ const ProductPostPage = () => {
           />
         </div>
         <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-white">Map Embed Link:</label>
-        <input type="text" name="mapEmbedLink"  className="mt-2 w-full cursor-pointer rounded-lg border border-gray-300 bg-transparent py-2 px-3 text-sm text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Map Embed Link:
+          </label>
+          <input
+            type="text"
+            name="mapEmbedLink"
+            className="mt-2 w-full cursor-pointer rounded-lg border border-gray-300 bg-transparent py-2 px-3 text-sm text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
             onChange={handleChange}
-            value={productData.mapEmbedLink} />
+            value={productData.mapEmbedLink}
+          />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Website</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Website
+          </label>
           <input
             type="url"
             name="websiteUrl"
@@ -315,7 +373,9 @@ const ProductPostPage = () => {
         </div>
 
         <div className="mb-4">
-          <label  className="block text-sm font-medium text-gray-700 dark:text-white">About</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            About
+          </label>
           <ReactQuill value={productData.about} onChange={handleQuillChange} />
         </div>
         <button

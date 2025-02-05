@@ -6,40 +6,37 @@ import { useParams } from 'react-router'
 
 const Subcategories = () => {
   const { categoryName } = useParams();
+  const [category, setCategory] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   useEffect(() => {
-    const fetchSubcategories = async () => {
+    const fetchCategoryAndSubcategories = async () => {
       try {
-        const formattedCategoryName = categoryName.replace(/\s+/g, '-');
-        const response = await fetch(`http://localhost:5000/api/categories`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories');
+        const categoryResponse = await fetch(`http://localhost:5000/api/categories/${categoryName}`);
+        if (!categoryResponse.ok) {
+          throw new Error('Category not found');
         }
-        const data = await response.json();
-        const category = data.find(cat => cat.name.replace(/\s+/g, '-').toLowerCase() === formattedCategoryName.toLowerCase());
-        if (category) {
-          setSubcategories(category.subcategories);
-        } else {
-          setError('Category not found');
-        }
+        const categoryData = await categoryResponse.json();
+        console.log(categoryData,"categorydata")
+        setCategory(categoryData);
+        setSubcategories(categoryData);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchSubcategories();
+    fetchCategoryAndSubcategories();
   }, [categoryName]);
-
   if (loading) {
     return <div>Loading...</div>;
   }
   if (error) {
     return <div>Error: {error}</div>;
+  }
+  if (!category) {
+    return <div>Category not found</div>;
   }
 
   return (
@@ -65,12 +62,12 @@ const Subcategories = () => {
                 <ul className="">{subcategories.length > 0 ? (
                     subcategories.map((subcategory, index) => (
                       <li key={index} className="brdr has-sub">
-                        <a href={`/categories/product`}>
+                        <a href={`/categories/${categoryName}/subcategories/${category.slug}`}>
                       <img
                         src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
                         alt=""
                       />
-                      <span>{subcategory.name}</span>
+                      <span>{category.name}</span>
                     </a>
                   </li> ))
                   ) : (

@@ -7,7 +7,6 @@ import 'react-quill/dist/quill.snow.css';
 
 const EditProductPage = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
-  console.log('Slug:', slug, 'ID:', id);
   const navigate = useNavigate();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
