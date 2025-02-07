@@ -8,7 +8,10 @@
     --heading-gray:#5c5c5c;
     --heading-sub:#434343;
     --bg-component:#f4f4f4;
-    /* --bs-yellow: #d89605; */
+    --bg-green: #198754;
+    --text-green: #198754;
+    --bg-red:#dc3545;
+    --text-red:#dc3545;
     --ztc-text-text-1: #0D0E10;
         --ztc-text-text-2: #fff;
         --ztc-text-pera-text-1: #676879;
@@ -4605,4 +4608,16 @@ body{
 }
 .navbar-toggler:focus{
     box-shadow: none !important;
+}
+.bg-green{
+    background-color: var(--bg-green);
+}
+.bg-red{
+    background-color: var(--bg-red);
+}
+.text-green{
+    color:var(--text-green)
+}
+.text-red{
+    color:var(--text-red)
 }

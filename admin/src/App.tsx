@@ -14,6 +14,7 @@ import EditProductPage from './pages/Product/editproduct';
 import PostSubcategory from './pages/Category/postsubcategory';
 import Subcategory from './pages/Category/subcategory';
 import EditSubCategory from './pages/Category/editsubcategory';
+import ContactDetails from './pages/contact';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -43,85 +44,17 @@ function App() {
     ): (
     <DefaultLayout>
       <Routes>
-        <Route
-          index
-          element={
-            <>
-              <ECommerce />
-            </>
-          }
-        />
-        <Route
-          path="/post-category"
-          element={
-            <>
-              <PostCategory />
-            </>
-          }
-        />
-        <Route
-          path="/post-subcategory"
-          element={
-            <>
-              <PostSubcategory />
-            </>
-          }
-        />
-        <Route
-          path="/category"
-          element={
-            <>
-              <PostingCategory />
-            </>
-          }
-        />
-        <Route
-          path="/subcategory/:categorySlug"
-          element={
-            <>
-              <Subcategory />
-            </>
-          }
-        />
-        <Route
-          path="/edit-category/:slug"
-          element={
-            <>
-              <EditCategory />
-            </>
-          }
-        />
-         <Route
-          path="/edit-subcategory/:slug"
-          element={
-            <>
-              <EditSubCategory />
-            </>
-          }
-        />
-        <Route
-          path="/posting-product"
-          element={
-            <>
-              <ProductPostPage />
-            </>          }
-        />
-        <Route
-          path="/posted-product"
-          element={
-            <>
-              <PostedProductsPage />
-            </>
-          }
-        />
-        <Route
-          path="/edit-product/:slug/:id"
-          element={
-            <>
-              <EditProductPage/>
-            </>
-          }
-        />
+        <Route index  element={<><ECommerce /></>}/>
+        <Route path="/post-category" element={<> <PostCategory /></>}/>
+        <Route path="/post-subcategory"  element={ <>  <PostSubcategory /></> } />
+        <Route path="/category" element={<><PostingCategory /> </> }/>
+        <Route path="/subcategory/:categorySlug"  element={<><Subcategory /></>}/>
+        <Route path="/edit-category/:slug"  element={<> <EditCategory /> </>} />
+        <Route path="/edit-subcategory/:slug" element={<> <EditSubCategory /></>}/>
+        <Route path="/posting-product" element={ <><ProductPostPage /></>}/>
+        <Route path="/posted-product"  element={<><PostedProductsPage /></>  }/>
+        <Route path="/edit-product/:slug" element={ <><EditProductPage/></> } />
+        <Route path="/contact" element={ <><ContactDetails/></> } />
       </Routes>
     </DefaultLayout>
     )

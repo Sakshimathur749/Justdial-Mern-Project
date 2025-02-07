@@ -65,7 +65,9 @@ const Postingcategory = () => {
         <img
           src={row.image ? `http://localhost:5173/src/images/category_uploads/${row.image}` : ''}
           alt={row.name}
-          style={{ width: '60px', height: '60px', borderRadius: '5px',margin:'5px',objectFit:'contain' }}
+          height={100}
+          width={100} style={{objectFit:'contain',margin:'10px'}}
+          className="rounded-lg border border-stroke shadow-sm"
         />
       ),
       sortable: false,

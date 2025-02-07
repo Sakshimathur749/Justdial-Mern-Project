@@ -24,7 +24,7 @@ const ProductDetail = ({ slug }) => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/slug/${slug}`);
+        const response = await fetch(`http://localhost:5000/api/products/${slug}`);
         if (!response.ok) {
           throw new Error('Product not found');
         }
@@ -110,22 +110,7 @@ const ProductDetail = ({ slug }) => {
   if (!product) {
     return <div>No product data available.</div>;
   } 
-  const staticdata = {
-    name: "Sample Product",
-    images: [
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png",
-      "1738578351360-Social-Media.png", 
-      "1738578351360-Social-Media.png",
-    ],
-  };
-
-  const totalImages = staticdata.images.length;
+  const totalImages = product.productImages.length;
   const getVisibleImages = () => {
     if (window.innerWidth <= 576) {
       return 1; 
@@ -137,7 +122,7 @@ const ProductDetail = ({ slug }) => {
   };
   
   const visibleImages = getVisibleImages();
-  const displayedImages = staticdata.images.slice(0, visibleImages); 
+  const displayedImages = product.productImages.slice(0, visibleImages); 
   return (
     <div>
       <Container>
@@ -146,8 +131,8 @@ const ProductDetail = ({ slug }) => {
             <div className="gallery_images">
             <div className="main-image">
                 <img
-                  src={`http://localhost:5173/src/images/uploads/${displayedImages[0]}`}
-                  alt="Product"
+                  src={`http://localhost:5173/src/images/uploads/productImages/${displayedImages[0]}`}
+                  alt="Product" style={{objectFit:'contain'}}
                   className="img-fluid"
                 />
               </div>
@@ -155,7 +140,7 @@ const ProductDetail = ({ slug }) => {
               <div className="other-images">
                 {displayedImages.slice(1, visibleImages).map((image, index) => (
                   <div key={index} className="small-image">
-                    <img src={`http://localhost:5173/src/images/uploads/${image}`} alt={`Image ${index + 1}`} />
+                    <img src={`http://localhost:5173/src/images/uploads/productImages/${image}`} style={{objectFit:'contain'}} alt={`Image ${index + 1}`} />
                   </div>
                 ))}
 
@@ -590,13 +575,13 @@ const ProductDetail = ({ slug }) => {
                             {product.gallery.map((image, index) => (
                           <div className="prod_img" key={index}>
                               <a
-                                href={`http://localhost:5173/src/images/uploads/${image}`}
+                                href={`http://localhost:5173/src/images/uploads/gallery/${image}`}
                                 key={index}
-                                className="gal img_inner"
+                                className="gal img_inner" 
                               >
                                 <img
-                                  src={`http://localhost:5173/src/images/uploads/${image}`}
-                                  alt={`Gallery image ${index + 1}`}
+                                  src={`http://localhost:5173/src/images/uploads/gallery/${image}`}
+                                  alt={`Gallery image ${index + 1}`} style={{objectFit:'contain'}}
                                 />
                               </a>
                           </div>

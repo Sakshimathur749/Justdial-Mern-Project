@@ -38,7 +38,7 @@ const TopCities = () => {
                           className="over-img"
                           alt={product.title}
                           style={{ objectFit: "contain", width: "100%" }}
-                          src={`http://localhost:5173/src/images/uploads/${product.image}`}
+                          src={`http://localhost:5173/src/images/uploads/image/${product.image}`}
                         />
                       </div>
                       <div className="first-cate-white">

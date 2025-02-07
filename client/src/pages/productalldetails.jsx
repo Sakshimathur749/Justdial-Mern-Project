@@ -8,7 +8,7 @@ import '../css/components.css'
 import { useParams } from 'react-router';
 import Map from '../Components/Map';
 const Productalldetails = () => {
-  const { slug } = useParams();
+  const { category, subcategory, slug } = useParams();
   const [product, setProduct] = useState(null); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,7 +28,6 @@ const Productalldetails = () => {
           throw new Error('Failed to fetch product data');
         }
         const data = await response.json();
-        console.log(data)
         setProduct(data);
       } catch (error) {
         setError(error.message); 

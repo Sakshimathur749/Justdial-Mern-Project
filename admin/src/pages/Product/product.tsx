@@ -18,19 +18,19 @@ const PostedProductsPage = () => {
           throw new Error('Failed to fetch products');
         }
         const data = await response.json();
-        setProducts(data); 
+        setProducts(data);console.log(data)
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
         setLoading(false);
       }
     };
-    
-
     fetchProducts();
-  }, []); 
-  const handleEdit = (slug: string, _id: string) => {
-    navigate(`/edit-product/${slug}/${_id}`);
+  }, []);
+
+  
+  const handleEdit = (slug: string) => {
+    navigate(`/edit-product/${slug}`);
   };  
 
   const handleDelete = async (id: string) => {
@@ -56,16 +56,18 @@ const PostedProductsPage = () => {
       name: 'Product Image',
       selector: (row: any) => (
         <img
-          src={`http://localhost:5173/src/images/uploads/${row.image}`}
+          src={`http://localhost:5173/src/images/uploads/image/${row.image}`}
           alt={row.heading}
-          style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
+          height={100}
+          width={100} style={{objectFit:'contain'}}
+          className="rounded-lg border border-stroke shadow-sm"
         />
       ),
       sortable: false,
     },
     {
       name: 'Category',
-      selector: (row: any) => row.category,
+      selector: (row: any) =>  row.categoryId.slug,
       sortable: true,
     },
     {
@@ -98,7 +100,7 @@ const PostedProductsPage = () => {
       cell: (row: any) => (
         <button
           className="inline-flex items-center justify-center rounded bg-meta-3 p-4 text-center font-medium text-white hover:bg-opacity-90"
-          onClick={() =>handleEdit(row.slug, row._id)}
+          onClick={() =>handleEdit(row.slug)}
         >
           Edit
         </button>

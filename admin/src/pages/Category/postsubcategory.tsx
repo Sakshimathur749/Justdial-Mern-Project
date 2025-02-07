@@ -156,8 +156,8 @@ const PostSubcategory = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      height={50}
-                      width={50}
+                      height={80}
+                      width={150} style={{objectFit:'contain'}}
                       className="rounded-lg border border-stroke shadow-sm"
                     />
                   </div>

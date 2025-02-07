@@ -6,149 +6,176 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 const EditProductPage = () => {
-  const { slug, id } = useParams<{ slug: string; id: string }>();
+  const { slug, id } = useParams<{ slug?: string; id?: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [productImagePreview, setProductImagePreview] = useState<string[]>([]);
   const [galleryImages, setGalleryImages] = useState<File[]>([]);
-  const [galleryImagePreviews, setGalleryImagePreviews] = useState<string[]>(
-    [],
-  );
+  const [galleryImagePreviews, setGalleryImagePreviews] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string>('');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
+  const [generalImage, setGeneralImage] = useState<File | null>(null);
+  const [generalImagePreview, setGeneralImagePreview] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/categories');
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      let isMounted = true;
+      try {
+        const response = await fetch(`http://localhost:5000/api/products/${slug}`);
+        if (!response.ok) throw new Error('Failed to fetch product');
+        const data = await response.json();
+        if (isMounted) {
+          setProduct({
+            title: data.title || '',
+            category: data.category.slug || '',
+            subcategory: data.subcategory.slug || '',
+            location: data.location || '',
+            rating: data.rating || 1,
+            phoneNumber: data.phoneNumber || '',
+            websiteUrl: data.websiteUrl || '',
+            about: data.about || '',
+            status: data.status || 'Open',
+            mapEmbedLink: data.mapEmbedLink || '',
+            relevantTags: data.relevantTags || [],
+            image: data.image || null,
+            gallery: data.gallery || [],
+            productImages: data.productImages || [],
+            keywords: data.keywords || '',
+          });
+          console.log(data,"product get")
+          setLoading(false);
+          setKeywords(data.keywords || ''); 
+          setSelectedCategory(data.categoryId.slug || '');
+          setSelectedSubcategory(data.subcategoryId.slug || '');
+          if (data.image) {
+            const image:any =`http://localhost:5173/src/images/uploads/image/${data.image}`
+            setGeneralImagePreview(image);
+          }
+          if(data.productImages && data.productImages.length > 0) {
+            const productImages = data.productImages.map(
+              (image: any) => `http://localhost:5173/src/images/uploads/productImages/${image}`
+            );
+            setProductImagePreview(productImages)
+          }
+          if (data.gallery && data.gallery.length > 0) {
+            const galleryPreviews = data.gallery.map(
+              (image: any) => `http://localhost:5173/src/images/uploads/gallery/${image}`
+            );
+            setGalleryImagePreviews(galleryPreviews);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        alert('There was an error fetching the product. Please try again later.');
+      }
+    };
 
-  const handleQuillChange = (value: string) => {
-    setProduct((prevData: any) => ({ ...prevData, about: value }));
-  };
+    fetchProduct();
+  }, [slug, id]);
+  useEffect(() => {
+    if (selectedCategory) {
+      const fetchSubcategories = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/api/subcategories/${selectedCategory}`);
+          if (!response.ok) throw new Error('Failed to fetch subcategories');
+          const data = await response.json();
+          console.log(data,'subcategories')
+          console.log(selectedCategory,"selectedCategory")
+          setSubcategories(data);
+        } catch (error) {
+          console.error('Error fetching subcategories:', error);
+        }
+      };
+
+      fetchSubcategories();
+    }
+  }, [selectedCategory]);
   const handleChange = (event: any) => {
     setProduct((prevData: any) => ({
       ...prevData,
       [event.target.name]: event.target.value,
     }));
-    if (event.target.name === 'relevantTags') {
-      const tagsArray = event.target.value.split(',').map((tag:any) => tag.trim());
-      setProduct((prevProduct: any) => ({
-        ...prevProduct,
-        relevantTags: tagsArray,
-      }));
-    }
   };
-
-  const handleImageChange = (event: any) => {
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const category = event.target.value;
+    setSelectedCategory(category);
+    setSelectedSubcategory(''); 
+  };
+  const handleSubcategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubcategory(event.target.value);
+  };
+  const handleGeneralImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setProduct((prevProduct: any) => ({
-        ...prevProduct,
-        image: event.target.files[0],
+      const file = event.target.files[0];
+      setProduct((prevData: any) => ({
+        ...prevData,
+        images: {
+          ...prevData.images,
+          generalImage: file,
+        },
       }));
-      const previewUrl = URL.createObjectURL(event.target.files[0]);
-      setImagePreview(previewUrl);
+      setGeneralImagePreview(URL.createObjectURL(file));
+    }
+  };  
+  const handleProductImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = Array.from(event.target.files);
+      setProductImagePreview(file.map((files: File) => URL.createObjectURL(files)));
+      setProductImages(file)
     }
   };
-  const handleGalleryImageChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleGalleryImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
-      setGalleryImages((prevImages: any) => [...prevImages, ...files]);
-      const previewUrls = files.map((file) => URL.createObjectURL(file));
-      setGalleryImagePreviews((prevPreviews) => [
-        ...prevPreviews,
-        ...previewUrls,
-      ]);
+      setGalleryImages(files);
+      setGalleryImagePreviews(files.map((file: File) => URL.createObjectURL(file)));
     }
   };
-
-  const handleRemoveImage = async (index: number) => {
-    const imageToRemove = galleryImagePreviews[index];
-    if (!imageToRemove) {
-      console.error('No image found at index:', index);
-      return;
-    }
-    const imageName = imageToRemove.split('/').pop();
-    if (!imageName) {
-      console.error('Failed to extract image name');
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/products/${id}/gallery/${imageName}`,
-        {
-          method: 'DELETE',
-        },
-      );
-
-      if (response.ok) {
-        const updatedProduct = await response.json();
-        setGalleryImages((prevImages) =>
-          prevImages.filter((_, i) => i !== index),
-        );
-        setGalleryImagePreviews((prevPreviews) =>
-          prevPreviews.filter((_, i) => i !== index),
-        );
-      } else {
-        console.error('Failed to delete image');
-      }
-    } catch (error) {
-      console.error('Error deleting image:', error);
-    }
+  const handleKeywordsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const keywordString = event.target.value;
+    setKeywords(keywordString);
+    setProduct((prevData: any) => ({
+      ...prevData,
+      keywords: keywordString.split(',').map((keyword: string) => keyword.trim()),
+    }));
+  };  
+  const handleQuillChange = (value: string) => {
+    setProduct((prevData: any) => ({ ...prevData, about: value }));
   };
-  useEffect(() => {
-    if (!slug || !id) {
-      console.error('Missing slug or id');
-      return;
-    }
-  
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/products/slug/${slug}`
-        );
-        if (!response.ok) {
-          throw new Error('Failed to fetch product');
-        }
-        const data = await response.json();
-        setProduct({
-          title: data.title || '',
-          category: data.category || '',
-          location: data.location || '',
-          rating: data.rating || 1,
-          phoneNumber: data.phoneNumber || '',
-          websiteUrl: data.websiteUrl || '',
-          about: data.about || '',
-          status: data.status || 'Open',
-          mapEmbedLink: data.mapEmbedLink || '',
-          relevantTags: data.relevantTags ,
-          image: data.image || null,
-          gallery: data.gallery || [],
-        });
-        setLoading(false);
-        
-        if (data.image) {
-          setImagePreview(
-            `http://localhost:5173/src/images/uploads/${data.image}`
-          );
-        }
-        if (data.gallery && data.gallery.length > 0) {
-          const galleryPreviews = data.gallery.map(
-            (image: any) => `http://localhost:5173/src/images/uploads/${image}`
-          );
-          setGalleryImagePreviews(galleryPreviews);
-        }
-      } catch (error) {
-        console.error('Error fetching product:', error);
-      }
-    };
-  
-    fetchProduct();
-  }, [slug, id]);
-  
+  const handleRemoveImage = (index: number) => {
+    const updatedGalleryPreviews = [...galleryImagePreviews];
+    const updatedGalleryImages = [...galleryImages];
+    updatedGalleryPreviews.splice(index, 1);
+    updatedGalleryImages.splice(index, 1);
+    setGalleryImagePreviews(updatedGalleryPreviews);
+    setGalleryImages(updatedGalleryImages);
+  };
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     const formData = new FormData();
-    // Add fields to formData
     formData.append('title', product.title);
-    formData.append('category', product.category);
+    formData.append('categoryId', selectedCategory);
+    formData.append('subcategoryId', selectedSubcategory);
     formData.append('location', product.location);
     formData.append('rating', product.rating.toString());
     formData.append('phoneNumber', product.phoneNumber);
@@ -157,35 +184,41 @@ const EditProductPage = () => {
     formData.append('status', product.status);
     formData.append('mapEmbedLink', product.mapEmbedLink);
     formData.append('relevantTags', product.relevantTags.join(','));
-
-    if (product.image) {
+    formData.append('keywords', keywords);
+   if (generalImage) {
       formData.append('image', product.image);
     }
     galleryImages.forEach((image: any) => {
       formData.append('gallery', image);
     });
-
+    productImages.forEach((image: any) => {
+      formData.append('productImages', image);
+    });
+    console.log(formData)
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/products/${slug}`, {
         method: 'PUT',
         body: formData,
       });
-
       if (response.ok) {
         const updatedProduct = await response.json();
-        setImagePreview(
-          updatedProduct.image
-            ? `http://localhost:5173/src/images/uploads/${updatedProduct.image}`
-            : null,
+        console.log(updatedProduct,"Put Product ")
+        setGeneralImagePreview(updatedProduct.image
+          ? `http://localhost:5173/src/images/uploads/image/${updatedProduct.image}`
+          : null
         );
-
         if (updatedProduct.gallery) {
           const galleryPreviews = updatedProduct.gallery.map(
-            (image: any) => `http://localhost:5173/src/images/uploads/${image}`,
+            (image: any) => `http://localhost:5173/src/images/uploads/gallery/${image}`
           );
           setGalleryImagePreviews(galleryPreviews);
         }
-
+        if(updatedProduct.productImages){
+         const productImages= updatedProduct.productImages.map(
+           `http://localhost:5173/src/images/uploads/productImages/${updatedProduct.image}`
+         )
+          setProductImagePreview(productImages)
+        }
         navigate('/posted-product');
       } else {
         console.error('Failed to update product');
@@ -194,9 +227,7 @@ const EditProductPage = () => {
       console.error('Error during submission:', error);
     }
   };
-
   if (loading) return <div>Loading...</div>;
-
   return (
     <div>
       <Breadcrumb pageName="Edit Product" />
@@ -214,28 +245,44 @@ const EditProductPage = () => {
           />
         </div>
         <div>
-          <label
-            htmlFor="category"
-            className="block text-sm font-medium text-gray-700 dark:text-white"
-          >
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Category
           </label>
           <select
             id="category"
             name="category"
-            value={product.category || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
             required
           >
             <option value="">Select Category</option>
-            <option value="electronics">Electronics</option>
-            <option value="restaurants">Restaurants</option>
-            <option value="shopping">Shopping</option>
-            <option value="home">Home</option>
-            <option value="sports">Sports</option>
+            {categories.map((category: any) => (
+              <option key={category._id} value={category.slug}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-white">
+              Subcategory
+            </label>
+            <select
+              id="subcategory"
+              name="subcategory"
+              value={selectedSubcategory}
+              onChange={handleSubcategoryChange}
+              className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Subcategory</option>
+              {subcategories.map((subcategory: any) => (
+                <option key={subcategory._id} value={subcategory.slug}>
+                  {subcategory.name}
+                </option>
+              ))}
+            </select>
+          </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Location
@@ -317,30 +364,77 @@ const EditProductPage = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Image
+            Keywords
+          </label>
+          <input
+            type="text"
+            name="keywords"
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+            value={keywords}
+            onChange={handleKeywordsChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            General Image
           </label>
           <input
             type="file"
-            onChange={handleImageChange}
+            onChange={handleGeneralImageChange}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="product"
-              style={{ width: '100px', height: 'auto', borderRadius: '5px' }}
-            />
+          {generalImagePreview && (
+            <div className="mt-2">
+              <img
+                src={generalImagePreview}
+                alt="General Image"
+                height={80}
+                width={150}
+                className="rounded-lg border border-stroke shadow-sm"
+              />
+            </div>
           )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Product Gallery
+            Product Image
+          </label>
+          <input
+            type="file"
+            onChange={handleProductImageChange}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+          />
+          <div className="mt-4 grid grid-cols-3 gap-4">
+          {productImagePreview.map((preview, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={preview}
+                  alt={`product-images-${index}`}
+                  height={80}
+                  width={150}
+                  style={{ objectFit: 'contain' }}
+                  className="rounded-lg border border-stroke shadow-sm"
+                />
+                <button
+                  type="button"
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                  onClick={() => handleRemoveImage(index)}
+                >
+                  X
+                </button>
+              </div>
+            ))}
+            </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Gallery Images
           </label>
           <input
             type="file"
             multiple
             onChange={handleGalleryImageChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
           />
           <div className="mt-4 grid grid-cols-3 gap-4">
             {galleryImagePreviews.map((preview, index) => (
@@ -348,12 +442,10 @@ const EditProductPage = () => {
                 <img
                   src={preview}
                   alt={`gallery-image-${index}`}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    objectFit: 'cover',
-                    borderRadius: '5px',
-                  }}
+                  height={80}
+                  width={150}
+                  style={{ objectFit: 'contain' }}
+                  className="rounded-lg border border-stroke shadow-sm"
                 />
                 <button
                   type="button"

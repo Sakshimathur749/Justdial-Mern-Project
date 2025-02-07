@@ -4,8 +4,8 @@ const slugify = require('slugify');
 const productSchema = new mongoose.Schema({
   title: String,
   slug: { type: String, unique: true, required: true },
-  category: String,
-  subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory' },
+  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  subcategoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory' ,required:true},
   location: String,
   rating: Number,
   phoneNumber: String,

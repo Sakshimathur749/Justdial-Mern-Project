@@ -1,5 +1,6 @@
 const Category = require('../modals/category-modal');
 const SubCategory = require('../modals/subcategory-modal');
+const Product = require('../modals/product-modal');
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const path = require('path');
@@ -56,6 +57,33 @@ const deleteCategory = async (req, res) => {
         }
       }
       await SubCategory.findByIdAndDelete(sub._id); 
+    }
+    const products = await Product.find({ categoryId: id });
+    for (const product of products) {
+      if (product.image) {
+        const productImagePath = path.join(__dirname, '../../admin/src/images/uploads/image', product.image);
+        if (fs.existsSync(productImagePath)) {
+          fs.unlinkSync(productImagePath);
+        }
+      }
+      if (product.gallery && Array.isArray(product.gallery)) {
+        product.gallery.forEach(image => {
+          const galleryImagePath = path.join(__dirname, '../../admin/src/images/uploads/gallery', image);
+          if (fs.existsSync(galleryImagePath)) {
+            fs.unlinkSync(galleryImagePath);
+          }
+        });
+      }
+      if (product.productImages && Array.isArray(product.productImages)) {
+        product.productImages.forEach(image => {
+          const additionalImagePath = path.join(__dirname, '../../admin/src/images/uploads/productImages', image);
+          if (fs.existsSync(additionalImagePath)) {
+            fs.unlinkSync(additionalImagePath);
+          }
+        });
+      }
+
+      await Product.findByIdAndDelete(product._id); // Delete the product itself
     }
     await Category.findByIdAndDelete(id);
     res.status(200).json({ message: 'Category and its subcategories deleted successfully' });

@@ -100,6 +100,8 @@ const EditSubCategory = () => {
                 <img
                   src={imagePreview}
                   alt="Image Preview"
+                  height={80}
+                  width={150} style={{objectFit:'contain'}}
                   className="rounded-lg border border-stroke shadow-sm"
                 />
               </div>

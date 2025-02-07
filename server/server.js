@@ -9,17 +9,22 @@ const AdminRoute = require('./routes/admin-router');
 const ProductRoutes = require('./routes/product-router')
 const ReviewRoutes = require('./routes/review-router')
 const SubcategoryRoutes= require('./routes/subcategory-router')
+const ContactRoutes= require('./routes/contact-router')
 const path = require('path')
-
+  
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/uploads/subcategory', express.static(path.join(__dirname, '../../admin/src/images/subcategory_uploads')));
 app.use('/uploads/category', express.static(path.join(__dirname, '../../admin/src/images/category_uploads')));
+app.use('/uploads/image', express.static(path.join(__dirname, '../../admin/src/images/uploads/image')));
+app.use('/uploads/gallery', express.static(path.join(__dirname, '../../admin/src/images/uploads/gallery')));
+app.use('/uploads/productImages', express.static(path.join(__dirname, '../../admin/src/images/uploads/productImages')));
 app.use('/api', CategoryRouter);
 app.use('/api', SubcategoryRoutes);
 app.use('/api', ProductRoutes);
 app.use('/api', ReviewRoutes);
+app.use('/api',ContactRoutes)
 app.use('/api/auth', AdminRoute);
 const PORT =process.env.PORT || 5000;
 connectdb(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{

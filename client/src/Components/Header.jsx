@@ -13,6 +13,14 @@ import logo from '../assets/logo.png'
 function Header() {
   const [show, setShow] = useState(false);
   const [loginShow, setLoginShow] = useState(false); 
+  const [contactData, setContactData] = useState({name: '',  email: '', password: '',  mobilenumber: '', message: '',  });
+  const [loading, setLoading] = useState(false); 
+  const [successModalShow, setSuccessModalShow] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorModalShow, setErrorModalShow] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+
   useEffect(() => {
     window.scrollTo(0, 0.5);
   }, [location]);
@@ -20,6 +28,48 @@ function Header() {
   const handleShow = () => setShow(true);
   const handleLoginClose = () => setLoginShow(false); 
   const handleLoginOpen = () => setLoginShow(true);  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setContactData({ ...contactData, [name]: value });
+  };
+
+  const handleSubmitContact = async (e) => {
+    e.preventDefault();
+    if (!contactData.name || !contactData.email || !contactData.password || !contactData.mobilenumber || !contactData.message) {
+      alert('All fields are required');
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/contact/post', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setSuccessMessage(result.message || 'Contact message saved successfully!');
+        setSuccessModalShow(true); // Show success modal
+        setContactData({ name: '', email: '', password: '', mobilenumber: '', message: '' }); // Reset form
+      } else {
+        // Show error modal if the response is not ok
+        setErrorMessage(result.message || 'Error sending message. Please try again later.');
+        setErrorModalShow(true); // Show error modal
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setErrorMessage('There was an error submitting the form. Please try again later.');
+      setErrorModalShow(true); // Show error modal
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const handleSuccessModalClose = () => setSuccessModalShow(false);
+  const handleErrorModalClose = () => setErrorModalShow(false); 
+
   return (
     <>
       <Navbar
@@ -124,39 +174,97 @@ function Header() {
           </Accordion>
         </Offcanvas.Body>
       </Offcanvas>
-      <Modal show={loginShow}  onHide={handleLoginClose}>
+      <Modal show={successModalShow} onHide={handleSuccessModalClose}>
+        <Modal.Header className="bg-white" closeButton>
+          <Modal.Title className="text-green">Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="bg-white">
+          <p className="text-green">{successMessage}</p>
+          <Button className="bg-green"  onClick={handleSuccessModalClose}>Close</Button>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={errorModalShow} onHide={handleErrorModalClose}>
+        <Modal.Header className="bg-white" closeButton>
+          <Modal.Title className="text-red">Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="bg-white">
+          <p className="text-red">{errorMessage}</p>
+          <Button className="bg-red" onClick={handleErrorModalClose}>Close</Button>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={loginShow} onHide={handleLoginClose}>
         <Modal.Header className="bg-white" closeButton>
           <Modal.Title>Login / Register</Modal.Title>
         </Modal.Header>
         <Modal.Body className="bg-white">
-          <Form>
+          <Form onSubmit={handleSubmitContact}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" style={{padding:'20px', fontWeight:'500'}} placeholder="Enter email" />
+              <Form.Control
+                type="email"
+                name="email"
+                style={{ padding: "20px", fontWeight: "500" }}
+                placeholder="Enter email"
+                value={contactData.email}
+                onChange={handleInputChange}
+              />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" style={{padding:'20px', fontWeight:'500'}} placeholder="Password" />
+              <Form.Control
+                type="password"
+                name="password"
+                style={{ padding: "20px", fontWeight: "500" }}
+                placeholder="Password"
+                value={contactData.password}
+                onChange={handleInputChange}
+              />
             </Form.Group>
-            <div className="d-flex justify-content-between px-3 py-2">
-            <div >
-              <div className="py-1 px-2"><a href="" className="resta-content "> Forget Password</a></div>
-              <div className="py-1 px-2"><a href="" className="open-status text-decoration-underline">Sign up</a></div>
-            </div>
-            <div>
-            <Button variant="primary" className="px-2 px-4" type="submit" block>
-              Login
+
+            {/* Add other fields for contact data */}
+            <Form.Group className="mb-3" controlId="formBasicName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                style={{ padding: "20px", fontWeight: "500" }}
+                placeholder="Enter your name"
+                value={contactData.name}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicMobile">
+              <Form.Label>Mobile Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="mobilenumber"
+                style={{ padding: "20px", fontWeight: "500" }}
+                placeholder="Enter mobile number"
+                value={contactData.mobilenumber}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicMessage">
+              <Form.Label>Message</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="message"
+                style={{ padding: "20px", fontWeight: "500" }}
+                placeholder="Enter your message"
+                value={contactData.message}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+
+            <Button style={{background:'#e6ab2a', borderRadius:'20px'}} className="px-2 px-4" type="submit" disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
             </Button>
-            </div>
-            </div>
           </Form>
-          <div style={{ marginTop: "10px", textAlign:'center' , padding:'20px'}}>
-            <span className="resta-content">Don't have an account? </span>
-            <a href="/register" className="open-status">
-              Register here
-            </a>
-          </div>
         </Modal.Body>
       </Modal>
     </>

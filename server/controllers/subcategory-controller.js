@@ -43,7 +43,7 @@ const getSubCategories = async (req, res) => {
   }
 };
 const getSubCategoryBySlug = async (req, res) => {
-  const { slug } = req.params;  // Access slug from the URL
+  const { slug } = req.params;  
   try {
     const subcategory = await SubCategory.findOne({ slug });  // Query based on the slug
     if (!subcategory) {
@@ -65,6 +65,32 @@ const deleteSubCategory = async (req, res) => {
     const imagePath = path.join(__dirname, '../../admin/src/images/subcategory_uploads', deletedSubCategory.image);
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
+    }
+    const products = await Product.find({ subCategoryId: id });
+    for (const product of products) {
+      if (product.image) {
+        const productImagePath = path.join(__dirname, '../../admin/src/images/uploads/image', product.image);
+        if (fs.existsSync(productImagePath)) {
+          fs.unlinkSync(productImagePath);
+        }
+      }
+    if (product.gallery && Array.isArray(product.gallery)) {
+        product.gallery.forEach(image => {
+          const galleryImagePath = path.join(__dirname, '../../admin/src/images/uploads/gallery', image);
+          if (fs.existsSync(galleryImagePath)) {
+            fs.unlinkSync(galleryImagePath);
+          }
+        });
+      }
+     if (product.productImages && Array.isArray(product.productImages)) {
+        product.productImages.forEach(image => {
+          const additionalImagePath = path.join(__dirname, '../../admin/src/images/uploads/productImages', image);
+          if (fs.existsSync(additionalImagePath)) {
+            fs.unlinkSync(additionalImagePath);
+          }
+        });
+      }
+     await Product.findByIdAndDelete(product._id);
     }
     await SubCategory.findByIdAndDelete(id);
     res.status(200).json({ message: 'Subcategory deleted successfully' });

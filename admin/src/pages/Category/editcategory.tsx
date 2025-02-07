@@ -100,7 +100,9 @@ const EditCategory = () => {
             <img
               src={imagePreview}
               alt="Image Preview"
-               className="rounded-lg border border-stroke shadow-sm"
+              height={80}
+              width={150} style={{objectFit:'contain'}}
+              className="rounded-lg border border-stroke shadow-sm"
             />
           </div>
         )}

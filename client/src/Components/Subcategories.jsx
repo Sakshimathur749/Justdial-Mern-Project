@@ -18,17 +18,24 @@ const Subcategories = () => {
           throw new Error('Category not found');
         }
         const categoryData = await categoryResponse.json();
-        console.log(categoryData,"categorydata")
         setCategory(categoryData);
-        setSubcategories(categoryData);
+        const subcategoryResponse = await fetch(`http://localhost:5000/api/subcategories/${categoryData.slug}`);
+        if (!subcategoryResponse.ok) {
+          throw new Error('Failed to fetch subcategories');
+        }
+        const subcategoryData = await subcategoryResponse.json();
+        console.log(subcategoryData)
+        setSubcategories(subcategoryData);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+    
     fetchCategoryAndSubcategories();
   }, [categoryName]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -59,17 +66,19 @@ const Subcategories = () => {
                   {categoryName}
                 </div>
                 <div className="bor_head">&nbsp;</div>
-                <ul className="">{subcategories.length > 0 ? (
+                <ul className="">
+                {subcategories.length > 0 ? (
                     subcategories.map((subcategory, index) => (
                       <li key={index} className="brdr has-sub">
-                        <a href={`/categories/${categoryName}/subcategories/${category.slug}`}>
-                      <img
-                        src="https://buyphpcode.com/justdialclone/assets/front/images/shape.png"
-                        alt=""
-                      />
-                      <span>{category.name}</span>
-                    </a>
-                  </li> ))
+                        <a href={`/${categoryName}/${subcategory.slug}/products`}>
+                          <img
+                            src={subcategory.image}
+                            alt=""
+                          />
+                          <span>{subcategory.name}</span>
+                        </a>
+                      </li>
+                    ))
                   ) : (
                     <li>No subcategories available</li>
                   )}

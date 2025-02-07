@@ -5,16 +5,20 @@
     margin-bottom: 20px;padding: 5px;border: 1px solid #eaeaea;
   }.main-image {
     margin-bottom: 20px;
+    padding: 20px;
+    width: 40%;
+    max-width: 600px;
   }
   .main-image img {
-    width: 80%;
-    max-width: 600px;
+    width: 100%;
     height: auto;
     border-radius: 8px;
   }.other-images {
     display: flex;
+    width: 50%;
     flex-wrap: wrap;
     justify-content: flex-start;
+    align-items: center;
   }.small-image {
     margin: 5px;
   }.small-image img {

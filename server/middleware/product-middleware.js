@@ -4,31 +4,33 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let folder = '';
-    if  (req.body.imageType === 'gallery') {
-        folder = path.join(__dirname, '../../admin/src/images/gallery');
-    } else if (req.body.imageType === 'productImages') {
-      folder = path.join(__dirname, '../../admin/src/images/productImages'); 
-    } 
-    if (!folder) {
+    let uploadDir = '';
+    if (file.fieldname === 'image') {
+      uploadDir = path.join(__dirname, '../../admin/src/images/uploads/image');
+    } else if (file.fieldname === 'gallery') {
+      uploadDir = path.join(__dirname, '../../admin/src/images/uploads/gallery');
+    } else if (file.fieldname === 'productImages') {
+      uploadDir = path.join(__dirname, '../../admin/src/images/uploads/productImages');
+    }
+    if (!uploadDir) {
       console.error('Error: imageType is not valid or missing!');
       return cb(new Error('Invalid imageType specified'));
     }
-    if (!fs.existsSync(folder)) {
+    if (!fs.existsSync(uploadDir)) {
       try {
-        fs.mkdirSync(folder, { recursive: true });
+        fs.mkdirSync(uploadDir, { recursive: true });
       } catch (err) {
         console.error('Error creating directory:', err);
         return cb(err);
       }
     }
-    cb(null, folder);
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const filename = Date.now() + '-' + file.originalname;
-    cb(null, filename);  
-  }
+    cb(null, filename);
+  },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 }});
 module.exports = upload;
