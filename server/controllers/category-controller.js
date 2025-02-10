@@ -83,7 +83,7 @@ const deleteCategory = async (req, res) => {
         });
       }
 
-      await Product.findByIdAndDelete(product._id); // Delete the product itself
+      await Product.findByIdAndDelete(product._id);  
     }
     await Category.findByIdAndDelete(id);
     res.status(200).json({ message: 'Category and its subcategories deleted successfully' });

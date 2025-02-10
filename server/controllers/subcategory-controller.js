@@ -45,7 +45,7 @@ const getSubCategories = async (req, res) => {
 const getSubCategoryBySlug = async (req, res) => {
   const { slug } = req.params;  
   try {
-    const subcategory = await SubCategory.findOne({ slug });  // Query based on the slug
+    const subcategory = await SubCategory.findOne({ slug }); 
     if (!subcategory) {
       return res.status(404).json({ message: 'Subcategory not found' });
     }
@@ -105,7 +105,7 @@ const updateSubCategory = async (req, res) => {
   const { name, categoryId } = req.body;
   const imageFilename = req.file ? req.file.filename : '';
   try {
-    const subcategory = await SubCategory.findOne({ slug }); // Find by slug
+    const subcategory = await SubCategory.findOne({ slug });  
     if (!subcategory) {
       return res.status(404).json({ message: 'Subcategory not found' });
     }

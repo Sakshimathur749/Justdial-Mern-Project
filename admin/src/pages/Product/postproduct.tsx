@@ -13,6 +13,8 @@ const ProductPostPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [productImagePreview, setProductImagePreview] = useState<string[]>([]);
   const [galleryPreview, setGalleryPreview] = useState<string[]>([]);
+  const [successModal, setSuccessModal] = useState<boolean>(false);
+  const [errorModal, setErrorModal] = useState<boolean>(false);
   const [productData, setProductData] = useState<any>({
     image: '',
     category: '',
@@ -149,7 +151,7 @@ const ProductPostPage = () => {
       }
   
       const result = await response.json();
-      alert('Product created successfully!');
+      setSuccessModal(true);
       setProductData({
         image: '',
         category: '',
@@ -171,7 +173,7 @@ const ProductPostPage = () => {
       setImagePreview(null);
     } catch (error) {
       console.error('Error submitting product:', error);
-      alert('Error submitting the product!');
+      setErrorModal(true); 
     }
   };
   
@@ -179,6 +181,35 @@ const ProductPostPage = () => {
   return (
     <div className="container mx-auto p-6">
       <Breadcrumb pageName="Create Product Post" />
+      {successModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h4 className="text-lg font-semibold">Success!</h4>
+            <p>Your category has been successfully submitted.</p>
+            <button
+              onClick={() => setSuccessModal(false)}
+              className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {errorModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h4 className="text-lg font-semibold">Error!</h4>
+            <p>There was an issue with your submission. Please try again.</p>
+            <button
+              onClick={() => setErrorModal(false)}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="mb-4" >
           <label className="block text-sm font-medium text-gray-700 dark:text-white">

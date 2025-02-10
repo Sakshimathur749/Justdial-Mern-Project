@@ -15,6 +15,12 @@ import PostSubcategory from './pages/Category/postsubcategory';
 import Subcategory from './pages/Category/subcategory';
 import EditSubCategory from './pages/Category/editsubcategory';
 import ContactDetails from './pages/contact';
+import BussniessListing from './pages/BussinessListing/bussniessListing';
+import Vendor from './pages/Vendor/vendor';
+import VendorTable from './pages/Vendor/vendortable';
+import EditVendor from './pages/Vendor/editVendor';
+import BusinessListingTable from './pages/BussinessListing/bussniessListingtable';
+import EditBussniessListing from './pages/BussinessListing/editBussniessListing';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -55,6 +61,12 @@ function App() {
         <Route path="/posted-product"  element={<><PostedProductsPage /></>  }/>
         <Route path="/edit-product/:slug" element={ <><EditProductPage/></> } />
         <Route path="/contact" element={ <><ContactDetails/></> } />
+        <Route path="/bussinesslisting/create" element={ <><BussniessListing/></> } />
+        <Route path="/bussinesslisting" element={ <><BusinessListingTable/></> } />
+        <Route path="/bussinesslisting/:slug" element={ <><EditBussniessListing/></> } />
+        <Route path="/vendor/create" element={ <><Vendor/></> } />
+        <Route path="/vendor" element={ <><VendorTable/></> } />
+        <Route path="/vendor/:slug" element={<EditVendor />} />
       </Routes>
     </DefaultLayout>
     )

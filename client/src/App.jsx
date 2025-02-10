@@ -8,6 +8,7 @@ import Categories from './pages/categories'
 import Subcategories from './pages/subcategories'
 import Products from './pages/product'
 import Productalldetails from './pages/productalldetails'
+import Bussinesslisting from './pages/bussinesslisting'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/categories/:categoryName" element={<Subcategories />} />
       <Route path='/:category/:subcategory/products' element={<Products/>}></Route>
       <Route path='/products/:slug' element={<Productalldetails />} />
+      <Route path='/Free-listing/address' element={<Bussinesslisting/>}></Route>
     </Routes>
     <Footer/>
     </BrowserRouter>

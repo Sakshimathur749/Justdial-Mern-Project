@@ -31,23 +31,15 @@ const createProduct = async (req, res) => {
   } = req.body;
 
   try {
-    // Find category and subcategory using slugs
     const category = await Category.findOne({ slug: categoryId });
     const subcategory = await Subcategory.findOne({ slug: subcategoryId });
-
     if (!category || !subcategory) {
       return res.status(404).json({ message: 'Category or Subcategory not found' });
     }
-
-    // Generate slug for product
     let slug = await generateUniqueSlug(title);
-
-    // Handle file uploads (image, gallery, productImages)
-    const image = req.files && req.files.image ? req.files.image[0].filename : null;
+   const image = req.files && req.files.image ? req.files.image[0].filename : null;
     const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
     const productImages = req.files && req.files.productImages ? req.files.productImages.map(file => file.filename) : [];
-
-    // Create new product object
     const newProduct = new Product({
       title,
       slug,
@@ -67,11 +59,7 @@ const createProduct = async (req, res) => {
       about,
       mapEmbedLink,
     });
-
-    // Save the product
     await newProduct.save();
-
-    // Populate category and subcategory references
     const populatedProduct = await Product.findById(newProduct._id)
       .populate('categoryId')
       .populate('subcategoryId');
@@ -131,23 +119,36 @@ const deleteProduct = async (req, res) => {
 
 const updateProductBySlug = async (req, res) => {
   const { slug } = req.params;
-  const { title,categoryId, subcategoryId, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink, keywords } = req.body;
+  const { title, categoryId, subcategoryId, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink, keywords } = req.body;
   const image = req.files && req.files.image ? req.files.image[0].filename : null;
   const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
   const productImages = req.files && req.files.productImages ? req.files.productImages.map(file => file.filename) : [];
   try {
     const category = await Category.findOne({ slug: categoryId });
-    const subcategory = await Subcategory.findOne({ slug: subcategoryId });
+    if (!category) {
+      return res.status(400).json({ message: 'Category not found' });
+    }
+
+    let subcategory = null;
+    if (subcategoryId) {
+      subcategory = await Subcategory.findOne({ slug: subcategoryId });
+      if (!subcategory) {
+        return res.status(400).json({ message: 'Subcategory not found' });
+      }
+    }
+
     const product = await Product.findOne({ slug });
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
     if (image && product.image) {
       const oldImagePath = path.join(__dirname, '../../admin/src/images/uploads/image', product.image);
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       }
     }
+
     if (gallery.length > 0 && product.gallery.length > 0) {
       product.gallery.forEach(file => {
         const oldGalleryPath = path.join(__dirname, '../../admin/src/images/uploads/gallery', file);
@@ -164,9 +165,12 @@ const updateProductBySlug = async (req, res) => {
         }
       });
     }
+
     product.title = title;
-    product.categoryId=category._id;
-    product.subcategoryId = subcategory._id;
+    product.categoryId = category._id;
+    if (subcategory) {
+      product.subcategoryId = subcategory._id;
+    }
     product.location = location;
     product.rating = rating;
     product.phoneNumber = phoneNumber;

@@ -47,8 +47,8 @@ const EditProductPage = () => {
         if (isMounted) {
           setProduct({
             title: data.title || '',
-            category: data.category.slug || '',
-            subcategory: data.subcategory.slug || '',
+            category: data.categoryId.slug || '',
+            subcategory: data.subcategoryId.slug || '',
             location: data.location || '',
             rating: data.rating || 1,
             phoneNumber: data.phoneNumber || '',
@@ -62,7 +62,6 @@ const EditProductPage = () => {
             productImages: data.productImages || [],
             keywords: data.keywords || '',
           });
-          console.log(data,"product get")
           setLoading(false);
           setKeywords(data.keywords || ''); 
           setSelectedCategory(data.categoryId.slug || '');
@@ -99,8 +98,6 @@ const EditProductPage = () => {
           const response = await fetch(`http://localhost:5000/api/subcategories/${selectedCategory}`);
           if (!response.ok) throw new Error('Failed to fetch subcategories');
           const data = await response.json();
-          console.log(data,'subcategories')
-          console.log(selectedCategory,"selectedCategory")
           setSubcategories(data);
         } catch (error) {
           console.error('Error fetching subcategories:', error);
@@ -194,7 +191,6 @@ const EditProductPage = () => {
     productImages.forEach((image: any) => {
       formData.append('productImages', image);
     });
-    console.log(formData)
     try {
       const response = await fetch(`http://localhost:5000/api/products/${slug}`, {
         method: 'PUT',
@@ -202,7 +198,6 @@ const EditProductPage = () => {
       });
       if (response.ok) {
         const updatedProduct = await response.json();
-        console.log(updatedProduct,"Put Product ")
         setGeneralImagePreview(updatedProduct.image
           ? `http://localhost:5173/src/images/uploads/image/${updatedProduct.image}`
           : null
@@ -215,7 +210,7 @@ const EditProductPage = () => {
         }
         if(updatedProduct.productImages){
          const productImages= updatedProduct.productImages.map(
-           `http://localhost:5173/src/images/uploads/productImages/${updatedProduct.image}`
+           (image: any) =>`http://localhost:5173/src/images/uploads/productImages/${updatedProduct.image}`
          )
           setProductImagePreview(productImages)
         }
