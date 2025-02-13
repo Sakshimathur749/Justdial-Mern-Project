@@ -6,8 +6,8 @@ const businessSchema = new mongoose.Schema({
   businessName: { type: String, required: true },
   mainCategory: { type: String, required: true },
   subCategory: { type: String, required: true },
-  image: { type: String, required: true },
-  ProductImages: [String],
+  image: { type: String },
+  productImages: [String],
   gallery: [String], 
   location: {
     country: String,

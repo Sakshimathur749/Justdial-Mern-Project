@@ -72,7 +72,7 @@ const createProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find()
-    .populate('categoryId', 'slug')  
+    .populate('categoryId', 'slug')  .populate('subcategoryId', 'slug')  
     .exec();
     res.status(200).json(products); 
   } catch (error) {

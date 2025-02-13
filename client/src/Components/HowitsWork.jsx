@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 const HowitsWork = () => {
   return (
-    <div>
+    <div className='sp'>
       <Container>
         <Row>
           <div className="how-it-work-block">

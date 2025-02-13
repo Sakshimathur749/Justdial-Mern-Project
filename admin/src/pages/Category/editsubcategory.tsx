@@ -8,6 +8,7 @@ const EditSubCategory = () => {
   const [subCategory, setSubCategory] = useState<any>(null);
   const [name, setName] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [categorySlug, setCategorySlug] = useState('');
   const [image, setImage] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);  
   useEffect(() => {
@@ -17,6 +18,7 @@ const EditSubCategory = () => {
         const data = await response.json();
         setSubCategory(data);
         setName(data.name);
+        setCategorySlug(data.categorySlug)
         setCategoryId(data.categoryId);
         if (data.image) {
           setImagePreview(`http://localhost:5173/src/images/subcategory_uploads/${data.image}`);
@@ -41,6 +43,7 @@ const EditSubCategory = () => {
     formData.append('imageType', 'subcategory');
     formData.append("name", name);
     formData.append("categoryId", categoryId);
+    formData.append("categorySlug", categorySlug);
     if (image) {
       formData.append("image", image);
     }
@@ -59,7 +62,6 @@ const EditSubCategory = () => {
       console.error("Error updating subcategory:", error);
     }
   };
-  
 
   return (
     subCategory ? (
@@ -82,8 +84,8 @@ const EditSubCategory = () => {
             <input
             id="category"
               type="text"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
+              value={categorySlug}
+              onChange={(e) => setCategorySlug(e.target.value)}
               className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
                required            
             />

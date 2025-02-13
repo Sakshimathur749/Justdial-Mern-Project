@@ -6,6 +6,7 @@ const subCategorySchema = new mongoose.Schema({
   image: { type: String, required: false },
   slug: { type: String, required: true, unique: true },
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  categorySlug: { type: String, },
 });
 subCategorySchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true, strict: true });

@@ -12,6 +12,7 @@ const SubcategoryRoutes= require('./routes/subcategory-router')
 const ContactRoutes= require('./routes/contact-router')
 const BusinessRoutes = require('./routes/bussiness-router')
 const VendorRoutes= require('./routes/vendor-router')
+const UserRoutes= require('./routes/user-router')
 const path = require('path')
   
 app.use(express.json());
@@ -30,6 +31,7 @@ app.use('/api',ContactRoutes)
 app.use('/api/auth', AdminRoute);
 app.use('/api/business', BusinessRoutes);
 app.use('/api', VendorRoutes);
+app.use('/api/user',UserRoutes)
 const PORT =process.env.PORT || 5000;
 connectdb(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{
     app.listen(PORT, ()=>{

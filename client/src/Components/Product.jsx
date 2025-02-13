@@ -10,8 +10,7 @@ const Product = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(''); 
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [allSubcategories, setAllSubcategories] = useState(''); 
   const [subcategories, setSubcategories] = useState([]);
   const [showMap, setShowMap] = useState(false); 
   useEffect(() => {
@@ -24,7 +23,6 @@ const Product = () => {
         })
         .then(data => {
           setSubcategories(Array.isArray(data) ? data : []); 
-            console.log(data,".")
             setLoading(false);
         })
         .catch(error => {
@@ -32,7 +30,6 @@ const Product = () => {
             setLoading(false);
         });
 }, [subcategory]); 
-
   useEffect(() => {
     fetch('http://localhost:5000/api/products')  
       .then(response => response.json())
@@ -47,19 +44,15 @@ const Product = () => {
       });
   }, []);
   useEffect(() => {
-    if (selectedCategory === '') {
-      setFilteredProducts(products); 
-    } else {
+    if (subcategory) {
       const filtered = products.filter(product => 
-        product.categories.includes(selectedCategory)
+        product.subcategoryId.slug === subcategory
       );
-      setFilteredProducts(filtered); 
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
     }
-  }, [selectedCategory, products]);
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-  };
+  }, [subcategory, products]);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   return (
@@ -327,7 +320,7 @@ const Product = () => {
                   </button>
                 </form>
               </section>
-              {products.map((product) => (
+              {filteredProducts.length>0?filteredProducts.map((product) => (
                 <Link to={`/products/${product.slug}`}>
                   <div key={product._id} className="result" id="lid-3697726">
                     <div className="srp-listing clickable-area mdm">
@@ -460,7 +453,9 @@ const Product = () => {
                     </div>
                   </div>
                 </Link>
-              ))}
+              )):(
+                <p>No products found for this subcategory</p>
+              )}
             </div>
             <aside id="main-aside">
               <div class="categories_sect sidebar-nav">

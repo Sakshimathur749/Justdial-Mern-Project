@@ -360,7 +360,8 @@ h2.resp-tab-title:last-child {
     background: blue;
 }
 .resp-tab-content-active {
-    display: block;
+    display: flex;
+    gap: 20px;
 }
 
 h2.resp-accordion:first-child {
@@ -1890,10 +1891,6 @@ hr.nn {
 }
 
 /* TopCities Component Css */
-.resp-tab-content-active {
-    display: block;
-}
-
 .resp-accordion:first-child {
     border-top: 1px solid #c1c1c1 !important;
 }
@@ -2117,7 +2114,7 @@ hr.nn {
     .list-inline > li .form-control-feedback {
         width: 100%;
         text-align: right;
-        margin-right: 20px;
+        margin-right: 50px;
     }
     .form-control-feedback{
         right: -30px;

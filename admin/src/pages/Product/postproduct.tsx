@@ -160,7 +160,7 @@ const ProductPostPage = () => {
         location: '',
         rating: 1,
         number: '',
-        status: 'Open',
+        status: '',
         relevantTags: '',
         websiteUrl: '',
         mapEmbedLink: '',
@@ -169,8 +169,23 @@ const ProductPostPage = () => {
         productImages: [],
         gallery: []
       });
+      setProductImagePreview([]); 
       setGalleryPreview([]);
+      setSelectedCategory(''); 
+      setSelectedSubcategory('');  
       setImagePreview(null);
+      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = ''; 
+      }
+      const ProductInput = document.getElementById('product-input') as HTMLInputElement;
+      if (ProductInput) {
+        ProductInput.value = ''; 
+      }
+      const galleryinput = document.getElementById('gallery-input') as HTMLInputElement;
+      if (galleryinput) {
+        galleryinput.value = ''; 
+      }
     } catch (error) {
       console.error('Error submitting product:', error);
       setErrorModal(true); 
@@ -215,7 +230,7 @@ const ProductPostPage = () => {
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Main Image
           </label>
-          <input
+          <input id='file-input'
             type="file"
             onChange={handleMainImagePreview} style={{background:'white'}} 
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
@@ -237,9 +252,9 @@ const ProductPostPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Product Images (Multiple)
+            Product Images (Max 5)
           </label>
-          <input
+          <input id='product-input'
             type="file" style={{background:'white'}} 
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             multiple
@@ -264,9 +279,9 @@ const ProductPostPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Gallery Images
+            Gallery Images(Max 10)
           </label>
-          <input
+          <input id='gallery-input'
             type="file" style={{background:'white'}} 
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             multiple

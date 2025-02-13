@@ -46,7 +46,10 @@ const PostSubcategory = () => {
     }
     formData.append('name', subcategoryName);
     formData.append('categoryId', selectedCategory || '');
-    console.log(formData) 
+    const categorySlug = categories.find((category) => category._id === selectedCategory)?.slug;
+    if (categorySlug) {
+      formData.append('categorySlug', categorySlug|| '');
+    }
     try {
       const response = await fetch('http://localhost:5000/api/subcategories/create', {
         method: 'POST',
@@ -63,6 +66,10 @@ const PostSubcategory = () => {
       setSelectedCategory(null);
       setImageFile(null);
       setImagePreview(null);
+      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = ''; 
+      }
     } catch (error) {
       console.error('Error:', error);
       setErrorModal(true);
@@ -145,7 +152,7 @@ const PostSubcategory = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Upload Image
                   </label>
-                  <input
+                  <input id="file-input"
                     onChange={handleFileChange}
                     type="file"
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none"

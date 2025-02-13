@@ -19,7 +19,7 @@ const TopCities = () => {
     fetchProducts();
   }, []);
   return (
-    <div className="explore-category">
+    <div className="explore-category sp">
       <Container>
         <Row>
           <div className="exp-category-head text-align-center">

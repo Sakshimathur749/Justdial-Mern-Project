@@ -21,6 +21,9 @@ import VendorTable from './pages/Vendor/vendortable';
 import EditVendor from './pages/Vendor/editVendor';
 import BusinessListingTable from './pages/BussinessListing/bussniessListingtable';
 import EditBussniessListing from './pages/BussinessListing/editBussniessListing';
+import MembershipPlan from './pages/MembershipDetails/membershipPlan';
+import EditMembershipPlan from './pages/MembershipDetails/editMembershipPlan';
+import Membership from './pages/MembershipDetails/membership';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -35,7 +38,7 @@ function App() {
     setTimeout(() => setLoading(false), 1000);
   }, []);
   if (token && pathname === '/auth/signin') {
-    return <Navigate to="/" />;
+    return <Navigate to="/dashboard" />;
   }
   if (!token && pathname !== '/auth/signin') {
     return <Navigate to="/auth/signin"/>;
@@ -50,7 +53,7 @@ function App() {
     ): (
     <DefaultLayout>
       <Routes>
-        <Route index  element={<><ECommerce /></>}/>
+        <Route path='/dashboard'  element={<><ECommerce /></>}/>
         <Route path="/post-category" element={<> <PostCategory /></>}/>
         <Route path="/post-subcategory"  element={ <>  <PostSubcategory /></> } />
         <Route path="/category" element={<><PostingCategory /> </> }/>
@@ -67,6 +70,9 @@ function App() {
         <Route path="/vendor/create" element={ <><Vendor/></> } />
         <Route path="/vendor" element={ <><VendorTable/></> } />
         <Route path="/vendor/:slug" element={<EditVendor />} />
+        <Route path='/membership' element={<Membership/>}></Route>
+        <Route path="/membership-plan" element={<MembershipPlan />} />
+        <Route path="/edit-membership-plan" element={<EditMembershipPlan />} />        
       </Routes>
     </DefaultLayout>
     )

@@ -4202,15 +4202,14 @@ body{
     color: var(--bg-black) !important;
     background-color: var(--bg-white) !important;
  }
- .bg-white{
+ .bg-white,.dropdown-menu.show{
     background-color: var(--bg-white) !important;
  }
  .theme-btn1 {
      display: inline-block;
      background-color: var(--bg-yellow);
-     margin: 10px;
      border-radius: 7px;
-     padding: 16px 20px;
+     padding: 10px 15px;
      color: var(--ztc-text-text-2);
      font-weight: var(--f-fw-blod);
      overflow: hidden;
@@ -4620,4 +4619,10 @@ body{
 }
 .text-red{
     color:var(--text-red)
+}
+.modal-content{
+    background-color: var(--bg-white) !important;
+}
+.sp{
+    padding: 50px 0px !important;
 }

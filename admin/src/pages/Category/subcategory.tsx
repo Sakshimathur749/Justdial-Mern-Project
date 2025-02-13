@@ -95,7 +95,11 @@ const Subcategory = () => {
   return (
     <>
      <Breadcrumb pageName="SubCategory" />
-      
+     <div className='d-flex justify-self-end'>
+        <button className="inline-flex items-center justify-center rounded bg-blue-500 p-2 mb-4 text-center font-medium text-white hover:bg-opacity-90">
+          <a href="/post-subcategory">Add Subcategories</a>
+        </button>
+      </div>
      {successModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">

@@ -26,6 +26,16 @@
         right: 15%;
     }
 }
+@media screen  and (max-width: 1200px) {
+    .theme-btn1{
+        right: -70px !important;
+    }
+}
+@media screen and (max-width: 1064px) {
+    .theme-btn1{
+        right: -30px !important;
+    }
+}
 @media screen and (max-width: 700px)  {
     .nav-right{
         display: none !important;

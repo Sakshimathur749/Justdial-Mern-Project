@@ -43,6 +43,10 @@ const Postcategory = () => {
       setCategoryName('');
       setImageFile(null);
       setImagePreview(null);
+      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = ''; 
+      }
     } catch (error) {
       console.error('Error:', error);
       setErrorModal(true); 
@@ -51,7 +55,6 @@ const Postcategory = () => {
   return (
     <>
       <Breadcrumb pageName="Post Category" />
-
       {successModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -66,7 +69,6 @@ const Postcategory = () => {
           </div>
         </div>
       )}
-
       {errorModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -91,38 +93,21 @@ const Postcategory = () => {
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <div className="px-6.5 w-full">
-                <input
-                  type="text"
-                  placeholder="Category Name"
-                  value={categoryName}
-                  onChange={(e) => setCategoryName(e.target.value)}
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none"
-                />
+                <input type="text"  placeholder="Category Name" value={categoryName} onChange={(e) => setCategoryName(e.target.value)}  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none"/>
               </div>
               <div className="w-full flex flex-col gap-5.5 p-6.5">
                 <div className="w-full">
                   <label className="mb-3 block text-black dark:text-white">
                     Upload Image
                   </label>
-                  <input
-                    onChange={handleFileChange}
-                    type="file"
-                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none"
-                  />
+                  <input onChange={handleFileChange} id="file-input" type="file" className=" w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none"/>
                 </div>
                 {imagePreview && (
                   <div className="px-6.5">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      height={80}
-                      width={150} style={{objectFit:'contain'}}
-                      className="rounded-lg border border-stroke shadow-sm"
-                    />
+                    <img   src={imagePreview} alt="Preview" height={80}  width={150} style={{objectFit:'contain'}}className="rounded-lg border border-stroke shadow-sm" />
                   </div>
                 )}
               </div>
-
               <div className="mb-7.5 pl-15 flex flex-wrap gap-5 xl:gap-20">
                 <button
                   onClick={handleSubmit}
