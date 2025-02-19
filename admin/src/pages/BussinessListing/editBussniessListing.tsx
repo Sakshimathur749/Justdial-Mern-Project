@@ -6,6 +6,7 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactQuill from 'react-quill';
 type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 type Hours = {open: string; close: string;};
 const EditBusinessListing = () => {
@@ -15,16 +16,14 @@ const EditBusinessListing = () => {
   const [subCategories, setSubCategories] = useState<any[]>([]);
   const [image, setImage] = useState<any>(null);
   const [galleryImages, setGalleryImages] = useState<any[]>([]);
-  const [productImages, setProductImages] = useState<any[]>([]);
-  const [productImagePreview, setProductImagePreview] = useState<string[]>([]);
   const [galleryImagePreviews, setGalleryImagePreviews] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<any>('');
   const [selectedCategory, setSelectedCategory] = useState<any>('');
   const [selectedSubcategory, setSelectedSubcategory] = useState<any>('');
   const [selectedState, setSelectedState] = useState<any>('');
-  const [selectedCity, setSelectedCity] = useState<any>(null);
-  const [cities, setCities] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState<any>('');
+  const [cities, setCities] = useState<any>([]);
   const [state, setState] = useState<any>([]);
   const [paymentModes, setPaymentModes] = useState<any[]>([]);
   const [businessService, setBusinessService] = useState<any[]>([]);
@@ -34,6 +33,15 @@ const EditBusinessListing = () => {
   const [personName, setPersonName] = useState<string>('');
   const [number, setNumber] = useState<any>('');
   const [aboutYear, setAboutYear] = useState<Date | null>(null);
+  const [pincode, setPincode] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [rating, setRating] = useState<number>(0);
+  const [status, setStatus] = useState<string>('');
+  const [relevantTags, setRelevantTags] = useState<string>('');
+  const [keywords, setKeywords] = useState<string>('');
+  const [websiteUrl, setWebsiteUrl] = useState<string>('');
+  const [about, setAbout] = useState<string>('');
+  const [mapEmbedLink, setMapEmbedLink] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -48,41 +56,67 @@ const EditBusinessListing = () => {
     };
     fetchCategories();
   }, []);
+  useEffect(() => {
+    if (selectedCategory) {
+      const fetchSubcategories = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/subcategories/${selectedCategory}`
+          );
+          const data = await response.json();
+          setSubCategories(data);
+        } catch (error) {
+          console.error('Error fetching subcategories:', error);
+        }
+      };
+      fetchSubcategories();
+    }
+  }, [selectedCategory]);
+  const handleSubcategoryChange = (e: any) => {
+    setSelectedSubcategory(e.target.value);
+  };
+  const handleCategoryChange = async (e: any) => {
+    const categorySlug = e.target.value;
+    setSelectedCategory(categorySlug);
+    setSelectedSubcategory('');
+  };
 useEffect(() => {
     const fetchBusinessData = async () => {
       setLoading(true);
       try {
         const response = await fetch(`http://localhost:5000/api/business/listing/slug/${slug}`);
         const data = await response.json();
-        console.log(data)
-        console.log("image:",data.image,"GalleryImage:",data.gallery,"ProductImage:",data.ProductImages)        
+        console.log(data)        
         if (data) {
           setBusinessName(data.businessName);
           setAddedBy(data.addedBy);
           setPersonName(data.personName);
           setNumber(data.mobileNumber);
-          setSelectedCategory(data.mainCategory);
-          setSelectedSubcategory(data.subCategory);
+          setSelectedCategory(data.categoryId);
+          setSelectedSubcategory(data.subcategoryId);
           setSelectedCountry(data.location.country);
           setSelectedState(data.location.state);
           setSelectedCity(data.location.city);
           setImage(data.image)
           setGalleryImages(data.gallery);
-          setProductImages(data.ProductImages);
           setHours(data.openingHours);
           setPaymentModes(data.paymentModes);
+          console.log(' Payment Modes:',data.paymentModes);
           setBusinessService(data.services);
           setAboutYear(new Date(data.aboutYear));
+          setPincode(data.location.pinCode);
+          setTitle(data.title);
+          setRating(data.rating);
+          setStatus(data.status);
+          setRelevantTags(data.relevantTags.join(', '));
+          setKeywords(data.keywords.join(', '));
+          setWebsiteUrl(data.websiteUrl);
+          setAbout(data.about);
+          setMapEmbedLink(data.mapEmbedLink);
+
           if (data.image) {
             const image:any =`http://localhost:5173/src/images/uploads/image/${data.image}`
             setImagePreview(image);
-          }
-          if(data.ProductImages && data.ProductImages.length > 0) {
-            const productImages = data.ProductImages.map(
-              (image: any) => `http://localhost:5173/src/images/uploads/productImages/${image}`
-            );
-            setProductImages(productImages)
-            setProductImagePreview(productImages)
           }
           if (data.gallery && data.gallery.length > 0) {
             const galleryPreviews = data.gallery.map(
@@ -107,47 +141,22 @@ useEffect(() => {
   }, [slug]);
   const handlePaymentModesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-  if (paymentModes.includes(value)) {
-    setPaymentModes(paymentModes.filter((mode) => mode !== value));
-  } else {
-    setPaymentModes([...paymentModes, value]);
-  }
+    setPaymentModes((prevSelected) => {
+      if (prevSelected.includes(value)) {
+        return prevSelected.filter((mode) => mode !== value);
+      } else {
+        return [...prevSelected, value];
+      }
+    });
   };
   const handleBusinessServiceChange = (selectedOptions: any) => {
     setBusinessService(selectedOptions.map((option: any) => option.value));
-  };
-  const handleCategoryChange = async (e: any) => {
-    const categorySlug = e.target.value;
-    setSelectedCategory(categorySlug);
-    setSelectedSubcategory('');
-    try {
-      const response = await fetch(`http://localhost:5000/api/subcategories/${categorySlug}`);
-      const data = await response.json();
-      setSubCategories(data);
-    } catch (error) {
-      console.error('Error fetching subcategories:', error);
-    }
-  };
-  const handleRemoveImage = (index: number) => {
-    const updatedGalleryPreviews = [...galleryImagePreviews];
-    const updatedGalleryImages = [...galleryImages];
-    updatedGalleryPreviews.splice(index, 1);
-    updatedGalleryImages.splice(index, 1);
-    setGalleryImagePreviews(updatedGalleryPreviews);
-    setGalleryImages(updatedGalleryImages);
   };
   const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = Array.from(e.target.files);
       setGalleryImagePreviews(file.map((files: File) => URL.createObjectURL(files)));
       setGalleryImages(file)
-    }
-  };
-  const handleProductImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = Array.from(e.target.files);
-     setProductImagePreview(file.map((files: File) => URL.createObjectURL(files)));
-      setProductImages(file)
     }
   };
   const handleHoursChange = (day: string, field: string, value: string) => {
@@ -158,16 +167,24 @@ useEffect(() => {
     const formData = new FormData();
     formData.append('addedBy', addedBy);
     formData.append('businessName', businessName);
-    formData.append('mainCategory', selectedCategory);
-    formData.append('subCategory', selectedSubcategory);
+    formData.append('categoryId', selectedCategory);
+    formData.append('subcategoryId', selectedSubcategory);
     if (image) {
       formData.append('image', image);
     }
     galleryImages.forEach((image) => formData.append('gallery', image));
-    productImages.forEach((image) => formData.append('productImages', image));
     formData.append('location[country]', selectedCountry);
     formData.append('location[state]', selectedState);
     formData.append('location[city]', selectedCity);
+    formData.append('location[pinCode]', pincode);
+    formData.append('title', title);
+    formData.append('rating', rating.toString());
+    formData.append('status', status);
+    formData.append('relevantTags', relevantTags.split(',').map(tag => tag.trim()).join(','));
+    formData.append('keywords', keywords.split(',').map(keyword => keyword.trim()).join(','));
+    formData.append('websiteUrl', websiteUrl);
+    formData.append('about', about);
+    formData.append('mapEmbedLink', mapEmbedLink);
     formData.append('personName', personName);
     formData.append('mobileNumber', number);
     Object.keys(hours).forEach((day) => {
@@ -176,6 +193,7 @@ useEffect(() => {
     });
     formData.append('services', JSON.stringify(businessService));
     formData.append('paymentModes', JSON.stringify(paymentModes));
+    console.log('Selected Payment Modes:', paymentModes);
     formData.append('aboutYear', aboutYear ? aboutYear.getFullYear().toString() : '');
     try {
       const response = await fetch(`http://localhost:5000/api/business/listing/${slug}`, {
@@ -194,13 +212,7 @@ useEffect(() => {
           );
           setGalleryImagePreviews(galleryPreviews);
         }
-        if(updatedProduct.ProductImages){
-         const productImages= updatedProduct.ProductImages.map(
-           (image: any) =>`http://localhost:5173/src/images/uploads/productImages/${updatedProduct.image}`
-         )
-          setProductImagePreview(productImages)
-        }
-        navigate('/businesslisting');
+        navigate('/bussinesslisting');
       } else {
         alert('Error updating business');
       }
@@ -211,11 +223,10 @@ useEffect(() => {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="container mx-auto p-6">
       <Breadcrumb pageName="Edit Business Listing" />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className='flex flex-wrap gap-3'>
         {/* <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Added By
@@ -228,7 +239,7 @@ useEffect(() => {
             required
           />
         </div> */}
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Business Name
           </label>
@@ -240,7 +251,7 @@ useEffect(() => {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Person Name
           </label>
@@ -252,7 +263,7 @@ useEffect(() => {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Mobile Number
           </label>
@@ -265,7 +276,43 @@ useEffect(() => {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Relevant Tags</label>
+          <input
+            value={relevantTags}
+            onChange={(e) => setRelevantTags(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Relevant Tags"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Keywords</label>
+          <input
+            value={keywords}
+            onChange={(e) => setKeywords(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Keywords"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Website URL</label>
+          <input
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Website URL"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Map Embed Link</label>
+          <input
+            value={mapEmbedLink}
+            onChange={(e) => setMapEmbedLink(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Map Embed Link"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Category
           </label>
@@ -283,13 +330,13 @@ useEffect(() => {
             ))}
           </select>
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Subcategory
           </label>
           <select
             value={selectedSubcategory}
-            onChange={(e) => setSelectedSubcategory(e.target.value)}
+            onChange={handleSubcategoryChange}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
             required
           >
@@ -300,8 +347,59 @@ useEffect(() => {
               </option>
             ))}
           </select>
+        </div>          
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Business Services
+          </label>
+          <Select
+            isMulti
+            options={categories.map((category) => ({
+              value: category.slug,
+              label: category.name,
+            }))}
+            value={
+              businessService?.map((service) => ({
+                value: service,
+                label: service,
+              })) || []
+            }
+            onChange={handleBusinessServiceChange}
+          />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Title</label>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Title"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Rating</label>
+          <select
+            value={rating}
+            onChange={(e) => setRating(Number(e.target.value))}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Status</label>
+          <input
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Status"
+          />
+        </div>
+        <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Image
           </label>
@@ -322,7 +420,7 @@ useEffect(() => {
             </div>
           )}
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Gallery Images (Max 10)
           </label>
@@ -340,47 +438,8 @@ useEffect(() => {
                   alt={`gallery-image-${index}`}
                   height={80}
                   width={150}
-                  style={{ objectFit: 'contain' }}
-                  className="rounded-lg border border-stroke shadow-sm"
+                  className="rounded-lg border border-stroke shadow-sm object-fit-contain"
                 />
-                <button
-                  type="button"
-                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
-                  onClick={() => handleRemoveImage(index)}
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Product Images (Max 5)
-          </label>
-          <input
-            type="file"
-            onChange={handleProductImageChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
-          />
-          <div className="mt-4 grid grid-cols-3 gap-4">
-            {productImagePreview.map((preview, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={preview}
-                  alt={`product-images-${index}`}
-                  height={80}
-                  width={150}
-                  style={{ objectFit: 'contain' }}
-                  className="rounded-lg border border-stroke shadow-sm"
-                />
-                <button
-                  type="button"
-                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
-                  onClick={() => handleRemoveImage(index)}
-                >
-                  X
-                </button>
               </div>
             ))}
           </div>
@@ -389,7 +448,7 @@ useEffect(() => {
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Business Location
           </label>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <div>
               <label className="block text-sm">Country</label>
               <select
@@ -428,20 +487,30 @@ useEffect(() => {
                 className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
               >
                 <option value="">Select City</option>
-                {cities.map((city) => (
+                {cities.map((city:any) => (
                   <option key={city.name} value={city.name}>
                     {city.name}
                   </option>
                 ))}
               </select>
             </div>
+            <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Pincode</label>
+          <input
+            value={pincode}
+            onChange={(e) => setPincode(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+            placeholder="Enter Pincode"
+          />
+        </div>
+
           </div>
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Opening Hours
           </label>
-          <div className="flex  gap-5 p-5" style={{ flexDirection: 'column' }}>
+          <div className="flex flex-wrap gap-5 p-5" >
             {[
               'monday',
               'tuesday',
@@ -451,17 +520,18 @@ useEffect(() => {
               'saturday',
               'sunday',
             ].map((day) => (
-              <div className="flex gap-5 " key={day}>
-                <label className="flex justify-center items-center text-sm font-medium text-gray-700 dark:text-white">
+              <div className="flex flex-col gap-3 " key={day}>
+                <label className="text-sm font-medium text-gray-700 dark:text-white">
                   {day.charAt(0).toUpperCase() + day.slice(1)}
                 </label>
+                <div className="flex gap-4">
                 <input
                   type="time"
                   value={hours[day as DayOfWeek]?.open || ''}
                   onChange={(e) =>
                     handleHoursChange(day as DayOfWeek, 'open', e.target.value)
                   }
-                  className="mt-2 w-1/6 px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2  px-4 py-2 border border-gray-300 rounded-md"
                 />
                 <input
                   type="time"
@@ -469,13 +539,14 @@ useEffect(() => {
                   onChange={(e) =>
                     handleHoursChange(day as DayOfWeek, 'close', e.target.value)
                   }
-                  className="mt-2 w-1/6 px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2  px-4 py-2 border border-gray-300 rounded-md"
                 />
+                </div>
               </div>
             ))}
           </div>
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             Payment Modes
           </label>
@@ -494,26 +565,7 @@ useEffect(() => {
             ))}
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">
-            Business Services
-          </label>
-          <Select
-            isMulti
-            options={categories.map((category) => ({
-              value: category.slug,
-              label: category.name,
-            }))}
-            value={
-              businessService?.map((service) => ({
-                value: service,
-                label: service,
-              })) || []
-            }
-            onChange={handleBusinessServiceChange}
-          />
-        </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             About Year
           </label>
@@ -523,6 +575,15 @@ useEffect(() => {
             showYearPicker
             dateFormat="yyyy"
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md"
+          />
+        </div>
+        <div className="mb-4 mb-4 w-full">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">About</label>
+          <ReactQuill
+            value={about}
+            onChange={(e:any) => setAbout(e.target.value)}
+            style={{ background: 'white' }}
+            placeholder="Enter About Information"
           />
         </div>
         <button

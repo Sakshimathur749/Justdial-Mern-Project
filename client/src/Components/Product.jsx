@@ -10,11 +10,10 @@ const Product = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [allSubcategories, setAllSubcategories] = useState(''); 
   const [subcategories, setSubcategories] = useState([]);
   const [showMap, setShowMap] = useState(false); 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/subcategory/${subcategory}`)
+    fetch(`http://localhost:5000/api/subcategories/${category}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Subcategories not found');
@@ -30,23 +29,29 @@ const Product = () => {
             setLoading(false);
         });
 }, [subcategory]); 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/products')  
-      .then(response => response.json())
-      .then(data => {
-        setProducts(data);
-        console.log(data)
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Error fetching products');
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/business/listing');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      console.log(data);
+      setProducts(data); 
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);  
+    }
+  };
+  fetchProducts();
+}, []);
+
   useEffect(() => {
     if (subcategory) {
       const filtered = products.filter(product => 
-        product.subcategoryId.slug === subcategory
+          subcategory === product.subcategoryId
       );
       setFilteredProducts(filtered);
     } else {
@@ -290,8 +295,6 @@ const Product = () => {
                 <form
                   className="search-dd"
                   id="food-search-form"
-                  action="/form_menu_search"
-                  method="GET"
                 >
                   <label>
                     Menu Search:
@@ -331,10 +334,8 @@ const Product = () => {
                               alt={product.title}
                               src={`http://localhost:5173/src/images/uploads/image/${product.image}`}
                               width={130}
-                              height={130}
+                              height={130} className="object-fit-contain w-100" 
                               style={{
-                                objectFit: "contain",
-                                width: "100%",
                                 height: "100%",
                               }}
                             />
@@ -411,7 +412,7 @@ const Product = () => {
                             </div>
                             <div className="adr">
                               <div className="street-address">
-                                {product.location}
+                                {product.location.city}{""}{product.location.state}{""}{product.location.country}{""}{product.location.pinCode}
                               </div>
                             </div>
                             <div className="price-range">$</div>
@@ -458,23 +459,23 @@ const Product = () => {
               )}
             </div>
             <aside id="main-aside">
-              <div class="categories_sect sidebar-nav">
-                <div class="sidebar-brand">
+              <div className="categories_sect sidebar-nav">
+                <div className="sidebar-brand">
                   Related Categories
-                  <span class="spe_mobile">
-                    <a href="#"></a>
+                  <span className="spe_mobile">
+                    <a ></a>
                   </span>
                 </div>
-                <div class="bor_head">&nbsp;</div>
-                <ul class="spe_submobile">
+                <div className="bor_head">&nbsp;</div>
+                <ul className="spe_submobile">
                   {Array.isArray(subcategories) &&
                     subcategories.map((subcategory) => (
                       <li key={subcategory._id}>
-                        <a href="">{subcategory.name}</a>
+                        <a >{subcategory.name}</a>
                       </li>
                     ))}
                 </ul>
-                <div class="clearfix"></div>
+                <div className="clearfix"></div>
               </div>
             </aside>
           </Col>

@@ -28,16 +28,15 @@ const TopCities = () => {
           </div>
         </Row>
         <Row>
-          <div className="resp-tabs-container resp-tab-content-active">
+          <div className="resp-tabs-container resp-tab-content-active justify-content-between flex-wrap">
               {products.map((product) => (
-                <Col lg="3" md="4" sm="4" className='pb-30'>
+                <Col lg="3" md="5" sm="5" >
                   <a href={`/categories/product/${product.slug}`}>
                     <div className="col-bott-mar blog-box">
                       <div className="first-cate-img image-anime image">
                         <img
-                          className="over-img"
+                          className="over-img object-fit-contain w-100"
                           alt={product.title}
-                          style={{ objectFit: "contain", width: "100%" }}
                           src={`http://localhost:5173/src/images/uploads/image/${product.image}`}
                         />
                       </div>

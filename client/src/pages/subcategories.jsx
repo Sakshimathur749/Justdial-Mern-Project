@@ -9,6 +9,7 @@ const Subcategories = () => {
     { label: 'Home', link: '/' },
     { label: categoryName, link: `/categories/${categoryName}` },
   ];
+
   return (
     <div>
       <SearchBanner/>

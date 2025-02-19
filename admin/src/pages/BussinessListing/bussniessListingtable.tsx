@@ -55,13 +55,13 @@ const BusinessListingTable = () => {
       sortable: true,
     },
     {
-      name: 'Main Category',
-      selector: (row: any) => row.mainCategory,
+      name: 'Category',
+      selector: (row: any) => row.categoryId,
       sortable: true,
     },
     {
       name: 'Subcategory',
-      selector: (row: any) => row.subCategory,
+      selector: (row: any) => row.subcategoryId,
       sortable: true,
     },
     {

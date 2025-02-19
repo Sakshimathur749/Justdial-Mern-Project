@@ -8,9 +8,11 @@ import Categories from './pages/categories'
 import Subcategories from './pages/subcategories'
 import Products from './pages/product'
 import Productalldetails from './pages/productalldetails'
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
+const YOUR_GOOGLE_CLIENT_ID =  '510164715040-lj99bre09a5co1gbelb7u3ul16kgakqo.apps.googleusercontent.com'
 function App() {
   return (
+    <GoogleOAuthProvider clientId={YOUR_GOOGLE_CLIENT_ID}>
     <>
     <BrowserRouter>
     <Header/>
@@ -25,6 +27,7 @@ function App() {
     <Footer/>
     </BrowserRouter>
     </>
+    </GoogleOAuthProvider>
   )
 }
 

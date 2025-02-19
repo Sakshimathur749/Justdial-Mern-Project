@@ -24,6 +24,7 @@ import EditBussniessListing from './pages/BussinessListing/editBussniessListing'
 import MembershipPlan from './pages/MembershipDetails/membershipPlan';
 import EditMembershipPlan from './pages/MembershipDetails/editMembershipPlan';
 import Membership from './pages/MembershipDetails/membership';
+import Profilepage from './pages/profile/profilepage';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -63,7 +64,7 @@ function App() {
         <Route path="/posting-product" element={ <><ProductPostPage /></>}/>
         <Route path="/posted-product"  element={<><PostedProductsPage /></>  }/>
         <Route path="/edit-product/:slug" element={ <><EditProductPage/></> } />
-        <Route path="/contact" element={ <><ContactDetails/></> } />
+        {/* <Route path="/contact" element={ <><ContactDetails/></> } /> */}
         <Route path="/bussinesslisting/create" element={ <><BussniessListing/></> } />
         <Route path="/bussinesslisting" element={ <><BusinessListingTable/></> } />
         <Route path="/bussinesslisting/:slug" element={ <><EditBussniessListing/></> } />
@@ -72,7 +73,8 @@ function App() {
         <Route path="/vendor/:slug" element={<EditVendor />} />
         <Route path='/membership' element={<Membership/>}></Route>
         <Route path="/membership-plan" element={<MembershipPlan />} />
-        <Route path="/edit-membership-plan" element={<EditMembershipPlan />} />        
+        <Route path="/edit-membership-plan" element={<EditMembershipPlan />} /> 
+        <Route path="/profile" element={<Profilepage />} />        
       </Routes>
     </DefaultLayout>
     )

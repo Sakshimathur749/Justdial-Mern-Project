@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'http://localhost:5000/api/user';
 
 export const login = async (email: string, password: string): Promise<any> => {
   const response = await fetch(`${API_URL}/login`, {
@@ -14,5 +14,6 @@ export const login = async (email: string, password: string): Promise<any> => {
   }
 
   const data = await response.json();
-  return { token: data.token, name: data.admin.name };
+  console.log(data,"user")
+  return { token: data.token, username: data.user.username, profilepicture:data.user.profilepicture };
 };

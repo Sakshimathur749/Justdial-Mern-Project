@@ -114,8 +114,8 @@ const Vendor = () => {
           </div>
         </div>
       )}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+      <form onSubmit={handleSubmit} className='flex flex-wrap gap-3'>
+        <div className="mb-4  w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Full Name</label>
           <input
             id="fullname"
@@ -127,7 +127,7 @@ const Vendor = () => {
             placeholder="Enter Full Name"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Email</label>
           <input
             id="Email"
@@ -139,7 +139,7 @@ const Vendor = () => {
             placeholder="Enter Your Email"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Mobile Number</label>
           <input
             id="mobileNumber"
@@ -151,7 +151,7 @@ const Vendor = () => {
             placeholder="Enter Valid Phone Number"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Password</label>
           <input
             id="password"
@@ -163,17 +163,7 @@ const Vendor = () => {
             placeholder="Enter Password"
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Matriculation Status</label>
-          <Select
-            options={matriculationStatusOptions}
-            value={matriculationStatus}
-            onChange={(e) => setMatriculationStatus(e)}
-            placeholder="Select Matriculation Status"
-            className="mt-2 w-full"
-          />
-        </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Gender</label>
           <Select
             options={genderOptions}
@@ -183,7 +173,17 @@ const Vendor = () => {
             className="mt-2 w-full"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">Matriculation Status</label>
+          <Select
+            options={matriculationStatusOptions}
+            value={matriculationStatus}
+            onChange={(e) => setMatriculationStatus(e)}
+            placeholder="Select Matriculation Status"
+            className="mt-2 w-full"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-1/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Date of Birth</label>
           <DatePicker
             selected={dob}
@@ -193,7 +193,7 @@ const Vendor = () => {
             dateFormat="yyyy/MM/dd"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-1/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">State</label>
           <select
             onChange={(e) => setSelectedState(e.target.value)}
@@ -225,7 +225,7 @@ const Vendor = () => {
             </select>
           </div>
         )}
-        <div className="mb-4">
+        <div className="mb-4 w-full md:w-1/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Zipcode</label>
           <input
             id="zipCode"
@@ -237,7 +237,7 @@ const Vendor = () => {
             placeholder="Enter Zipcode"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Area Profile</label>
           <textarea
             id="areaProfile"

@@ -44,7 +44,7 @@ const Category = () => {
             {categories.length > 0 ? (
               categories.map((category) => (
             <li key={category._id}>
-                <a href={`/categories/${category.name}/subcategories`}>
+                <a href={`/categories/${category.slug}`}>
                   <span className="cate-img">
                     <img
                       src={`http://localhost:5173/src/images/category_uploads/${category.image}`}

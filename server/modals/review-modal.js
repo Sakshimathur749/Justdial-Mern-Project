@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const reviewSchema = new mongoose.Schema({
   slug: {
     type: String,
-    ref: 'Product',
+    ref: 'Business',
     required: true,
   },
     rating: {

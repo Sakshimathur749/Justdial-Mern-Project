@@ -407,8 +407,7 @@ const EditProductPage = () => {
                   alt={`product-images-${index}`}
                   height={80}
                   width={150}
-                  style={{ objectFit: 'contain' }}
-                  className="rounded-lg border border-stroke shadow-sm"
+                  className="object-fit-contain rounded-lg border border-stroke shadow-sm"
                 />
                 <button
                   type="button"
@@ -439,8 +438,7 @@ const EditProductPage = () => {
                   alt={`gallery-image-${index}`}
                   height={80}
                   width={150}
-                  style={{ objectFit: 'contain' }}
-                  className="rounded-lg border border-stroke shadow-sm"
+                  className="object-fit-contain rounded-lg border border-stroke shadow-sm"
                 />
                 <button
                   type="button"

@@ -116,7 +116,6 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error });
   }
 };
-
 const updateProductBySlug = async (req, res) => {
   const { slug } = req.params;
   const { title, categoryId, subcategoryId, location, rating, phoneNumber, status, relevantTags, websiteUrl, email, about, mapEmbedLink, keywords } = req.body;
@@ -191,7 +190,6 @@ const updateProductBySlug = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error });
   }
 };
-
 const getProductBySlug = async (req, res) => {
   const { slug } = req.params;
   try {

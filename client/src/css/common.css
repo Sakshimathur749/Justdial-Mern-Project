@@ -396,6 +396,9 @@ body{
     margin-bottom: 5px;
     font-weight: bold;
   }
+  input,textarea{
+    outline: none !important;
+  }
   input[type="search"] {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
@@ -4585,10 +4588,10 @@ body{
 .exp-category-head span{
     background: var(--bg-yellow) !important;
 }
-.bor_head,#food-search-form .yellow-btn,.rank_name > div,.submit-btn button,.srp-listing .action{
+.bor_head,#food-search-form .yellow-btn,.ui.yellow.buttons .button, .ui.yellow.button,.rank_name > div,.submit-btn button,.srp-listing .action{
     background: var(--bg-yellow) !important;
 }
-.business-name,.srp-listing .n,.custom-filters,.blog .blog-box .heading h4 a,.what-to-do h4 a,.resta-name h6 a,.category-head h3,.exp-category-head h3,#search-filter-and-sort a,.filters-component .slim-filters .buttons label>span {
+.business-name,.srp-listing .n,.custom-filters,.blog .blog-box .heading h4 a,.what-to-do h4 a,.resta-name h6 a,.category-head h4,.category-head h3,.exp-category-head h3,#search-filter-and-sort a,.filters-component .slim-filters .buttons label>span {
     color: var(--heading-gray) !important;
 }
 .cate-txt,.title_acc{

@@ -82,8 +82,8 @@ const EditVendor = () => {
     return (
     <div>
       <Breadcrumb pageName='Edit Vendor'/>
-      <form onSubmit={handleUpdate}>
-        <div className="mb-4">
+      <form onSubmit={handleUpdate} className='flex flex-wrap gap-3'>
+        <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Full Name:</label>
           <input
             type="text"
@@ -93,7 +93,7 @@ const EditVendor = () => {
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
-        <div className='mb-4'> 
+        <div className='mb-4 w-full md:w-2/5'> 
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Email:</label>
           <input
             type="email"
@@ -103,7 +103,7 @@ const EditVendor = () => {
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
-        <div className='mb-4'>
+        <div className='mb-4 w-full md:w-2/5'>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Phone Number:</label>
           <input
             type="text"
@@ -113,7 +113,7 @@ const EditVendor = () => {
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
-        <div className='mb-4'>
+        <div className='mb-4 w-full md:w-2/5'>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Password:</label>
           <input
             type="password"
@@ -123,7 +123,7 @@ const EditVendor = () => {
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
-        <div className='mb-4'>
+        <div className='mb-4 w-full md:w-2/5'>
             <label className="block text-sm font-medium text-gray-700 dark:text-white">Marital Status:</label>
             <select
               name="maritalStatus"
@@ -136,7 +136,7 @@ const EditVendor = () => {
               <option className="mt-2 w-full" value="unmarried">Unmarried</option>
             </select>
           </div>
-          <div className='mb-4'>
+          <div className='mb-4 w-full md:w-2/5'>
             <label className="block text-sm font-medium text-gray-700 dark:text-white">Gender:</label>
             <select
               name="gender"
@@ -150,7 +150,7 @@ const EditVendor = () => {
               <option className="mt-2 w-full" value="other">Other</option>
             </select>
           </div>
-        <div className='mb-4'>
+        <div className='mb-4 w-full md:w-1/5'>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">State:</label>
           <select
             name="state"
@@ -166,7 +166,7 @@ const EditVendor = () => {
             ))}
           </select>
         </div>
-                <div className='mb-4'>
+                <div className='mb-4 w-full md:w-1/5'>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">City:</label>
           <select
               name="city"
@@ -182,7 +182,7 @@ const EditVendor = () => {
               ))}
             </select>
         </div>
-        <div className='mb-4'>
+        <div className='mb-4 w-full md:w-2/5'>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Date of Birth:</label>
           <input
             type="date"
@@ -193,23 +193,23 @@ const EditVendor = () => {
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
-        <div className='mb-4'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white"> Area Profile:</label>
-          <input
-            type="text"
-            name="areaProfile"
-            value={updatedVendor?.areaProfile || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
-        </div>
-        <div className='mb-4'>
+        <div className='mb-4 w-full md:w-2/5'>
           <label className="block text-sm font-medium text-gray-700 dark:text-white">Zipcode:</label>
           <input
             type="text"
             name="zipCode"
             id='zipCode'
             value={updatedVendor?.zipCode || ''}
+            onChange={handleChange}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+          />
+        </div>
+        <div className='mb-4 w-full md:w-2/5'>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white"> Area Profile:</label>
+          <input
+            type="text"
+            name="areaProfile"
+            value={updatedVendor?.areaProfile || ''}
             onChange={handleChange}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />

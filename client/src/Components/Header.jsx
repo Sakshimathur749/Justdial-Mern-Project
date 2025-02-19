@@ -3,11 +3,13 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useEffect, useState } from "react";
-import { Accordion, Button, Form, Modal, Offcanvas } from "react-bootstrap";
+import { Accordion, Alert, Button, Form, Modal, Offcanvas } from "react-bootstrap";
 import ReactLanguageSelect from "react-languages-select";
+import { GoogleLogin } from '@react-oauth/google';
 import "react-languages-select/css/react-languages-select.css";
 import "../css/header.css";
 import '../css/common.css';
+import '../css/components.css';
 import logo from '../assets/logo.png'
 
 function Header() {
@@ -16,17 +18,19 @@ function Header() {
   const [registerShow, setRegisterShow] = useState(false);
   const [user, setUser] = useState(null); 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    mobilenumber: '',
-    confirmPassword: '',
+    email:'',
+    password:'',
+    username:'',
+    mobileNumber:'',
   });
   const [loading, setLoading] = useState(false); 
-  const [successModalShow, setSuccessModalShow] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorModalShow, setErrorModalShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+const togglePasswordVisibility = () => {
+  setShowPassword(!showPassword);
+};
   useEffect(() => {
     window.scrollTo(0, 0.5);
   }, [location]);
@@ -39,6 +43,7 @@ function Header() {
   const handleLoginOpen = () => {
     setLoginShow(true);
     setErrorMessage('');
+    setSuccessMessage(''); 
     setShow(false)
   };
   const handleRegisterOpen = () => {
@@ -51,6 +56,7 @@ function Header() {
     e.preventDefault();
     setLoading(true);
     setErrorMessage('');
+    setSuccessMessage(''); 
     try {
       const response = await fetch('http://localhost:5000/api/user/login', {
         method: 'POST',
@@ -65,14 +71,20 @@ function Header() {
       const result = await response.json();
       if (response.ok) {
         localStorage.setItem('token', result.token); 
-        setUser(result.user);
-        console.log(user,"user")
+        setUser(result.user.username);
+        setSuccessMessage('Login successful!');
         setLoginShow(false);
       } else {
-        setErrorMessage(result.message); 
+        setErrorMessage(result.message);
         console.log(result.message)
         setShow(false)
-        setLoginShow(false);
+        if (result.message === 'User not Register') {
+          setLoginShow(false); 
+          setRegisterShow(true);
+        } else if (result.message === 'Invalid password') {
+          setRegisterShow(false);
+          setLoginShow(true); 
+        }
       }
     } catch (error) {
       setLoginShow(false);
@@ -86,6 +98,7 @@ const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage('');
+    setSuccessMessage('');
     try {
       const response = await fetch('http://localhost:5000/api/user/register', {
         method: 'POST',
@@ -93,17 +106,17 @@ const handleRegisterSubmit = async (e) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
+          username: formData.username,
           email: formData.email,
           password: formData.password,
-          mobilenumber: formData.mobilenumber,
-          confirmPassword: formData.confirmPassword,
+          mobileNumber: formData.mobileNumber,
         }),
       });
       const result = await response.json();
       if (response.ok) {
         setRegisterShow(false);
-        handleLoginOpen();         
+        handleLoginOpen();     
+        setSuccessMessage('Login successful!');    
       } else {
         setErrorMessage(result.message); 
       }
@@ -115,9 +128,40 @@ const handleRegisterSubmit = async (e) => {
   };
  const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user'); 
     setUser(null);
   };
-  console.log(user,"user")
+  const handleGoogleLoginSuccess = async (response) => {
+    const { credential } = response;
+    console.log('Google login credential:', credential);  
+    try {
+      const res = await fetch('http://localhost:5000/api/user/google-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: credential }),
+      });
+      const data = await res.json();
+      console.log(data)
+      if (res.ok) {
+        console.log('User authenticated:', data);
+        setSuccessMessage('Login successful!');
+        localStorage.setItem('user', JSON.stringify(data.user));
+      } else {
+        setErrorMessage('An error occurred while registering');
+        console.error('Failed to authenticate with Google');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred while registering');
+      console.error('Error with Google login:', error);
+    }
+  };  
+  const handleGoogleLoginFailure = (error) => {
+    console.error("Google login error:", error);
+    setErrorMessage("Failed to login with Google.");
+  };
+  
   return (
     <>
       <Navbar
@@ -133,15 +177,13 @@ const handleRegisterSubmit = async (e) => {
           <Navbar.Brand href="/" onClick={() => window.location.reload()}>
             <img src={logo} alt="" />
           </Navbar.Brand>
-          <div className="nav-right" style={{ display: "flex", gap: "20px" }}>
+          <div className="nav-right d-flex gap-4">
             <Nav
-              className="my-2 my-lg-0 navbar-nav"
+              className="my-2 my-lg-0 navbar-nav justify-content-center align-items-center"
               style={{
                 maxHeight: "100px",
                 left: "340px",
                 gap: "25px",
-                justifyItems: "center",
-                alignSelf: "center",
               }}
             >
               <div className="nav-link">
@@ -166,12 +208,12 @@ const handleRegisterSubmit = async (e) => {
                 Product{" "}
               </div>
             </Nav>
-            <div>
+            <div className="align-self-center">
               <a>
                 {user ? (
                   <div>
                     <NavDropdown
-                      title={`Hello, ${user.name}`}
+                      title={`Hello, ${user}`}
                       id="user-dropdown"
                     >
                       <NavDropdown.Item as="a" onClick={handleLogout}>
@@ -181,7 +223,7 @@ const handleRegisterSubmit = async (e) => {
                   </div>
                 ) : (
                   <div className="button">
-                    <a className="theme-btn1" onClick={handleLoginOpen}>
+                    <a className="theme-btn1"onClick={handleLoginOpen}>
                       Login
                     </a>
                   </div>
@@ -223,31 +265,22 @@ const handleRegisterSubmit = async (e) => {
             </div>
             <div>
               <a href="" style={{ border: "none", color: "darkslategray" }}>
-                {user ? (
+              {user ? (
                   <div>
                     <NavDropdown
-                      title={`Hello, ${user.name}`}
+                      title={`Hello, ${user}`}
                       id="user-dropdown"
                     >
-                      <NavDropdown.Item
-                        style={{ padding: "10px 20px", cursor: "pointer" }}
-                        as="a"
-                        onClick={handleLogout}
-                      >
+                      <NavDropdown.Item as="a" onClick={handleLogout}>
                         Logout
                       </NavDropdown.Item>
                     </NavDropdown>
                   </div>
                 ) : (
-                  <div>
-                    <Button
-                      as="a"
-                      style={{ padding: "1rem 1.3rem" }}
-                      variant="none"
-                      onClick={handleLoginOpen}
-                    >
+                  <div className="button">
+                    <a className="theme-btn1" onClick={handleLoginOpen}>
                       Login
-                    </Button>
+                    </a>
                   </div>
                 )}
               </a>
@@ -274,128 +307,120 @@ const handleRegisterSubmit = async (e) => {
         </Modal.Body>
       </Modal> */}
       {/* Login Modal */}
-      <Modal show={loginShow} onHide={handleLoginClose}>
+      <div  id="login_poup" role="dialog" style={{display: 'block', paddingLeft: '0px'}}>
+    <Modal show={loginShow}  onHide={handleLoginClose}>
         <Modal.Header closeButton>
-          <h2>Login</h2>
+            <Modal.Title className="category-head"> <h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Login</h4></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleLoginSubmit}>
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                style={{ padding: "20px", fontWeight: "500" }}
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                style={{ padding: "20px", fontWeight: "500" }}
-                value={formData.password}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-           <Form.Group  className="mb-3">
-           <Form.Text className="mb-3">
-              Don't have an account?{" "}
-              <a variant="primary" onClick={handleRegisterOpen}>
-                Register here
-              </a>
-            </Form.Text>
-           </Form.Group>
-            {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
-            <Button
-              style={{ background: "#e6ab2a", borderRadius: "20px" }}
-              className="px-2 px-4"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </Button>
-          </Form>
+            {successMessage && (
+                <Alert id="error_div"
+                    variant="success"
+                    className="mb-3 p-3 rounded-3 text-white shadow-sm fade show"
+                    role="alert"
+                >
+                    <strong>Success!</strong> {successMessage}
+                </Alert>
+            )} {errorMessage && (
+                <Alert variant="danger"
+                    className="mb-3 p-3 rounded-3 text-white shadow-sm fade show alert alert-danger alert-dismissible"
+                    role="alert"
+                >
+                    <strong>Error!</strong> {errorMessage}
+                </Alert>
+            )}
+                  <Form className="form-horizontal" id="login_form " onSubmit={handleLoginSubmit}>
+            <div className="login_box">
+                <div className="title_login">Login with your email and password</div>
+                <div className="user_box">
+                    <div className="label_form">Email<span style={{ color: 'red' }}>*</span></div>
+                    <input type="text" name="email" id="email_login" className="input_box" data-rule-required="true" value={formData.email} onChange={handleInputChange} placeholder="Enter Email Address" />
+                </div>
+                <div className="user_box">
+                    <div className="label_form">Password <span style={{ color: 'red' }}>*</span></div>
+                    <input type={showPassword ? 'text' : 'password'}  name="password" id="password_login" data-rule-required="true" className="input_box" value={formData.password} onChange={handleInputChange} placeholder="Enter password" /><i  className={`eye-icon ${showPassword ? 'visible' : 'hidden'}`} onClick={togglePasswordVisibility}> 👁️ </i>
+                </div>
+                <div className="login_box">
+                    <div className="left_bar">
+                        <a className="forgt" >Forget your password?</a>
+                        <a id="open_register" onClick={handleRegisterOpen} className="sign_up">Register</a>
+                    </div>
+                    <Button type="subit" id="login_submit" disabled={loading} className=" yellow ui button"> {loading ? "Logging in..." : "Login"}</Button>
+                    <img src="https://buyphpcode.com/justdialclone/assets/front/images/or1.png" alt="facebook login" />
+                </div>
+            </div>
+            <div className="text-center d-flex flex-wrap justify-content-center align-content-center">
+                <GoogleLogin 
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={handleGoogleLoginFailure}
+                    useOneTap
+                />
+                </div>
+        </Form>
         </Modal.Body>
-      </Modal>
-
-      <Modal show={registerShow} onHide={handleRegisterClose}>
+        
+    </Modal>
+      </div>
+      <div id="login_poup" role="dialog" style={{ display: 'block', paddingLeft: '0px' }}>
+    <Modal show={registerShow} onHide={handleRegisterClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Register</Modal.Title>
+            <Modal.Title className="category-head"> <h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Register</h4></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleRegisterSubmit}>
-            <Form.Group className="mb-3" controlId="formName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                placeholder="Enter your name"
-                style={{ padding: "20px", fontWeight: "500" }}
-                value={formData.name}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                style={{ padding: "20px", fontWeight: "500" }}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formMobileNumber">
-              <Form.Label>MobileNumber</Form.Label>
-              <Form.Control
-                type="tel"
-                name="mobilenumber"
-                placeholder="Enter your mobilenumber"
-                value={formData.mobilenumber}
-                style={{ padding: "20px", fontWeight: "500" }}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                style={{ padding: "20px", fontWeight: "500" }}
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formConfirmPassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="confirmPassword"
-                style={{ padding: "20px", fontWeight: "500" }}
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
-            <Button
-              style={{ background: "#e6ab2a", borderRadius: "20px" }}
-              className="px-2 px-4"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? "Registering..." : "Register"}
-            </Button>
-          </Form>
+            {successMessage && (
+                <Alert id="error_div"
+                    variant="success"
+                    className="mb-3 p-3 rounded-3 text-white shadow-sm fade show"
+                    role="alert"
+                >
+                    <strong>Success!</strong> {successMessage}
+                </Alert>
+            )} {errorMessage && (
+                <Alert
+                    variant="danger"
+                    className="mb-3 p-3 rounded-3 text-white shadow-sm fade show alert alert-danger alert-dismissible"
+                    role="alert"
+                >
+                    <strong>Error!</strong> {errorMessage}
+                </Alert>
+            )}
+            <Form className="form-horizontal" id="login_form " onSubmit={handleRegisterSubmit}>
+                <div className="login_box">
+                    <div className="user_box">
+                        <div className="label_form">UserName<span style={{ color: 'red' }}>*</span></div>
+                        <input type="text" name="username" id="email_login" className="input_box" data-rule-required="true" value={formData.username} onChange={handleInputChange} placeholder="Enter UserName" />
+                    </div>
+                    <div className="user_box">
+                        <div className="label_form">MobileNumber<span style={{ color: 'red' }}>*</span></div>
+                        <input id="email_login" className="input_box" type="tel" name="mobileNumber" placeholder="Enter your mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} />
+                    </div>
+                    <div className="user_box">
+                        <div className="label_form">Email<span style={{ color: 'red' }}>*</span></div>
+                        <input type="text" name="email" id="email_login" className="input_box" data-rule-required="true" value={formData.email} onChange={handleInputChange} placeholder="Enter Email Address" />
+                    </div>
+                    <div className="user_box">
+                        <div className="label_form">Password <span style={{ color: 'red' }}>*</span></div>
+                        <input type="password" name="password" id="password_login" data-rule-required="true" className="input_box" value={formData.password} onChange={handleInputChange} placeholder="Enter password" />
+                    </div>
+                    <div className="login_box">
+                        <div className="left_bar">
+                            <a id="open_register" onClick={()=>(handleLoginOpen(),handleRegisterClose())}>Login</a>
+                        </div>
+                        <Button type="subit" id="login_submit" disabled={loading} className=" yellow ui button">Submit</Button>
+                        <img src="https://buyphpcode.com/justdialclone/assets/front/images/or1.png" alt="facebook login" />
+                    </div>
+                </div>
+                <div className="text-center d-flex flex-wrap justify-content-center align-content-center">
+                    <GoogleLogin
+                        onSuccess={handleGoogleLoginSuccess}
+                        onError={handleGoogleLoginFailure}
+                        useOneTap
+                    />
+                </div>
+            </Form>
         </Modal.Body>
-      </Modal>
+    </Modal>
+</div>
     </>
   );
 }

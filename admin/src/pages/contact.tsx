@@ -3,12 +3,13 @@ import DataTable from 'react-data-table-component';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 
 const ContactDetails = () => {
+  const API_URL='http://localhost:5000'
   const [tableData, setTableData] = useState<any[]>([]);
   const [message, setMessage] = useState<any>({ text: '', type: '' });
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/contact');
+        const response = await fetch(API_URL+'/api/contact');
         if (response.ok) {
           const data = await response.json();
           setTableData(data);

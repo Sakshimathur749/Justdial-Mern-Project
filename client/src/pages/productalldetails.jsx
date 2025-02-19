@@ -8,35 +8,35 @@ import '../css/components.css'
 import { useParams } from 'react-router';
 import Map from '../Components/Map';
 const Productalldetails = () => {
-  const { category, subcategory, slug } = useParams();
+  const {  slug } = useParams();
+    const API_URL='http://localhost:5000'
   const [product, setProduct] = useState(null); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
- 
+  const [business, setBusiness] = useState(null);
   const breadcrumbs = [
     { label: 'Home', link: '/' },
-    { label: 'Category', link: '/categories' },
-    { label: 'Restaurent', link: '/categories/subcategories' },
-    { label: 'Berris Pizza Cafe', link: '/state/location' },
-  ];
+    { label: 'Product', link: '/categories' },
+    { label:slug, link: `/products/${slug}` },
+  ]; 
   useEffect(() => {
-    const fetchProductData = async () => {
+    const fetchBusinessData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/api/products/slug/${slug}`); 
+        const response = await fetch(`http://localhost:5000/api/business/listing/slug/${slug}`); 
         if (!response.ok) {
-          throw new Error('Failed to fetch product data');
+          throw new Error('Failed to fetch business data');
         }
         const data = await response.json();
-        setProduct(data);
+        console.log(data,"bussiness")
+        setBusiness(data); 
       } catch (error) {
         setError(error.message); 
       } finally {
         setLoading(false); 
       }
     };
-
-    fetchProductData();
+    fetchBusinessData();
   }, [slug]); 
   return (
     <div>
@@ -44,7 +44,7 @@ const Productalldetails = () => {
       <Breadcrumb breadcrumbs={breadcrumbs}/>
       <div className="d-flex p-5 gap-4 justify-content-center flex-wrap">
       <div className="col-3 col-md-12 product-right">
-      <ContactDetail/>
+      <ContactDetail  slug={slug}/>
       </div>
       <div className="col-8 col-md-12 product-left">
       <ProductDetail slug={slug}/>
@@ -53,7 +53,7 @@ const Productalldetails = () => {
       </div>
       <div>
     </div>
-    <Map location={product?.mapEmbedLink} />
+    <Map location={business?.mapEmbedLink} />
     </div>
   )
 }

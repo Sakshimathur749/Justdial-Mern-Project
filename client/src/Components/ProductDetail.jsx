@@ -24,11 +24,12 @@ const ProductDetail = ({ slug }) => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${slug}`);
+        const response = await fetch(`http://localhost:5000/api/business/listing/slug/${slug}`);
         if (!response.ok) {
           throw new Error('Product not found');
         }
         const data = await response.json();
+        console.log(data,"Product")
         setProduct(data);
         const reviewResponse = await fetch(`http://localhost:5000/api/review/slug/${slug}`);
     if (!reviewResponse.ok) {
@@ -110,7 +111,7 @@ const ProductDetail = ({ slug }) => {
   if (!product) {
     return <div>No product data available.</div>;
   } 
-  const totalImages = product.productImages.length;
+  const totalImages = product.gallery.length;
   const getVisibleImages = () => {
     if (window.innerWidth <= 576) {
       return 1; 
@@ -122,7 +123,7 @@ const ProductDetail = ({ slug }) => {
   };
   
   const visibleImages = getVisibleImages();
-  const displayedImages = product.productImages.slice(0, visibleImages); 
+  const displayedImages = product.gallery.slice(0, visibleImages); 
   return (
     <div>
       <Container>
@@ -131,16 +132,16 @@ const ProductDetail = ({ slug }) => {
             <div className="gallery_images">
             <div className="main-image">
                 <img
-                  src={`http://localhost:5173/src/images/uploads/productImages/${displayedImages[0]}`}
-                  alt="Product" style={{objectFit:'contain'}}
-                  className="img-fluid"
+                  src={`http://localhost:5173/src/images/uploads/gallery/${displayedImages[0]}`}
+                  alt="Product" 
+                  className="img-fluid object-fit-contain"
                 />
               </div>
 
               <div className="other-images">
                 {displayedImages.slice(1, visibleImages).map((image, index) => (
                   <div key={index} className="small-image">
-                    <img src={`http://localhost:5173/src/images/uploads/productImages/${image}`} style={{objectFit:'contain'}} alt={`Image ${index + 1}`} />
+                    <img src={`http://localhost:5173/src/images/uploads/gallery/${image}`} className="object-fit-contain" alt={`Image ${index + 1}`} />
                   </div>
                 ))}
 
@@ -188,7 +189,7 @@ const ProductDetail = ({ slug }) => {
                         d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"
                       />
                     </svg>
-                    <span>{product.phoneNumber}</span>
+                    <span>{product.mobileNumber}</span>
                     </div>
                     <div className="d-flex gap-3 py-2">
                     <svg
@@ -202,7 +203,7 @@ const ProductDetail = ({ slug }) => {
                       />
                     </svg>{" "}
                     <span>
-                      {product.location} (<a  href={`https://www.google.com/maps?q=${encodeURIComponent( product.location)}`}
+                      {product.location.country} (<a  href={`https://www.google.com/maps?q=${encodeURIComponent( product.location.city)}`}
                               target="_blank"
                               rel="nofollow noopener"> map</a>
                       )
@@ -287,14 +288,10 @@ const ProductDetail = ({ slug }) => {
             </div>
             <div className="tours-detail-tab">
               <div
-                id="dash_tab"
+                id="dash_tab" className="w-100 m-0 d-block py-2 px-3"
                 style={{
                   background: "rgb(255, 255, 255)",
-                  padding: "10px 13px",
                   border: "1px solid rgb(234, 234, 234)",
-                  display: "block",
-                  width: "100%",
-                  margin: "0px",
                 }}
               >
                 <ul className="resp-tabs-list d-flex">
@@ -358,8 +355,7 @@ const ProductDetail = ({ slug }) => {
                   {activeTab === "rating" && (
                     <div
                       id="review_rank"
-                      className="resp-tab-content resp-tab-content-active"
-                      style={{ display: "block" }}
+                      className="resp-tab-content resp-tab-content-active d-block"
                       aria-labelledby="tab_item-0"
                     >
                       <div className="rating_views">
@@ -407,7 +403,7 @@ const ProductDetail = ({ slug }) => {
                                   {review.comment}
                                 </div>
                                 <div className="acad-rating-block">
-                                  <span className="stars-block resta-rating-block d-flex gap-1 pb-3 justify-content-center">
+                                  <span className="stars-block resta-rating-block d-flex gap-1 pb-3 justify-content-start" >
                                     {[...Array(5)].map((_, index) => (
                                       <svg
                                         key={index}
@@ -445,7 +441,7 @@ const ProductDetail = ({ slug }) => {
                   {activeTab === "review" && (
                     <div
                       id="review_rating"
-                      className="resp-tab-content resp-tab-content-active"
+                      className="resp-tab-content d-block"
                       aria-labelledby="tab_item-1"
                     >
                       <div className="write-review-main" id="review_id">
@@ -581,7 +577,7 @@ const ProductDetail = ({ slug }) => {
                               >
                                 <img
                                   src={`http://localhost:5173/src/images/uploads/gallery/${image}`}
-                                  alt={`Gallery image ${index + 1}`} style={{objectFit:'contain'}}
+                                  alt={`Gallery image ${index + 1}`} className="object-fit-contain"
                                 />
                               </a>
                           </div>
@@ -597,8 +593,7 @@ const ProductDetail = ({ slug }) => {
                       aria-labelledby="tab_item-3"
                     >
                       <div
-                        className="company_info "
-                        style={{ textAlign: "justify" }}
+                        className="company_info text-start"
                       ></div>
                       {product.about ? (
                         <div
