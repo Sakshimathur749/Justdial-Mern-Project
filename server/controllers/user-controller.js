@@ -5,6 +5,7 @@ const Membership= require('../modals/membership-modal')
 const defaultAdminCredentials = {
   email: 'mathursakshi143@gmail.com',
   password: 'admin123',
+  role:'Admin',
 };
 const hashDefaultPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
@@ -26,12 +27,12 @@ const registerUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(201).json({ message: 'User registered successfully.',token ,  user: { email: newUser.email, username: newUser.username, mobileNumber: newUser.mobileNumber , password:newUser.password},});
   } catch (error) {
-    console.log(error)
+    console.log(error,"Register")
     res.status(500).json({ message: 'Server error' });
   }
 };
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password,isAdmin  } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -43,7 +44,7 @@ const loginUser = async (req, res) => {
         const token = jwt.sign({ id: 'defaultAdminId' }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return res.json({
           token,
-          admin: { email: defaultAdminCredentials.email, username: 'Admin' },
+          admin: { email: defaultAdminCredentials.email, role:defaultAdminCredentials.role,username: 'Admin' },
         });
       } else {
         return res.status(400).json({ message: 'Invalid password' });
@@ -57,10 +58,10 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password' });
     }
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: admin._id , role:admin.role}, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({
-      token,
-      user: { email: admin.email, username: admin.username , profilepicture:admin.profilepicture},
+      token, role:admin.role,
+      user: { email: admin.email, username: admin.username , profilepicture:admin.profilepicture, Googleprofilepicture: admin.profilepicture},
     });
   } catch (error) {
     console.error(error);

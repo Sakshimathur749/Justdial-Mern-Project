@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const axios = require('axios');
 const User = require('../modals/user-modal');
-const auth = require('../middleware/auth-middleware')
+const {auth} = require('../middleware/auth-middleware')
 const { OAuth2Client } = require('google-auth-library');
 const { registerUser, loginUser, getProfile,updateProfile } = require('../controllers/user-controller');
+const { default: mongoose } = require('mongoose');
+const jwt = require('jsonwebtoken');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../../admin/src/images/profile_image')
@@ -31,16 +32,28 @@ router.put('/profile-edit', auth, upload.single('profilepicture'), updateProfile
 router.post('/google-login', async (req, res) => {
   try {
     const { token } = req.body;
-    const response = await axios.post(
-      'https://oauth2.googleapis.com/tokeninfo',
-      null,
-      { params: { id_token: token } }
-    );
-  const googleUser = response.data;
-  console.log(googleUser)
-    res.json(googleUser); 
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: '510164715040-lj99bre09a5co1gbelb7u3ul16kgakqo.apps.googleusercontent.com',
+    });
+    const { email, name, picture, sub } = ticket.getPayload();
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({
+        email,
+        username: name,
+        Googleprofilepicture: picture,
+        slug: new mongoose.Types.ObjectId().toString(),
+      });
+      await user.save();
+    }
+    const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({
+      token: jwtToken,
+      user: { email: user.email, username: user.username, Googleprofilepicture: user.Googleprofilepicture },
+    });
   } catch (error) {
-    console.error(error);
+    console.error(error, "Google Login Error");
     res.status(500).json({ error: 'Failed to authenticate user with Google' });
   }
 });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
@@ -29,25 +29,33 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
   const isAuthRoute = pathname === '/auth/signin';
-
   useEffect(() => {
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+      console.log("Current URL:", window.location.href);
+      const params = new URLSearchParams(window.location.search);
+      const tokenFromUrl = params.get('uitoken');
+      if (tokenFromUrl) {
+        localStorage.setItem('token', tokenFromUrl);
+        console.log('Token from URL:', tokenFromUrl);
+      }
+    }, 500);  // Delay to ensure the URL has been updated
   }, [pathname]);
-
+  
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
   if (token && pathname === '/auth/signin') {
     return <Navigate to="/dashboard" />;
   }
-  if (!token && pathname !== '/auth/signin') {
-    return <Navigate to="/auth/signin"/>;
+  if (!token ) {
+    return <Navigate to="/dashboard"/>;
   }
   return loading ? (
     <Loader />
   ) : (
-    isAuthRoute ? (
+    isAuthRoute&& role==='admin' ? (
       <Routes>
         <Route path="/auth/signin" element={<SignIn />} />
       </Routes>

@@ -15,11 +15,16 @@ const SignIn: React.FC = () => {
     setError('');
 
     try {
-      const { token, username, profilepicture } = await login(email, password);
+      const { token, username, profilepicture ,role} = await login(email, password);
       localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
       localStorage.setItem('userName', username);
       localStorage.setItem('profilepicture', profilepicture);
-      navigate('/dashboard');
+      if(role === 'vendor') {
+        navigate('/vendor/create');
+       }else{
+        navigate('/dashboard'); 
+      } 
     } catch (err: any) {
       setError('Invalid email or password');
     } finally {

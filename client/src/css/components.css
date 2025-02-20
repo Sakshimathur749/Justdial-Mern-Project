@@ -1,5 +1,10 @@
+/* Privacy Policy And terms condition Page css */
+.cont_head {color: #424242;font-size: 20px;margin-bottom: 4px;}
+.cont_txt {margin-bottom: 15px;}
+.content_page { padding-top: 20px;}.cont_txt p {color: #828282;font-size: 16px;}
+
 /* Login And register popup Froget popup */
-.modal-backdrop.in { opacity: 0.78;}
+.modal-backdrop.in { opacity: 0.78;}.eye{ position: absolute;top: 12px; right: 10px;}
 .modal-header {background: #ddddda;text-align: center;border-radius: 3px;}
 .login_box { padding-bottom: 10px;clear: both;margin: 0 auto;max-width: 450px;padding-top: 13px;text-align: center;width: 100%;}
 .title_login { color: #535353;font-size: 16px; margin-bottom: 15px;}

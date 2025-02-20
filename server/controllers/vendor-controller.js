@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const slugify=require('slugify')
 const createVendor = async (req, res) => {
   try {
-    const { fullName, email, mobileNumber, password, maritalStatus, gender, dob, state,city, zipCode, areaProfile } = req.body;
+    const { fullName, email, mobileNumber, password, maritalStatus, gender, dob, state,city, zipCode, areaProfile, role } = req.body;
     const existingVendor = await Vendor.findOne({ email });
     if (existingVendor) {
       return res.status(400).json({ message: 'Vendor already exists' });

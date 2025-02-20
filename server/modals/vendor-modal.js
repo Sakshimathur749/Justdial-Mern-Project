@@ -54,6 +54,7 @@ const vendorSchema = new mongoose.Schema(
       unique: true, 
       required: true, 
     },  
+    role:{type:String, default:'vendor'},
   },
   { timestamps: true }
 );

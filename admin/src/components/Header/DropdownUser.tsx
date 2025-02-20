@@ -10,9 +10,14 @@ const DropdownUser = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const name = localStorage.getItem('userName');
+    const Googleprofilepicture = localStorage.getItem('Googleprofilepicture');
     const image = localStorage.getItem('profilepicture');
     if (name) {setUserName(name); }
-    if (image) {setProfileImage(image); }
+    if (image) {setProfileImage(`http://localhost:5173/src/images/profile_image/${image}`); 
+    }else if(Googleprofilepicture){
+      setProfileImage(`${Googleprofilepicture}`); 
+    }
+    // if(Googleprofilepicture){setProfileImage(Googleprofilepicture)}
   }, []);
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -34,7 +39,7 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={`http://localhost:5173/src/images/profile_image/${profileImage}`} alt="User" />
+          <img src={`${profileImage}`} alt="User" />
         </span>
 
         <svg
