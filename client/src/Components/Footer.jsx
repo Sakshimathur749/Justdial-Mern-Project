@@ -64,13 +64,13 @@ const Footer = () => {
             <h3 >Quick Links</h3>
             <ul>
               <li>
-                <a href="">Browse Categories</a>
+                <a href="/categories">Browse Categories</a>
               </li>
               <li>
-                <a href="">About Us</a>
+                <a href="/about">About Us</a>
               </li>
               <li>
-                <a href="">Contact</a>
+                <a href="/contact">Contact</a>
               </li>
               <li>
                 <a href="/terms&condition">Terms & Conditions</a>
