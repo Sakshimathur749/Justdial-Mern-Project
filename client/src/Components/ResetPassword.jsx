@@ -12,7 +12,6 @@ const ResetPassword = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const location = useLocation();
-  
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get('token');
 
@@ -21,16 +20,20 @@ const ResetPassword = () => {
   };
 
   const handleChangePassword = async () => {
-    const token = localStorage.getItem('token'); 
+  if (newPassword !== confirmPassword) {
+    alert('Passwords do not match');
+    return;
+  }
     try {
-      const response = await fetch('http://localhost:5000/api/reset-password', {
+      const response = await fetch(`http://localhost:5000/api/reset-password?token=${token}` , {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' ,  Authorization: `Bearer ${token}`},
-        body: JSON.stringify({ newPassword, token })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword,confirmPassword,token })
       });
       const data = await response.json();
-      if (response.ok) {
-        setSuccessMessage('Password reset successfully!');
+      console.log(data)
+      if (data) {
+        setSuccessMessage('Password update successfully!');
       } else {
         setErrorMessage(data.message || 'An error occurred.');
       }
@@ -40,10 +43,10 @@ const ResetPassword = () => {
   };
 
   return (
-    <div style={{height:'45vh'}}>
+    <div style={{height:'65vh'}}>
       <div show={resetPasswordModal} onHide={() => setResetPasswordModal(false)}>
-          <div className="category-head"><h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Reset ACcoount Password</h4></div>
-        <div>
+          <div className="category-head"><h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Reset Account Password</h4></div>
+        <div style={{width:'400px', justifySelf:'center' }}>
           {successMessage && <Alert variant="success">{successMessage}</Alert>}
           {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
           <Form className="form-horizontal">
@@ -59,6 +62,27 @@ const ResetPassword = () => {
                   className="input_box"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter New password"
+                />
+                <img
+                  src={showPassword ? Eye : InvisibleEye}
+                  height={20}
+                  width={20}
+                  className="eye object-fit-contain"
+                  onClick={togglePasswordVisibility}
+                  alt="Toggle Password Visibility"
+                />
+              </div>
+              <div className="user_box">
+                <div className="label_form">
+                  Confirm Password <span style={{ color: "red" }}>*</span>
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmpassword"
+                  className="input_box"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Enter New password"
                 />
                 <img

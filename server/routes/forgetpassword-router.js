@@ -1,6 +1,7 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../modals/user-modal');
 const express = require('express');
 const router = express.Router();
@@ -44,21 +45,27 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 router.post('/reset-password', async (req, res) => {
-    const { newPassword} = req.body;
+    const { newPassword , confirmPassword} = req.body;
     const { token } = req.query;
-    jwt.verify(token, "jwt_secret_key", (err, decoded) => {
-      if(err) {
-          return res.json({message: "Error with token"})
-      } else {
-          bcrypt.hash(newPassword , 10)
-          .then(hash => {
-              User.findByIdAndUpdate({_id: id}, {newPassword: hash})
-              .then(u => res.send({message: "Success"}))
-              .catch(err => res.send({message: err}))
-          })
-          .catch(err => res.send({message: err}))
+    console.log(token,"token mil gaye ")
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.id;  
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const user = await User.findByIdAndUpdate(userId, { password: hashedPassword }, { new: true });
+      console.log(user.password,"New password Save")
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
       }
+      return res.status(200).json({ message: "Password successfully reset" });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Error resetting password" });
+    }
   })
-}) 
+
 
 module.exports = router;

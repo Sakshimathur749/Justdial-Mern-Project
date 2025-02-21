@@ -41,18 +41,15 @@ function Header() {
       const response = await fetch('http://localhost:5000/api/forgot-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email }) 
       });
       const data = await response.json(); 
       if (data) { 
         setSuccessMessage('Password reset link has been sent to your email!');
-        setForgotPasswordModal(true);
-        Navigate('/https://mail.google.com/mail/u/0/#inbox')
       } else {
         setErrorMessage('Failed to send password reset link.');
-        setForgotPasswordModal(true);
       }
     } catch (error) {
       console.log(error);
