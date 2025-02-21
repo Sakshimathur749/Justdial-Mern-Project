@@ -1,9 +1,10 @@
+require('dotenv').config();
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const User = require('../modals/user-modal');
 const express = require('express');
 const router = express.Router();
-
+const {auth} = require('../middleware/auth-middleware')
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   console.log(email,"email")
@@ -14,13 +15,13 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    const resetLink = `http://localhost:3000/reset-password/${user._id}?token=${token}`;
+    const resetLink = `http://localhost:5174/reset-password?token=${token}`;
     await user.save();
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'mathursakshi143@gmail.com', 
-        pass: 'India@143',  
+        pass: 'obpqeuimqyhakugo',  
       },
     });
     const mailOptions = {
@@ -43,20 +44,21 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 router.post('/reset-password', async (req, res) => {
-    const { password, token } = req.body;
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id);
-      if (!user) {
-        return res.status(400).send({ message: 'User not found' });
+    const { newPassword} = req.body;
+    const { token } = req.query;
+    jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+      if(err) {
+          return res.json({message: "Error with token"})
+      } else {
+          bcrypt.hash(newPassword , 10)
+          .then(hash => {
+              User.findByIdAndUpdate({_id: id}, {newPassword: hash})
+              .then(u => res.send({message: "Success"}))
+              .catch(err => res.send({message: err}))
+          })
+          .catch(err => res.send({message: err}))
       }
-      user.password = bcrypt.hashSync(password, 10);
-      await user.save();
-      res.send({ success: true });
-    } catch (error) {
-      res.status(400).send({ message: 'Invalid token' });
-    }
-  });
-  
+  })
+}) 
 
 module.exports = router;

@@ -1,12 +1,13 @@
 import React from "react";
 import "../css/common.css";
 import "../css/components.css";
+import SearchIcon from '../assets/Icons/icon-search.png'
 import { Col, Container, Row } from "react-bootstrap";
 const Footer = () => {
   return (
     <>
       <Container fluid className="footer">
-        <Row className="footer-content">
+        <div className="footer-content">
           <Col lg="3" md="6" sm="12" className="footer-section about">
             <h3>About Us</h3>
             <p>
@@ -59,8 +60,8 @@ const Footer = () => {
             </div>
           </Col>
 
-          <Col lg="3" md="6" sm="12" className="footer-section links">
-            <h3>Quick Links</h3>
+          <Col lg="2" md="6" sm="12" className="footer-section links">
+            <h3 >Quick Links</h3>
             <ul>
               <li>
                 <a href="">Browse Categories</a>
@@ -80,7 +81,7 @@ const Footer = () => {
             </ul>
           </Col>
 
-          <Col lg="3" md="6" sm="12" className="footer-section contact">
+          <Col lg="2" md="6" sm="12" className="footer-section contact">
             <h3>Contact Us</h3>
             <ul>
               <li>
@@ -95,12 +96,12 @@ const Footer = () => {
           <Col lg="3" md="6" sm="12" className="footer-section newsletter">
             <h3>Subscribe to Our Newsletter</h3>
             <p>Stay updated with the latest news and offers from Justdial.</p>
-            <form action="" method="post" className="d-flex f-wrap">
+            <form action="" method="post" className="d-flex" style={{width:'90%'}}>
               <input type="email" placeholder="Enter your email" required />
-              <button type="submit">Subscribe</button>
+              <button type="submit"><img src={SearchIcon}  alt="" /></button>
             </form>
           </Col>
-        </Row>
+        </div>
 
         <Row className="footer-bottom">
           <p>&copy; 2025 Justdial Clone. All rights reserved.</p>

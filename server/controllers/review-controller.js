@@ -18,7 +18,6 @@ const createReview = async (req, res) => {
 const getReviewsBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
-    console.log(slug)
     const reviews = await Review.find({ slug });  
     if (reviews.length === 0) {
       return res.status(404).json({ message: 'No reviews found for this slug' });

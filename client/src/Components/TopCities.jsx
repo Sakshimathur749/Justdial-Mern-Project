@@ -8,7 +8,7 @@ const TopCities = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch('http://localhost:5000/api/business/listing');
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -28,11 +28,11 @@ const TopCities = () => {
           </div>
         </Row>
         <Row>
-          <div className="resp-tabs-container resp-tab-content-active justify-content-between flex-wrap">
+          <div className="resp-tabs-container resp-tab-content-active  justify-content-start align-items-center flex-wrap">
               {products.map((product) => (
-                <Col lg="3" md="5" sm="5" >
-                  <a href={`/categories/product/${product.slug}`}>
-                    <div className="col-bott-mar blog-box">
+                <Col lg="3" md="5" sm="5" xs='10' >
+                  <a href={`/products/${product.slug}`}>
+                    <div className="col-bott-mar blog-box text-align-center"  style={{ width: '100%' }}>
                       <div className="first-cate-img image-anime image">
                         <img
                           className="over-img object-fit-contain w-100"
@@ -46,13 +46,13 @@ const TopCities = () => {
                         </div>
                         <div className="resta-name">
                           <h6>
-                            <a href={`/categories/product/${product.slug}`}>
+                            <a href={`/products/${product.slug}`}>
                               {product.title}
                             </a>
                           </h6>
                           <span></span>
                         </div>
-                        <div className="resta-content">{product.location}</div>
+                        <div className="resta-content">{product.location.city}{product.location.country}{product.location.pincode}</div>
                         <div className="resta-rating-block">
                         {[...Array(5)].map((_, index) => (
                       <svg

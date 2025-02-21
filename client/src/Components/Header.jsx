@@ -19,7 +19,7 @@ function Header() {
   const [show, setShow] = useState(false);
   const [loginShow, setLoginShow] = useState(false);
   const [registerShow, setRegisterShow] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,17 +31,11 @@ function Header() {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
-  const [resetPasswordModal, setResetPasswordModal] = useState(false);
   const [email, setEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
   const handleForgotPasswordOpen = () => {setForgotPasswordModal(true) ; 
     setLoginShow(false);
   }
   const handleForgotPasswordClose = () => setForgotPasswordModal(false);
-  const handleResetPasswordOpen = () => setResetPasswordModal(true);
-  const handleResetPasswordClose = () => setResetPasswordModal(false);
   const handleSendLink = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/forgot-password', {
@@ -52,36 +46,17 @@ function Header() {
         body: JSON.stringify({ email }) 
       });
       const data = await response.json(); 
-      if (response.ok) { 
+      if (data) { 
         setSuccessMessage('Password reset link has been sent to your email!');
-        setForgotPasswordModal(false);
+        setForgotPasswordModal(true);
+        Navigate('/https://mail.google.com/mail/u/0/#inbox')
       } else {
         setErrorMessage('Failed to send password reset link.');
+        setForgotPasswordModal(true);
       }
     } catch (error) {
       console.log(error);
       setErrorMessage('An error occurred while sending the link.');
-    }
-  };
-  
-  const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
-      return;
-    }
-    try {
-      const response = await fetch('http://localhost:5000/api/reset-password', {
-        password: newPassword,
-        token: window.location.search.split('=')[1]  // Extract token from URL query params
-      });
-      if (response.data.success) {
-        setSuccessMessage("Password updated successfully.");
-        setResetPasswordModal(false);
-      } else {
-        setErrorMessage("Failed to change password.");
-      }
-    } catch (error) {
-      setErrorMessage("An error occurred while changing password.");
     }
   };
   const togglePasswordVisibility = () => {
@@ -90,14 +65,18 @@ function Header() {
   useEffect(() => {
     window.scrollTo(0, 0.5);
   }, [location]);
-  window.onload = function() {
+  useEffect(() => {
     const token = localStorage.getItem('token'); 
-    if (token) {
-      console.log('Token found:', token);
+    const username = localStorage.getItem('username');
+    console.log(username) 
+    if (token && username) {
+      setUser(username)
+      console.log('Token found:', token,username);
     } else {
+      setUser(null);
       console.log('No token found');
     }
-  };  
+  });  
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleInputChange = (e) => {
@@ -136,8 +115,8 @@ function Header() {
       console.log(result)
       if (response.ok) {
         localStorage.setItem('token', result.token);
-        localStorage.setItem('Role', result.role);
-        localStorage.setItem('Username', result.user.username);
+        localStorage.setItem('role', result.role);
+        localStorage.setItem('username', result.user.username);
         const token = localStorage.getItem('token')
         setUser(result.user.username);
         setSuccessMessage('Login successful!');
@@ -203,7 +182,8 @@ function Header() {
   };
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
     setUser(null);
   };
   const handleGoogleLoginSuccess = async (response) => {
@@ -289,7 +269,7 @@ function Header() {
               <a>
                 {user ? (
                   <div>
-                    <NavDropdown
+                    <NavDropdown className="nav-link"
                       title={`Hello, ${user}`}
                       id="user-dropdown"
                     >
@@ -314,7 +294,7 @@ function Header() {
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
-            <img src={logo} alt="" />
+            <img src={logo} alt="" height={80} width={150} className="object-fit-content" />
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body id="offcanvas">
@@ -340,32 +320,15 @@ function Header() {
                 Product{" "}
               </a>
             </div>
-            <div>
-              <a href="" style={{ border: "none", color: "darkslategray" }}>
-                {user ? (
-                  <div>
-                    <NavDropdown
-                      title={`Hello, ${user}`}
-                      id="user-dropdown"
-                    >
-                      <NavDropdown.Item as="a" onClick={handleLogout}>
-                        Logout
-                      </NavDropdown.Item>
-                    </NavDropdown>
-                  </div>
-                ) : (
-                  <div className="button">
-                    <a className="theme-btn1" onClick={handleLoginOpen}>
-                      Login
-                    </a>
-                  </div>
-                )}
+            <div style={{ padding: "1rem 1.3rem" }}>
+              <a onClick={handleLoginOpen} style={{ border: "none", color: "darkslategray" }}>
+                Login
               </a>
             </div>
           </Accordion>
         </Offcanvas.Body>
       </Offcanvas>
-      <div id="login_poup" role="dialog" style={{ display: 'block', paddingLeft: '0px' }}>
+      <div id="login_poup" role="dialog" className='d-block p-0'>
         <Modal show={loginShow} onHide={handleLoginClose}>
           <Modal.Header closeButton>
             <Modal.Title className="category-head"> <h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Login</h4></Modal.Title>
@@ -399,14 +362,14 @@ function Header() {
                   <input type={showPassword ? 'text' : 'password'} name="password" id="password_login" data-rule-required="true" className="input_box" value={formData.password} onChange={handleInputChange} placeholder="Enter password" />
                   <img src={showPassword ? Eye : InvisibleEye} height={20} width={20} className="eye object-fit-contain" onClick={togglePasswordVisibility} alt="Toggle Password Visibility" />
                 </div>
+                
                 <div className="login_box">
+                <Button type="subit" id="login_submit"  className="yellow ui button"> Login</Button>
                   <div className="left_bar">
                     <a className="forgt" onClick={()=>handleForgotPasswordOpen()} >Forget your password?</a>
                     <a id="open_register" onClick={handleRegisterOpen} className="sign_up  text-decoration-underline ">Register</a>
                   </div>
-                  <Button type="subit" id="login_submit" disabled={loading} className=" yellow ui button"> Login</Button>
-                  <img src="https://buyphpcode.com/justdialclone/assets/front/images/or1.png" alt="facebook login" />
-                </div>
+                 </div>
               </div>
               <div className="text-center d-flex flex-wrap justify-content-center align-content-center">
                 <GoogleLogin
@@ -417,10 +380,9 @@ function Header() {
               </div>
             </Form>
           </Modal.Body>
-
         </Modal>
       </div>
-      <div id="login_poup" role="dialog" style={{ display: 'block', paddingLeft: '0px' }}>
+      <div id="login_poup" role="dialog" className='d-block'>
         <Modal show={registerShow} onHide={handleRegisterClose}>
           <Modal.Header closeButton>
             <Modal.Title className="category-head"> <h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Register</h4></Modal.Title>
@@ -463,12 +425,11 @@ function Header() {
                   <img src={showPassword ? Eye : InvisibleEye} height={20} width={20} className="eye object-fit-contain" onClick={togglePasswordVisibility} alt="Toggle Password Visibility" />
                 </div>
                 <div className="login_box">
+                <Button type="submit" id="login_submit"  className=" yellow ui button">Submit</Button>
                   <div className="left_bar">
                     <a className="forgt" >Already Have Account?</a>
                     <a id="open_register" className="sign_up text-decoration-underline " onClick={() => (handleLoginOpen(), handleRegisterClose())}>Login</a>
                   </div>
-                  <Button type="subit" id="login_submit" disabled={loading} className=" yellow ui button">Submit</Button>
-                  <img src="https://buyphpcode.com/justdialclone/assets/front/images/or1.png" alt="facebook login" />
                 </div>
               </div>
               <div className="text-center d-flex flex-wrap justify-content-center align-content-center">
@@ -482,106 +443,62 @@ function Header() {
           </Modal.Body>
         </Modal>
       </div>
-        <div
-          id="login_poup"
-          role="dialog"
-          style={{ display: "block", paddingLeft: "0px" }}
-        >
-          <Modal show={forgotPasswordModal} onHide={handleForgotPasswordClose}>
-            <Modal.Header closeButton>
-              <Modal.Title className="category-head">
-                <h4>Forgot Password</h4>
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {successMessage && (
-                <Alert
-                  id="error_div"
-                  variant="success"
-                  className="mb-3 p-3 rounded-3 text-success shadow-sm fade show"
-                  role="alert"
-                >
-                  <strong className="text-success">Success!</strong> {successMessage}
-                </Alert>
-              )}{" "}
-              {errorMessage && (
-                <Alert
-                  variant="danger"
-                  className="mb-3 p-3 rounded-3 text-danger shadow-sm fade show alert alert-danger alert-dismissible"
-                  role="alert"
-                >
-                  <strong className="text-danger">Error!</strong> {errorMessage}
-                </Alert>
-              )}
-              <Form className="form-horizontal" id="login_form ">
-                <div className="login_box">
-                  <div className="title_login">Enter email For Reset Password </div>
-                  <div className="user_box">
-                    <div className="label_form">
-                      Email<span style={{ color: "red" }}>*</span>
-                    </div>
-                    <input
-                      type="text"
-                      name="email"
-                      id="email_login"
-                      className="input_box"
-                      data-rule-required="true"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter Email Address"
-                    />
+      <div
+        id="login_poup"
+        role="dialog"
+        className="d-block"
+      >
+        <Modal show={forgotPasswordModal} onHide={handleForgotPasswordClose}>
+          <Modal.Header closeButton>
+            <Modal.Title className="category-head"> <h4 className="fw-bold"><img src={logo} height={60} width={60} className="object-fit-cover" alt="login logo" />Forgot Password</h4>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {successMessage && (
+              <Alert
+                id="error_div"
+                variant="success"
+                className="mb-3 p-3 rounded-3 text-success shadow-sm fade show"
+                role="alert"
+              >
+                <strong className="text-success">Success!</strong> {successMessage}
+              </Alert>
+            )}{" "}
+            {errorMessage && (
+              <Alert
+                variant="danger"
+                className="mb-3 p-3 rounded-3 text-danger shadow-sm fade show alert alert-danger alert-dismissible"
+                role="alert"
+              >
+                <strong className="text-danger">Error!</strong> {errorMessage}
+              </Alert>
+            )}
+            <Form className="form-horizontal" id="login_form ">
+              <div className="login_box">
+                <div className="title_login">Enter email For Reset Password </div>
+                <div className="user_box">
+                  <div className="label_form">
+                    Email<span style={{ color: "red" }}>*</span>
                   </div>
+                  <input
+                    type="text"
+                    name="email"
+                    id="email_login"
+                    className="input_box"
+                    data-rule-required="true"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter Email Address"
+                  />
                 </div>
-                <Button onClick={handleSendLink}>Send Link</Button>
-              </Form>
-            </Modal.Body>
-          </Modal>
-        </div>;
-        <div
-          id="login_poup"
-          role="dialog"
-          style={{ display: "block", paddingLeft: "0px" }}
-        >
-          <Modal show={resetPasswordModal} onHide={handleResetPasswordClose}>
-            <Modal.Header closeButton>
-              <Modal.Title className="category-head">Reset Password</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {successMessage && <Alert variant="success">{successMessage}</Alert>}
-              {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-              <Form className="form-horizontal" id="login_form ">
-                <div className="login_box">
-                  <div className="title_login">Reset Password </div>
-                  <div className="user_box">
-                    <div className="label_form">
-                      New Password <span style={{ color: "red" }}>*</span>
-                    </div>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      id="password_login"
-                      data-rule-required="true"
-                      className="input_box"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      placeholder="Enter New password"
-                    />
-                    <img
-                      src={showPassword ? Eye : InvisibleEye}
-                      height={20}
-                      width={20}
-                      className="eye object-fit-contain"
-                      onClick={togglePasswordVisibility}
-                      alt="Toggle Password Visibility"
-                    />
-                  </div>
-                </div>
-                <Button onClick={handleChangePassword}>Change Password</Button>
-              </Form>
-            </Modal.Body>
-          </Modal>
-        </div>;
-
+              </div>
+              <div className="login_box">
+                <Button type="subit" id="login_submit" className=" yellow ui button" onClick={handleSendLink}>Send Link</Button>
+              </div>
+            </Form>
+          </Modal.Body>
+        </Modal>
+      </div>
     </>
   );
 }

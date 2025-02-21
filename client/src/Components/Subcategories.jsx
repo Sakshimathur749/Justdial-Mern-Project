@@ -24,7 +24,6 @@ const Subcategories = () => {
           throw new Error('Failed to fetch subcategories');
         }
         const subcategoryData = await subcategoryResponse.json();
-        console.log(subcategoryData)
         setSubcategories(subcategoryData);
       } catch (err) {
         setError(err.message);

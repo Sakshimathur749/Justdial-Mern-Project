@@ -15,7 +15,7 @@ const HowitsWork = () => {
               <Col lg="4" sm="4" md="4">
                 <div className="what-to-do">
                   <div className="f1_container-tow">
-                    <div className="f1_card shadow">
+                    <div className="f1_card">
                       <div className="front face">
                         <img
                           src="https://buyphpcode.com/justdialclone/assets/front/images/how-to-img1.png"
@@ -36,7 +36,7 @@ const HowitsWork = () => {
               <Col lg="4" sm="4" md="4">
                 <div className="what-to-do">
                   <div className="f1_container-tow">
-                    <div className="f1_card shadow">
+                    <div className="f1_card">
                       <div className="front face">
                         <img
                           src="https://buyphpcode.com/justdialclone/assets/front/images/how-to-img2.png"
@@ -57,7 +57,7 @@ const HowitsWork = () => {
               <Col lg="4" sm="4" md="4">
                 <div className="what-to-do">
                   <div className="f1_container-tow">
-                    <div className="f1_card shadow">
+                    <div className="f1_card">
                       <div className="front face">
                         <img
                           src="https://buyphpcode.com/justdialclone/assets/front/images/how-to-img3.png"

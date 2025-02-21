@@ -34,7 +34,6 @@ const createBusiness = async (req, res) => {
           .populate('subcategoryId');
     res.status(201).json(populatedProduct); 
   } catch (error) {
-    console.log(error,"Error")
     res.status(500).json({ message: 'Error creating business listing' });
   }
 };

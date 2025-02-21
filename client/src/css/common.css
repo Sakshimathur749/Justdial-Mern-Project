@@ -4630,3 +4630,8 @@ body{
 .sp{
     padding: 50px 0px !important;
 }
+.offcanvas-header .btn-close{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}

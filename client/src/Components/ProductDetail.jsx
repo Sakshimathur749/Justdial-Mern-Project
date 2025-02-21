@@ -29,7 +29,6 @@ const ProductDetail = ({ slug }) => {
           throw new Error('Product not found');
         }
         const data = await response.json();
-        console.log(data,"Product")
         setProduct(data);
         const reviewResponse = await fetch(`http://localhost:5000/api/review/slug/${slug}`);
     if (!reviewResponse.ok) {
@@ -66,7 +65,6 @@ const ProductDetail = ({ slug }) => {
       email,
       phoneNumber: mobileNo,
     };
-    console.log("New Review: ", newReview);  
     try {
       const response = await fetch("http://localhost:5000/api/review", {
         method: "POST",

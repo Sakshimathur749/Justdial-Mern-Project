@@ -13,6 +13,5 @@ export const login = async (email: string, password: string): Promise<any> => {
   }
 
   const data = await response.json();
-  console.log(data,"user")
   return { token: data.token,role:data.role, username: data.user.username, profilepicture:data.user.profilepicture , Googleprofilepicture: data.user.Googleprofilepicture};
 };

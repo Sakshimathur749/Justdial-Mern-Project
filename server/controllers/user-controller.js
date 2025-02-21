@@ -27,7 +27,6 @@ const registerUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(201).json({ message: 'User registered successfully.',token ,  user: { email: newUser.email, username: newUser.username, mobileNumber: newUser.mobileNumber , password:newUser.password},});
   } catch (error) {
-    console.log(error,"Register")
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -108,7 +107,6 @@ const updateProfile = async (req, res) => {
     await user.save();
     res.json({ message: 'Profile updated successfully' });
   } catch (err) {
-    console.log(err)
     res.status(500).json({ message: 'Server error' });
   }
 };
