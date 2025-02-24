@@ -27,22 +27,31 @@ import Membership from './pages/MembershipDetails/membership';
 import Profilepage from './pages/profile/profilepage';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
+  const [profileIncomplete, setProfileIncomplete] = useState<any>(false);
   const { pathname } = useLocation();
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
   const isAuthRoute = pathname === '/auth/signin';
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     console.log("Current URL:", window.location.href);
-  //     const params = new URLSearchParams(window.location.search);
-  //     const tokenFromUrl = params.get('uitoken');
-  //     if (tokenFromUrl) {
-  //       localStorage.setItem('token', tokenFromUrl);
-  //       console.log('Token from URL:', tokenFromUrl);
-  //     }
-  //   }, 500);  // Delay to ensure the URL has been updated
-  // }, [pathname]);
   useEffect(() => {
+    const checkProfileCompletion = async () => {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/user/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        setProfileIncomplete(true);
+      } else {
+        const data = await response.json();
+        if (!data.username || !data.email || !data.mobileNumber || !data.city) {
+          setProfileIncomplete(true);
+        } else {
+          setProfileIncomplete(false);
+        }
+      }
+    };
+    checkProfileCompletion();
     setTimeout(() => setLoading(false), 1000);
   }, []);
   if (token && pathname === '/auth/signin') {
@@ -61,7 +70,7 @@ function App() {
     ): (
     <DefaultLayout>
       <Routes>
-        <Route path='/dashboard'  element={<><ECommerce /></>}/>
+        <Route path='/dashboard'  element={<><ECommerce profileIncomplete={profileIncomplete}/></>}/>
         <Route path="/post-category" element={<> <PostCategory /></>}/>
         <Route path="/post-subcategory"  element={ <>  <PostSubcategory /></> } />
         <Route path="/category" element={<><PostingCategory /> </> }/>

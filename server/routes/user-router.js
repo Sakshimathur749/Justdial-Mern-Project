@@ -5,9 +5,10 @@ const path = require('path');
 const User = require('../modals/user-modal');
 const {auth} = require('../middleware/auth-middleware')
 const { OAuth2Client } = require('google-auth-library');
-const { registerUser, loginUser, getProfile,updateProfile } = require('../controllers/user-controller');
+const { registerUser, loginUser, getProfile,updateProfile,changePassword } = require('../controllers/user-controller');
 const { default: mongoose } = require('mongoose');
 const jwt = require('jsonwebtoken');
+const sharp = require('sharp');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, '../../admin/src/images/profile_image')
@@ -23,12 +24,44 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 }}); 
+const compressImage = (req, res, next) => {
+  if (req.file) {
+    const fileSizeInMB = req.file.size / (1024 * 1024);
+    const compressThreshold = 3; 
+    if (fileSizeInMB > compressThreshold) {
+      sharp(req.file.path)
+        .resize(800) 
+        .jpeg({ quality: 80 }) 
+        .toFile(req.file.path, (err, info) => {
+          if (err) {
+            console.error('Error during image compression:', err);
+            return res.status(500).json({ error: 'Error during image compression' });
+          }
+          console.log('Image compressed:', info);
+          next(); 
+        });
+    } else {
+      sharp(req.file.path)
+        .jpeg({ quality: 80 })
+        .toFile(req.file.path, (err, info) => {
+          if (err) {
+            console.error('Error during image compression:', err);
+            return res.status(500).json({ error: 'Error during image compression' });
+          }
+          console.log('Image compressed:', info);
+          next();
+        });
+    }
+  } else {
+    next(); 
+  }
+};
 const client = new OAuth2Client('510164715040-lj99bre09a5co1gbelb7u3ul16kgakqo.apps.googleusercontent.com');
-
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/profile', auth, getProfile);
-router.put('/profile-edit', auth, upload.single('profilepicture'), updateProfile);
+router.put('/change-password', auth, changePassword);
+router.put('/profile-edit', auth, upload.single('profilepicture'),compressImage, updateProfile);
 router.post('/google-login', async (req, res) => {
   try {
     const { token } = req.body;
@@ -50,7 +83,7 @@ router.post('/google-login', async (req, res) => {
     const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({
       token: jwtToken,
-      user: { email: user.email, username: user.username, Googleprofilepicture: user.Googleprofilepicture },
+      user: { email: user.email, username: user.username , profilepicture:user.profilepicture, Googleprofilepicture: user.Googleprofilepicture },
     });
   } catch (error) {
     console.error(error, "Google Login Error");

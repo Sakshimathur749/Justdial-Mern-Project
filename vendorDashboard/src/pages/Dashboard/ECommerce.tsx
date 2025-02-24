@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
@@ -6,11 +6,29 @@ import ChartTwo from '../../components/Charts/ChartTwo';
 import ChatCard from '../../components/Chat/ChatCard';
 import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
-
-const ECommerce: React.FC = () => {
+interface ProfilePageProps {
+  profileIncomplete: boolean;
+}
+const ECommerce: React.FC<ProfilePageProps>= ({profileIncomplete}) => {
   return (
     <>
+     {profileIncomplete && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-xl">
+            <p className="text-red-500 font-semibold">
+              Your profile is incomplete. Please complete your profile to proceed.
+            </p>
+            <button
+              onClick={() => window.location.href = '/profile'}
+              className="mt-4 text-blue-500 hover:underline"
+            >
+              Go to Profile
+            </button>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+        
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"

@@ -29,6 +29,8 @@ function Header() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
+  const [resetModal, setResetModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
   const [email, setEmail] = useState("");
@@ -37,6 +39,7 @@ function Header() {
   }
   const handleForgotPasswordClose = () => setForgotPasswordModal(false);
   const handleSendLink = async () => {
+    e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/forgot-password', {
         method: 'POST',
@@ -46,8 +49,12 @@ function Header() {
         body: JSON.stringify({ email }) 
       });
       const data = await response.json();
+      console.log(data)
       if (response.ok) { 
         setSuccessMessage('Password reset link has been sent to your email!');
+        const reset= `Password reset link has been sent to your email! ${data.email}`
+        setResetMessage(reset);
+        setResetModal(true);
       } else {
         setErrorMessage('Failed to send password reset link.');
       }
@@ -118,7 +125,7 @@ function Header() {
         setUser(result.user.username);
         setSuccessMessage('Login successful!');
         if (result.role === 'vendor') {
-          const redirectUrl = `http://localhost:5174/vendor/create/?uitoken=${token}`;
+          const redirectUrl = `http://localhost:5174/dashboard?uitoken=${token}`;
           console.log(redirectUrl, "hey am i here")
           window.location.href = redirectUrl;
         } else if (result.user.role === 'user') {
@@ -198,10 +205,20 @@ function Header() {
       console.log(data)
       if (res.ok) {
         console.log('User authenticated:', data);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('username', data.user.username);
+        const token = localStorage.getItem('token');
         setSuccessMessage('Login successful!');
         setUser(data.user.username)
         setLoginShow(false)
-        localStorage.setItem('user', JSON.stringify(data.user));
+        if (result.role === 'vendor') {
+          const redirectUrl = `http://localhost:5174/dashboard?uitoken=${token}`;
+          console.log(redirectUrl, "hey am i here")
+          window.location.href = redirectUrl;
+        } else if (result.user.role === 'user') {
+          Navigate('/');
+        }
       } else {
         setErrorMessage('An error occurred while registering');
         console.error('Failed to authenticate with Google');
@@ -288,6 +305,11 @@ function Header() {
           <Navbar.Toggle onClick={handleShow} />
         </Container>
       </Navbar>
+      {resetMessage && (
+      <Alert variant="info" className="mt-3">
+        <strong>{resetMessage}</strong>
+      </Alert>
+    )}
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>

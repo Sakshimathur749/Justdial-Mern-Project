@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../modals/user-modal");
 const auth = async (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
+  console.log("Authorization Header:", req.header("Authorization"));
+  console.log("Extracted Token:", token);
+
   if (!token) {
     return res
       .status(401)
@@ -12,7 +15,7 @@ const auth = async (req, res, next) => {
     if (!secret) {
       throw new Error("JWT secret key is missing. Check .env file.");
     }
-    const decoded = jwt.verify(token.replace("Bearer ", ""), secret);
+    const decoded = jwt.verify(token, secret);
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({ message: "User not found" });

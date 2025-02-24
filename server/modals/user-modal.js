@@ -17,13 +17,13 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')|| !this.password) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+  if (!this.isModified('password') || !this.password) return next(); 
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } catch (error) {
+    return next(error);
+  }
 });
-// userSchema.methods.matchPassword = async function (password) {
-//   console.log("Entered Password:", password);
-//   console.log("Stored Hashed Password:", this.password);
-//   return await bcrypt.compare(password, this.password);
-// };
 const User = mongoose.model('User', userSchema);
 module.exports = User;

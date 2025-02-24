@@ -23,9 +23,10 @@ router.post('/forgot-password', async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
+    console.log(user.email,"forget password")
     const resetToken = crypto?.randomBytes(32).toString("hex");
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; 
+    user.resetPasswordExpires = Date.now() +  3600000; 
     await user.save();
     const encryptedData = encryptData({ userId: user._id, token: resetToken });
     const transporter = nodemailer.createTransport({
@@ -46,13 +47,13 @@ router.post('/forgot-password', async (req, res) => {
       if (error) {
         return res.status(500).json({ message: 'Error sending email' });
       }
-      res.status(200).json({ message: 'Password reset link sent' });
+      res.status(200).json({ message: 'Password reset link sent', email: user.email });
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 });
-router.get("/reset-password/:encryptedData", async (req, res) => {
+router.get('/change-password/:encryptedData', async (req, res) => {
   try {
     const { userId, token } = decryptData(decodeURIComponent(req.params.encryptedData));
     console.log("Decrypted Data:", decryptData(decodeURIComponent(req.params.encryptedData)));
@@ -68,45 +69,31 @@ router.get("/reset-password/:encryptedData", async (req, res) => {
   }
 });
 router.post('/reset-password/:encryptedData', async (req, res) => {
-    const { newpassword , confirmPassword} = req.body;
-    if (newpassword !== confirmPassword) {
-      console.log(newpassword, confirmPassword,"password Match check")
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-    try {
-      const encryptedData = decodeURIComponent(req.params.encryptedData); 
-      const { userId, token } = decryptData(encryptedData)
-      const user = await User.findOne({
-        _id: userId,
-        resetPasswordToken: token,
-      });
-      if (!user) return res.status(400).json({ message: "Invalid or expired token" });
-      console.log("Old Password (Hashed in DB):", user.password);
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newpassword, salt);
-      console.log("New Password (Hashed):", hashedPassword);
-      user.password = hashedPassword; 
-      // console.log(user.password,"User password")
-      console.log(user)
+  const { newpassword , confirmPassword} = req.body;
+  console.log("newpassword", req.body)
+  if (newpassword !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
+  try {
+    const encryptedData = decodeURIComponent(req.params.encryptedData); 
+    const { userId, token } = decryptData(encryptedData);
+    const user = await User.findOne({  _id: userId,
+      resetPasswordToken: token, 
+      resetPasswordExpires: { $gt: Date.now() } 
+    });
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+    user.password=newpassword;
+    await user.save();
+    const jwtToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7h' });
+    res.json({
+      message: "Password updated successfully",
+      token: jwtToken, 
+      user: { email: user.email, username: user.username },
+    });
 
-      await user.save();
-      // const updatedUser = await User.findOne({ _id: userId });
-      // console.log("Updated Password in DB:", updatedUser.password);
-      // console.log(updatedUser)
-      console.log(hashedPassword)
-      const jwtToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7h' });
-
-      res.json({
-        message: "Password updated successfully",
-        token: jwtToken, 
-        user: { email: user.email, username: user.username},
-      });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ message: "Server error" });
-    }
-  
-  })
-
-
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;

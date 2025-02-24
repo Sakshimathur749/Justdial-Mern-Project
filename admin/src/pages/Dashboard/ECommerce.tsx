@@ -6,8 +6,10 @@ import ChartTwo from '../../components/Charts/ChartTwo';
 import ChatCard from '../../components/Chat/ChatCard';
 import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
-
-const ECommerce: React.FC = () => {
+interface ProfilePageProps {
+  profileIncomplete: boolean;
+}
+const ECommerce: React.FC<ProfilePageProps>= ({profileIncomplete}) => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">

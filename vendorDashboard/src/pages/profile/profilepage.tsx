@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import DarkModeSwitcher from '../../components/Header/DarkModeSwitcher';
 
-const ProfilePage = () => {
+const ProfilePage = ({ profileIncomplete }: any) => {
   const [profile, setProfile] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,10 +13,20 @@ const ProfilePage = () => {
     mobileNumber: '',
     bio: '',
     city: '',
-    profilepicture:'',
+    profilepicture: '',
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showIncompleteProfilePopup, setShowIncompleteProfilePopup] =
+    useState(false);
+  const [passwordChangeData, setPasswordChangeData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [passwordChangeError, setPasswordChangeError] = useState('');
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState('');
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -36,21 +47,89 @@ const ProfilePage = () => {
           mobileNumber: data.mobileNumber,
           bio: data.bio || '',
           city: data.city || '',
-          profilepicture:data.profilepicture||null,
-        });  
-      } catch (error: any) {setError(error.message);} finally { setLoading(false);}
+          profilepicture: data.profilepicture || null,
+        });
+        if (!data.username || !data.email || !data.mobileNumber || !data.city) {
+          setShowIncompleteProfilePopup(true);
+        }
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchProfile();
   }, []);
-  const handleEditClick = () => {setIsEditing(true);};
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditFormData({...editFormData, [e.target.name]: e.target.value,}); };
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files ? e.target.files[0] : null;
-      setEditFormData({ ...editFormData,  profilepicture: file, });
-    };
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handlePasswordChangeInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setPasswordChangeData({
+      ...passwordChangeData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handlePasswordChangeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { currentPassword, newPassword, confirmPassword } =
+      passwordChangeData;
+
+    if (newPassword !== confirmPassword) {
+      setPasswordChangeError('New password and confirmation do not match.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        'http://localhost:5000/api/user/change-password',
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            currentPassword,
+            newPassword,
+            confirmPassword,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to change password');
+      }
+
+      const data = await response.json();
+      setPasswordChangeSuccess(data.message);
+      setPasswordChangeError('');
+    } catch (error: any) {
+      setPasswordChangeError(error.message);
+      setPasswordChangeSuccess('');
+    }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    setEditFormData({ ...editFormData, profilepicture: file });
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      !editFormData.username ||
+      !editFormData.email ||
+      !editFormData.mobileNumber ||
+      !editFormData.city
+    ) {
+      setShowIncompleteProfilePopup(true);
+      return;
+    }
     const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('username', editFormData.username);
@@ -83,14 +162,14 @@ const ProfilePage = () => {
         mobileNumber: data.mobileNumber,
         bio: data.bio || '',
         city: data.city || '',
-        profilepicture:data.profilepicture||null,
+        profilepicture: data.profilepicture || null,
       });
-      setSuccessMessage('Profile updated successfully!'); 
-      setIsEditing(false); 
-      setErrorMessage(''); 
+      setSuccessMessage('Profile updated successfully!');
+      setIsEditing(false);
+      setErrorMessage('');
     } catch (error: any) {
-      setErrorMessage(error.message); 
-      setSuccessMessage(''); 
+      setErrorMessage(error.message);
+      setSuccessMessage('');
     }
   };
   if (loading) return <div>Loading...</div>;
@@ -105,7 +184,14 @@ const ProfilePage = () => {
             <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
                 <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-                  <img  src={editFormData.profilepicture ? `http://localhost:5173/src/images/profile_image/${editFormData.profilepicture}` : "/images/user/owner.jpg"} alt="user" />
+                  <img
+                    src={
+                      editFormData.profilepicture
+                        ? `http://localhost:5173/src/images/profile_image/${editFormData.profilepicture}`
+                        : '/images/user/owner.jpg'
+                    }
+                    alt="user"
+                  />
                 </div>
                 <div className="order-3 xl:order-2">
                   <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
@@ -164,6 +250,21 @@ const ProfilePage = () => {
                 <p className="text-red-500 font-semibold">{errorMessage}</p>
                 <button
                   onClick={() => setErrorMessage('')}
+                  className="mt-4 text-blue-500 hover:underline"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+          {showIncompleteProfilePopup && (
+            <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-6 rounded-xl">
+                <p className="text-red-500 font-semibold">
+                  Please fill out all required fields to complete your profile.
+                </p>
+                <button
+                  onClick={() => setShowIncompleteProfilePopup(false)}
                   className="mt-4 text-blue-500 hover:underline"
                 >
                   Close
@@ -235,6 +336,57 @@ const ProfilePage = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+                <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+                  Change Password
+                </h4>
+                <form onSubmit={handlePasswordChangeSubmit} className="mt-4">
+                  <div className="grid gap-4">
+                    <div>
+                      <label className="text-xs">Current Password</label>
+                      <input
+                        type="password"
+                        name="currentPassword"
+                        value={passwordChangeData.currentPassword}
+                        onChange={handlePasswordChangeInput}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs">New Password</label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        value={passwordChangeData.newPassword}
+                        onChange={handlePasswordChangeInput}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs">Confirm New Password</label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        value={passwordChangeData.confirmPassword}
+                        onChange={handlePasswordChangeInput}
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                  >
+                    Change Password
+                  </button>
+                </form>
+                {passwordChangeError && (
+                  <p className="text-red-500 mt-4">{passwordChangeError}</p>
+                )}
+                {passwordChangeSuccess && (
+                  <p className="text-green-500 mt-4">{passwordChangeSuccess}</p>
+                )}
               </div>
             </>
           )}

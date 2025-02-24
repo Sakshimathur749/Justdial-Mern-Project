@@ -27,33 +27,58 @@ import Profilepage from './pages/profile/profilepage';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
+  const [profileIncomplete, setProfileIncomplete] = useState<any>(false); 
   const { pathname } = useLocation();
-  const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token ) {
-      console.log('Token found:', token);
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get('uitoken');
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+    const vendortoken = localStorage.getItem('token');
+    if (vendortoken) {
+      console.log('Token found:', vendortoken);
     } else {
       console.log('No token found');
-    } 
+    }
+
+    const checkProfileCompletion = async () => {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/user/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        setProfileIncomplete(true);
+      } else {
+        const data = await response.json();
+        if (!data.username || !data.email || !data.mobileNumber || !data.city) {
+          setProfileIncomplete(true);
+        } else {
+          setProfileIncomplete(false);
+        }
+      }
+    };
+    checkProfileCompletion();
+
     setTimeout(() => setLoading(false), 1000);
   }, []);
+  
   const isVendorCreated = localStorage.getItem('isVendorCreated') === 'true';
-
+  if (role === 'vendor' && profileIncomplete && pathname !== '/profile') {
+    return <Navigate to="/profile" />;
+  }
   if (role === 'vendor' && !isVendorCreated && pathname !== '/dashboard') {
     return <Navigate to="/dashboard" />;
   }
-  if (!token && pathname !== '/auth/signin') {
-    return <Navigate to="/" />;
-  }
-
   return loading ? (
     <Loader />
   ) :   (
     <DefaultLayout>
       <Routes>
-        <Route path='/dashboard'  element={<><ECommerce /></>}/>
+        <Route path='/dashboard'  element={<><ECommerce profileIncomplete={profileIncomplete}/></>}/>
         <Route path="/post-category" element={<> <PostCategory /></>}/>
         <Route path="/post-subcategory"  element={ <>  <PostSubcategory /></> } />
         <Route path="/vendor/create" element={ <><Vendor/></> } />
@@ -75,7 +100,7 @@ function App() {
         <Route path='/membership' element={<Membership/>}></Route>
         <Route path="/membership-plan" element={<MembershipPlan />} />
         <Route path="/edit-membership-plan" element={<EditMembershipPlan />} /> 
-        <Route path="/profile" element={<Profilepage />} />        
+        <Route path="/profile" element={<Profilepage profileIncomplete={profileIncomplete}/>} />        
       </Routes>
     </DefaultLayout>
     );

@@ -35,7 +35,7 @@ function App() {
       <Route path='/products/:slug' element={<Productalldetails />} />
       <Route path='/privacy&policy' element={<PrivacyandPolicy/>}/>
       <Route path='/terms&condition' element={<TermsandCondition />} />
-      <Route path='/vendor/create' element={token && role === 'vendor' ? <Navigate to="http://localhost:5174/vendor/dashboard" /> : <Vendor />} />
+      <Route path='/dashboard' element={token && role === 'vendor' ? <Navigate to="http://localhost:5174/vendor/dashboard" /> : <Vendor />} />
       <Route path='/reset-password/:encryptedData' element={<ResetPassword/>}/>
       {/* <Route path='/bussiness-listing' element={<Bussinesslisting/>}> */}
     </Routes>
