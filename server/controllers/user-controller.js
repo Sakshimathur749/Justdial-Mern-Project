@@ -31,7 +31,8 @@ const registerUser = async (req, res) => {
   }
 };
 const loginUser = async (req, res) => {
-  const { email, password,isAdmin  } = req.body;
+  const { email, password  } = req.body;
+  console.log(req.body,"login")
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -40,7 +41,7 @@ const loginUser = async (req, res) => {
       const hashedDefaultPassword = await hashDefaultPassword(defaultAdminCredentials.password);
       const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
       if (isMatch) {
-        const token = jwt.sign({ id: 'defaultAdminId' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: 'defaultAdminId' }, process.env.JWT_SECRET, { expiresIn: '7h' });
         return res.json({
           token,
           admin: { email: defaultAdminCredentials.email, role:defaultAdminCredentials.role,username: 'Admin' },
@@ -50,14 +51,19 @@ const loginUser = async (req, res) => {
       }
     }
     const admin = await User.findOne({ email });
+    console.log(admin,"login email")
     if (!admin) {
       return res.status(400).json({ message: 'User not Register' });
     }
-    const isMatch = await admin.matchPassword(password);
+    console.log("Found User in DB:", admin.email);
+    console.log("Stored Hashed Password in DB:", admin.password);
+    const isMatch = await bcrypt.compare(password,admin.password);
+    console.log("Password Matched Successfully");
+
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password' });
     }
-    const token = jwt.sign({ id: admin._id , role:admin.role}, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: admin._id , role:admin.role}, process.env.JWT_SECRET, { expiresIn: '7h' });
     res.json({
       token, role:admin.role,
       user: { email: admin.email, username: admin.username , profilepicture:admin.profilepicture, Googleprofilepicture: admin.profilepicture},

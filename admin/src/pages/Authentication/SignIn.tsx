@@ -8,7 +8,7 @@ const SignIn: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+console.log("Sign in tsx ")
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

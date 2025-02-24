@@ -31,31 +31,30 @@ function App() {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
   const isAuthRoute = pathname === '/auth/signin';
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("Current URL:", window.location.href);
-      const params = new URLSearchParams(window.location.search);
-      const tokenFromUrl = params.get('uitoken');
-      if (tokenFromUrl) {
-        localStorage.setItem('token', tokenFromUrl);
-        console.log('Token from URL:', tokenFromUrl);
-      }
-    }, 500);  // Delay to ensure the URL has been updated
-  }, [pathname]);
-  
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     console.log("Current URL:", window.location.href);
+  //     const params = new URLSearchParams(window.location.search);
+  //     const tokenFromUrl = params.get('uitoken');
+  //     if (tokenFromUrl) {
+  //       localStorage.setItem('token', tokenFromUrl);
+  //       console.log('Token from URL:', tokenFromUrl);
+  //     }
+  //   }, 500);  // Delay to ensure the URL has been updated
+  // }, [pathname]);
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
   if (token && pathname === '/auth/signin') {
-    return <Navigate to="/dashboard" />;
+      return <Navigate to="/dashboard" />
   }
-  if (!token ) {
-    return <Navigate to="/dashboard"/>;
+  if (!token && pathname !== '/auth/signin') {
+    return <Navigate to="/auth/signin"/>;
   }
   return loading ? (
     <Loader />
   ) : (
-    isAuthRoute&& role==='admin' ? (
+    isAuthRoute && role==='admin' ? (
       <Routes>
         <Route path="/auth/signin" element={<SignIn />} />
       </Routes>

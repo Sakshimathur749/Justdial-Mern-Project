@@ -6,18 +6,28 @@ const User = require('../modals/user-modal');
 const express = require('express');
 const router = express.Router();
 const {auth} = require('../middleware/auth-middleware')
+const CryptoJS = require('crypto-js');
+const crypto = require('crypto');  
+
+const encryptData = (data) => {
+  return CryptoJS.AES.encrypt(JSON.stringify(data), process.env.ENCRYPTION_SECRET).toString();
+};
+const decryptData = (encryptedData) => {
+  const bytes = CryptoJS.AES.decrypt(encryptedData, process.env.ENCRYPTION_SECRET);
+  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+};
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  console.log(email,"email")
   try {
     const user = await User.findOne({ email });
-    console.log(user,"user");
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    const resetLink = `http://localhost:5174/reset-password?token=${token}`;
+    const resetToken = crypto?.randomBytes(32).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; 
     await user.save();
+    const encryptedData = encryptData({ userId: user._id, token: resetToken });
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -25,6 +35,7 @@ router.post('/forgot-password', async (req, res) => {
         pass: 'obpqeuimqyhakugo',  
       },
     });
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${encodeURIComponent(encryptedData)}`;
     const mailOptions = {
       from: 'mathursakshi143@gmail.com',
       to: email,
@@ -33,38 +44,68 @@ router.post('/forgot-password', async (req, res) => {
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error(error,"Check");
         return res.status(500).json({ message: 'Error sending email' });
       }
       res.status(200).json({ message: 'Password reset link sent' });
     });
   } catch (error) {
-    console.log(error,"Error");
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-router.post('/reset-password', async (req, res) => {
-    const { newPassword , confirmPassword} = req.body;
-    const { token } = req.query;
-    console.log(token,"token mil gaye ")
-    if (newPassword !== confirmPassword) {
+router.get("/reset-password/:encryptedData", async (req, res) => {
+  try {
+    const { userId, token } = decryptData(decodeURIComponent(req.params.encryptedData));
+    console.log("Decrypted Data:", decryptData(decodeURIComponent(req.params.encryptedData)));
+    const user = await User.findOne({
+      _id: userId,
+      resetPasswordToken: token,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+    res.json({ email: user.email, username: user.username });
+  } catch (err) {
+    res.status(500).json({ message: "Invalid token or error processing request" });
+  }
+});
+router.post('/reset-password/:encryptedData', async (req, res) => {
+    const { newpassword , confirmPassword} = req.body;
+    if (newpassword !== confirmPassword) {
+      console.log(newpassword, confirmPassword,"password Match check")
       return res.status(400).json({ message: "Passwords do not match" });
     }
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = decoded.id;  
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      const user = await User.findByIdAndUpdate(userId, { password: hashedPassword }, { new: true });
-      console.log(user.password,"New password Save")
-      if (!user) {
-        return res.status(400).json({ message: "User not found" });
-      }
-      return res.status(200).json({ message: "Password successfully reset" });
+      const encryptedData = decodeURIComponent(req.params.encryptedData); 
+      const { userId, token } = decryptData(encryptedData)
+      const user = await User.findOne({
+        _id: userId,
+        resetPasswordToken: token,
+      });
+      if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+      console.log("Old Password (Hashed in DB):", user.password);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newpassword, salt);
+      console.log("New Password (Hashed):", hashedPassword);
+      user.password = hashedPassword; 
+      // console.log(user.password,"User password")
+      console.log(user)
+
+      await user.save();
+      // const updatedUser = await User.findOne({ _id: userId });
+      // console.log("Updated Password in DB:", updatedUser.password);
+      // console.log(updatedUser)
+      console.log(hashedPassword)
+      const jwtToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7h' });
+
+      res.json({
+        message: "Password updated successfully",
+        token: jwtToken, 
+        user: { email: user.email, username: user.username},
+      });
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Error resetting password" });
+      console.log(err);
+      res.status(500).json({ message: "Server error" });
     }
+  
   })
 
 
