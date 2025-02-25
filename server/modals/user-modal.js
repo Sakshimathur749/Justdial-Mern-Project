@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   slug: { type: String, unique: true, default: function() { return new mongoose.Types.ObjectId().toString(); }},
   bio:String,
   city:String,
+  address:String,
   role: { type: String, default: 'vendor' },
   resetPasswordToken: String,
   resetPasswordExpires: Date,

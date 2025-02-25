@@ -2700,7 +2700,10 @@ body{
  }
 
  .form-control {
-    display: block;
+    display: flex !important;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: nowrap !important;
     width: 100%;
     height: 34px;
     font-size: 14px;

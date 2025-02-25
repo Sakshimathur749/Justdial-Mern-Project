@@ -389,6 +389,7 @@
 #dash_tab .resp-tabs-list li {
     display: inline-block;
     list-style: none;
+    align-self: center;
     cursor: pointer;
     float: left;
     font-size: 16px;
@@ -478,8 +479,8 @@ h2.resp-tab-title:last-child {
 }
 .resp-tab-content-active {
     display: flex;
-    gap: 30px;
-    padding: 20px;
+    gap: 10px;
+    padding: 10px;
 }
 
 h2.resp-accordion:first-child {
@@ -496,7 +497,7 @@ h2.resp-accordion:first-child {
 }.bor_head {height: 3px;margin-bottom: 13px;margin-top: 4px;width: 70px;margin-left: 18px;}
 
 /* Product Css */
-.prod_img{display:inline-block; max-width:140px; width:100%; margin:10px; border:1px solid #ddd; padding:6px;overflow: hidden;height:94px;}.gal.img_inner > img { width: 100%; height:100%;}
+.prod_img{display:inline-block; max-width:100px; width:100%; margin:10px; border:1px solid #ddd; padding:6px;overflow: hidden;height:94px;}.gal.img_inner > img { width: 100%; height:100%;}
 .search-term h1 {
     font-size: 30px;
     line-height: 34px;
@@ -1593,7 +1594,7 @@ transform: rotate(-135deg);
     border-radius: 4px;
     list-style: outside none none;
     margin-bottom: 2px;
-    padding: 25px 0px 6px 0px;
+    padding: 20px 10px;
 }
 
 .gry_container .breadcrumb>li+li::before {
@@ -1767,7 +1768,7 @@ hr.nn {
   }
 .search-txt::-moz-placeholder{color: #bbbbbb; }
 .list-inline > li .form-group {border: medium none;padding-right: 0px;border: medium none;padding-right: 0px;border-radius: 24px;font-size: 16px;min-height: 53px;
-    padding-left: 3px;padding-top: 14px;}
+    padding-left: 3px;padding-top: 10px;}
 .list-inline > li .form-control-feedback {width: 60px; line-height: 54px; background-color: transparent; border: none; pointer-events: visible;}
 .form-control-feedback{ top: -4px;}.form-control-feedback {
     position: absolute;
@@ -1783,7 +1784,7 @@ hr.nn {
   }.search-txt {
     max-width:80%;
     width: 100%;
-}.search-txt.city_finder {max-width: 100px;width: 100%;border-right: 1px solid #bbbbbb !important;}.list-inline > li .search-txt {border: 0 none;display: inline-block;float: left;height: 30px;margin-left: 15px;text-align: left;}.has-feedback {position: relative;width: 500px;padding-right: 30px;}.search-txt.city_finder.ui-autocomplete-input {background:url("https://buyphpcode.com/justdialclone/assets/front/images/home_map.png");background-position: left center; background-repeat: no-repeat;padding-left: 24px;}
+}.search-txt.city_finder {max-width: 80px;width: 100%;border-right: 1px solid #bbbbbb !important;}.list-inline > li .search-txt {border: 0 none;display: inline-block;float: left;height: 30px;margin-left: 8px;text-align: left;}.has-feedback {position: relative;width: 500px;padding-right: 30px;}.search-txt.city_finder.ui-autocomplete-input {background:url("https://buyphpcode.com/justdialclone/assets/front/images/home_map.png");background-position: left center; background-repeat: no-repeat;padding-left: 24px;}
 .form-control-feedback {
     border: none;
     align-content: center;
@@ -2116,6 +2117,13 @@ hr.nn {
 /* Responsive CSS */
 /* Large Desktops (up to 1200px) */
 @media (max-width: 1200px) {
+    .other-images{
+        display: flex;
+        flex-wrap: wrap;        
+    }
+    .small-image{
+        width: 40% !important;
+    }
     .footer-section {
         width: 45%;
       }
@@ -2148,7 +2156,7 @@ hr.nn {
         margin-right: 0%;
     }
     .list-inline > li .form-control-feedback {
-        width: 50px;
+        width: 110px;
     }
     .select {
         width: 100%;
@@ -2190,9 +2198,14 @@ hr.nn {
 /* Tablets (576px to 768px) */
 @media (max-width: 768px) {
     /* ProductDetails css */
-    .small-image img{
-        width: 110px ;
+    
+    #main-content{
+        padding-left: 0px;
     }
+    .dash_line{
+        margin:10px 10px !important;
+    }
+    
     .p-5{
         padding: 0px  !important;
     }
@@ -2285,11 +2298,6 @@ hr.nn {
 
 @media (max-width: 576px) {
    /* Banner Component */
-   .search-txt.city_finder{
-    border-right: none !important;
-    max-width: 90% !important;
-    border-bottom: 1px solid #bbbbbb !important ;
-   }
    .f-wrap{
     flex-wrap:wrap !important;
 }
@@ -2301,11 +2309,10 @@ hr.nn {
     }
     .list-inline > li .search-txt {
         width: 100% !important;
-        margin-top: 10px;
     }
     .list-inline > li .form-control-feedback {
         width: 100%;
-        margin-top: 10px;
+        margin-top: 5px;
     }
     .select {
         width: 100%;
@@ -2360,9 +2367,7 @@ hr.nn {
         width: 25%;
       }
       /* Product Details css */
-      .small-image img{
-        width: 80px ;
-    }
+      
     .more-images{
         width: 120px;
         height: 120px;

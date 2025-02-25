@@ -42,7 +42,6 @@ function App() {
     } else {
       console.log('No token found');
     }
-
     const checkProfileCompletion = async () => {
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5000/api/user/profile', {

@@ -16,7 +16,7 @@ const DropdownUser = () => {
     }else if(Googleprofilepicture){
       setProfileImage(`${Googleprofilepicture}`); 
     }
-    // if(Googleprofilepicture){setProfileImage(Googleprofilepicture)}
+    console.log(image)
   }, []);
   const handleLogout = () => {
     localStorage.removeItem('token');

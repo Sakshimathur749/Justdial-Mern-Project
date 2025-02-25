@@ -2,13 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../modals/user-modal");
 const auth = async (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
-  console.log("Authorization Header:", req.header("Authorization"));
-  console.log("Extracted Token:", token);
-
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. No token provided." });
+    return res.status(401).json({ message: "Access denied. No token provided." });
   }
   try {
     const secret = process.env.JWT_SECRET;
@@ -16,21 +11,27 @@ const auth = async (req, res, next) => {
       throw new Error("JWT secret key is missing. Check .env file.");
     }
     const decoded = jwt.verify(token, secret);
+    if (decoded.id === 'defaultAdminId') {
+      req.user = { id: 'defaultAdminId', role: 'Admin' }; 
+      return next();
+    }
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-
-    req.user = { id: user._id };
+    req.user = { id: user._id ,role: user.role};
     next();
   } catch (err) {
     console.log(err, "error");
-     if (err.name === 'TokenExpiredError') {
-            return res.status(401).json({ message: 'Session expired. Please log in again.' });
-        }
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        message: `Session expired. Token expired at ${err.expiredAt}. Please log in again.`,
+      });
+    }
     return res.status(400).json({ message: "Invalid token" });
   }
 };
+
 const verifyRole = (role) => {
   return (req, res, next) => {
     if (req.user.role !== role) {
@@ -39,5 +40,4 @@ const verifyRole = (role) => {
     next();
   };
 };
-
 module.exports = { auth, verifyRole };

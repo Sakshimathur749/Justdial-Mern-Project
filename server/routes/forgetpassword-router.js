@@ -18,12 +18,13 @@ const decryptData = (encryptedData) => {
 };
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
+  console.log(email)
   try {
     const user = await User.findOne({ email });
+    console.log(user,"forget password")
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
-    console.log(user.email,"forget password")
     const resetToken = crypto?.randomBytes(32).toString("hex");
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = Date.now() +  3600000; 
@@ -50,6 +51,7 @@ router.post('/forgot-password', async (req, res) => {
       res.status(200).json({ message: 'Password reset link sent', email: user.email });
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: 'Server error' });
   }
 });

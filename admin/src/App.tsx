@@ -30,7 +30,6 @@ function App() {
   const [profileIncomplete, setProfileIncomplete] = useState<any>(false);
   const { pathname } = useLocation();
   const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
   const isAuthRoute = pathname === '/auth/signin';
   useEffect(() => {
     const checkProfileCompletion = async () => {
@@ -63,7 +62,7 @@ function App() {
   return loading ? (
     <Loader />
   ) : (
-    isAuthRoute && role==='admin' ? (
+    isAuthRoute  ? (
       <Routes>
         <Route path="/auth/signin" element={<SignIn />} />
       </Routes>

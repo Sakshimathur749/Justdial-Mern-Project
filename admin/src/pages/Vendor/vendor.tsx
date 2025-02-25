@@ -9,76 +9,49 @@ import { State, City } from 'country-state-city';
 import { useNavigate } from 'react-router-dom';
 
 const Vendor = () => {
-  const [dob, setDob] = useState<any>(null);
-  const [gender, setGender] = useState<any>('');
-  const [city, setCity] = useState<any>([]);
-  const [state, setState] = useState<any>([]);
-  const [matriculationStatus, setMatriculationStatus] = useState<any>('');
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const [city, setCity] = useState('');
   const [successModal, setSuccessModal] = useState<boolean>(false);
   const [errorModal, setErrorModal] = useState<boolean>(false);
-  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [zipcode, setZipcode] = useState('');
-  const [areaProfile, setAreaProfile] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [bio, setBio] = useState('');
+  const [address, setAddress] = useState('');
   const navigate = useNavigate();
-  useEffect(() => {
-    const indiaStates = State.getStatesOfCountry('IN');
-    setState(indiaStates);
-  }, []);
-  useEffect(() => {
-    if (selectedState) {
-      const citiesList = City.getCitiesOfState('IN', selectedState); 
-      setCity(citiesList);
-    }
-  }, [selectedState]);
-  const genderOptions = [
-    { value: 'male', label: 'Male' },
-    { value: 'female', label: 'Female' },
-    { value: 'other', label: 'Other' },
-  ];
-  const matriculationStatusOptions = [
-    { value: 'married', label: 'Married' },
-    { value: 'unmarried', label: 'Unmarried' },
-  ];  
   const handleSubmit = async (e:any) => {
     e.preventDefault();
-    const vendorData = {
-      fullName,
-      email,
-      mobileNumber,
-      password,
-      maritalStatus: matriculationStatus?.value,
-      gender: gender?.value,
-      dob,
-      state: selectedState,
-      city: selectedCity,
-      zipCode: zipcode,
-      areaProfile,
-    };
-  
+    
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('email', email);
+    formData.append('mobileNumber', mobileNumber);
+    formData.append('password', password);
+    formData.append('city', city);
+    formData.append('address', address);
+    formData.append('bio', bio);
+    if (profilePicture) {
+      formData.append('profilepicture', profilePicture);
+    }  
     try {
       const response = await fetch('http://localhost:5000/api/vendor', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(vendorData),
-      });
+        body: formData, 
+            });
+  
       if (response.ok) {
+        const result = await response.json();
         setSuccessModal(true);
-        navigate('/vendor')
+        navigate('/vendor');
       } else {
         const errorData = await response.json();
         console.log("Error Data:", errorData);
         setErrorModal(true);
       }
     } catch (error) {
+      console.error('Error creating vendor:', error);
       setErrorModal(true);
-      console.error("Error creating vendor:", error);
     }
   };
   
@@ -99,7 +72,6 @@ const Vendor = () => {
           </div>
         </div>
       )}
-
       {errorModal && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -114,138 +86,108 @@ const Vendor = () => {
           </div>
         </div>
       )}
-      <form onSubmit={handleSubmit} className='flex flex-wrap gap-3'>
+      <form onSubmit={handleSubmit} className="flex flex-wrap gap-3">
         <div className="mb-4  w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Full Name</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            User Name
+          </label>
           <input
-            id="fullname"
-            name="fullname"
+            id="username"
+            name="username"
             type="text"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)} 
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             placeholder="Enter Full Name"
           />
         </div>
         <div className="mb-4 w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Email</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Email
+          </label>
           <input
-            id="Email"
-            name="Email"
+            id="email"
+            name="email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)} 
+            onChange={(e) => setEmail(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             placeholder="Enter Your Email"
           />
         </div>
         <div className="mb-4 w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Mobile Number</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Mobile Number
+          </label>
           <input
             id="mobileNumber"
             name="mobileNumber"
             type="tel"
             value={mobileNumber}
-            onChange={(e) => setMobileNumber(e.target.value)} 
+            onChange={(e) => setMobileNumber(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             placeholder="Enter Valid Phone Number"
           />
         </div>
         <div className="mb-4 w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Password</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Password
+          </label>
           <input
             id="password"
             name="password"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} 
+            onChange={(e) => setPassword(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
             placeholder="Enter Password"
           />
         </div>
-        <div className="mb-4 w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Gender</label>
-          <Select
-            options={genderOptions}
-            value={gender}
-            onChange={(e) => setGender(e)}
-            placeholder="Select Gender"
-            className="mt-2 w-full"
-          />
-        </div>
-        <div className="mb-4 w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Matriculation Status</label>
-          <Select
-            options={matriculationStatusOptions}
-            value={matriculationStatus}
-            onChange={(e) => setMatriculationStatus(e)}
-            placeholder="Select Matriculation Status"
-            className="mt-2 w-full"
-          />
-        </div>
-        <div className="mb-4 w-full md:w-1/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Date of Birth</label>
-          <DatePicker
-            selected={dob}
-            onChange={(date) => setDob(date)}
-            placeholderText="Select Date"
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-            dateFormat="yyyy/MM/dd"
-          />
-        </div>
-        <div className="mb-4 w-full md:w-1/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">State</label>
-          <select
-            onChange={(e) => setSelectedState(e.target.value)}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          >
-            <option value="">Select State</option>
-            {state?.map((states: any, index: any) => (
-              <option key={index} value={states.isoCode}>
-                {states.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {selectedState && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">
-              City
-            </label>
-            <select
-              onChange={(e) => setSelectedCity(e.target.value)}
-              className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-            >
-              <option value="">Select City</option>
-              {city.map((cities: any) => (
-                <option key={cities.id} value={cities.id}>
-                  {cities.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        <div className="mb-4 w-full md:w-1/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Zipcode</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            City
+          </label>
           <input
-            id="zipCode"
-            name="zipCode"
             type="text"
-            value={zipcode}
-            onChange={(e) => setZipcode(e.target.value)} 
+            placeholder="Enter City" value={city} onChange={(e)=> setCity(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-            placeholder="Enter Zipcode"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Address
+          </label>
+          <input
+            id="address"
+            name="address"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+            placeholder="Enter Address"
+          />
+        </div>
+        <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Profile Picture
+          </label>
+          <input
+            type="file"
+            onChange={(e: any) => setProfilePicture(e.target.files[0])}
+            className="mt-2 w-full px-4 py-2 border bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
         <div className="mb-4 w-full">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Area Profile</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Bio
+          </label>
           <textarea
-            id="areaProfile"
-            name="areaProfile"
-            value={areaProfile}
-            onChange={(e) => setAreaProfile(e.target.value)} 
+            id="bio"
+            name="bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-            placeholder="Describe Area Profile"
+            placeholder="Describe yourself"
           />
         </div>
         <button

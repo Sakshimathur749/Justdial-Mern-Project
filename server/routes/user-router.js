@@ -28,27 +28,30 @@ const compressImage = (req, res, next) => {
   if (req.file) {
     const fileSizeInMB = req.file.size / (1024 * 1024);
     const compressThreshold = 3; 
+    const fileExtension = path.extname(req.file.originalname);
+    const tempFilePath = path.join(__dirname, '../../admin/src/images/profile_image', Date.now() + '-compressed' + fileExtension);
     if (fileSizeInMB > compressThreshold) {
       sharp(req.file.path)
         .resize(800) 
         .jpeg({ quality: 80 }) 
-        .toFile(req.file.path, (err, info) => {
+        .toFile(tempFilePath, (err, info)  => {
           if (err) {
             console.error('Error during image compression:', err);
             return res.status(500).json({ error: 'Error during image compression' });
           }
           console.log('Image compressed:', info);
+          req.file.path = tempFilePath;
           next(); 
         });
     } else {
       sharp(req.file.path)
         .jpeg({ quality: 80 })
-        .toFile(req.file.path, (err, info) => {
+        .toFile(tempFilePath, (err, info) => {
           if (err) {
             console.error('Error during image compression:', err);
             return res.status(500).json({ error: 'Error during image compression' });
           }
-          console.log('Image compressed:', info);
+          req.file.path = tempFilePath;
           next();
         });
     }

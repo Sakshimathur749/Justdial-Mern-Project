@@ -3,219 +3,148 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { State, City } from 'country-state-city'; 
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 const EditVendor = () => {
-    const [vendor, setVendor] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>(''); 
-    const [updatedVendor, setUpdatedVendor] = useState<any>(null); 
-    const [states, setStates] = useState<any>([]);
-    const [cities, setCities] = useState<any>([]);
-    const { slug } = useParams(); 
-    const navigate = useNavigate(); 
-  
-    useEffect(() => {
-      const fetchVendorDetails = async () => {
-        setLoading(true);
-        try {
-          const response = await fetch(`http://localhost:5000/api/vendor/slug/${slug}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch vendor details');
-          }
-          const data = await response.json();
-          console.log(data)
-          setVendor(data);
-          setUpdatedVendor(data);
-         const indiaStates = State.getStatesOfCountry('IN');
-          setStates(indiaStates);
-          if (data.state) {
-            const citiesList = City.getCitiesOfState('IN', data.state);
-            setCities(citiesList);
-          }
-        } catch (error) {
-          setError('Error fetching vendor details');
-        } finally {
-          setLoading(false);
+  const { slug } = useParams();
+  const [vendor, setVendor] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [successModal, setSuccessModal] = useState<boolean>(false);
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState('profile');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchVendorDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:5000/api/vendor/slug/${slug}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch vendor data');
         }
-      };
-  
-      fetchVendorDetails();
-    }, [slug]);
-  
-    const handleStateChange = (stateCode: string) => {
-      setUpdatedVendor((prev: any) => ({
-        ...prev,
-        state: stateCode,
-        city: '', 
-       }));
-     const citiesList = City.getCitiesOfState('IN', stateCode);
-      setCities(citiesList);
-    };
-    const handleChange = (e: any) => {
-      const { name, value } = e.target;
-      setUpdatedVendor((prev: any) => ({
-        ...prev,
-        [name]: value,
-      }));
-    };
-    const handleUpdate = async (e: React.FormEvent) => {
-      e.preventDefault();
-      const response = await fetch(`http://localhost:5000/api/vendor/slug/${slug}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedVendor),
-      });
-  
-      if (response.ok) {
-        navigate('/vendor');
-      } else {
-        setError('Failed to update vendor details');
+        const data = await response.json();
+        console.log(data)
+        setVendor(data);
+      } catch (error) {
+        console.error('Error fetching vendor details:', error);
+        setErrorModal(true);
+      } finally {
+        setLoading(false);
       }
     };
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toISOString().split('T')[0];
-      };    
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;  
-  
-    return (
-    <div>
-      <Breadcrumb pageName='Edit Vendor'/>
-      <form onSubmit={handleUpdate} className='flex flex-wrap gap-3'>
-        <div className="mb-4 w-full md:w-2/5">
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Full Name:</label>
-          <input
-            type="text"
-            name="fullName"
-            value={updatedVendor?.fullName || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
-        </div>
-        <div className='mb-4 w-full md:w-2/5'> 
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={updatedVendor?.email || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
-        </div>
-        <div className='mb-4 w-full md:w-2/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Phone Number:</label>
-          <input
-            type="text"
-            name="mobileNumber"
-            value={updatedVendor?.mobileNumber || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
-        </div>
-        <div className='mb-4 w-full md:w-2/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={updatedVendor?.password || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
-        </div>
-        <div className='mb-4 w-full md:w-2/5'>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Marital Status:</label>
-            <select
-              name="maritalStatus"
-              value={updatedVendor?.maritalStatus || ''}
-              onChange={handleChange}
-              className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+
+    fetchVendorDetails();
+  }, [slug]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    // Submit updated vendor data if needed
+  };
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="container mx-auto p-6">
+    <Breadcrumb pageName='Vendor Profile Page'/>
+      {successModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h4 className="text-lg font-semibold">Success!</h4>
+            <p>Your category has been successfully submitted.</p>
+            <button
+              onClick={() => setSuccessModal(false)}
+              className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
             >
-              <option className="mt-2 w-full" value="">Select Marital Status</option>
-              <option className="mt-2 w-full" value="married">Married</option>
-              <option className="mt-2 w-full" value="unmarried">Unmarried</option>
-            </select>
+              Close
+            </button>
           </div>
-          <div className='mb-4 w-full md:w-2/5'>
-            <label className="block text-sm font-medium text-gray-700 dark:text-white">Gender:</label>
-            <select
-              name="gender"
-              value={updatedVendor?.gender || ''}
-              onChange={handleChange}
-              className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+        </div>
+      )}
+      {errorModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h4 className="text-lg font-semibold">Error!</h4>
+            <p>There was an issue with your submission. Please try again.</p>
+            <button
+              onClick={() => setErrorModal(false)}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
             >
-              <option className="mt-2 w-full" value="">Select Gender</option>
-              <option className="mt-2 w-full" value="male">Male</option>
-              <option className="mt-2 w-full" value="female">Female</option>
-              <option className="mt-2 w-full" value="other">Other</option>
-            </select>
+              Close
+            </button>
           </div>
-        <div className='mb-4 w-full md:w-1/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">State:</label>
-          <select
-            name="state"
-            value={updatedVendor?.state || ''}
-            onChange={(e) => handleStateChange(e.target.value)}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          >
-            <option value="" className="mt-2 w-full">Select State</option>
-            {states?.map((state: any) => (
-              <option key={state.isoCode} value={state.isoCode} className="mt-2 w-full">
-                {state.name}
-              </option>
-            ))}
-          </select>
         </div>
-                <div className='mb-4 w-full md:w-1/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">City:</label>
-          <select
-              name="city"
-              value={updatedVendor?.city || ''}
-              onChange={(e) => handleChange(e)}
-              className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-            >
-              <option value="" className="mt-2 w-full">Select City</option>
-              {cities?.map((city: any) => (
-                <option key={city.id} value={city.id} className="mt-2 w-full">
-                  {city.name}
-                </option>
-              ))}
-            </select>
+      )}
+
+<div className="bg-white shadow-lg rounded-lg p-6">
+    <div className="mb-6">
+      <img
+        src={`http://localhost:5173/src/images/profile_image/${vendor.profilepicture}` || 'default-image-url'}
+        alt="Profile"
+        className="w-full px-5 py-5 rounded-t-lg object-cover" style={{height:'200px'}}
+      />
+    </div>
+    <div className="flex mb-6 space-x-4">
+      <button
+        onClick={() => handleTabChange('profile')}
+        className={`px-6 py-2 text-sm font-medium rounded-md ${activeTab === 'profile' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+      >
+        Profile Page
+      </button>
+      <button
+        onClick={() => handleTabChange('leads')}
+        className={`px-6 py-2 text-sm font-medium rounded-md ${activeTab === 'leads' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+      >
+        Leads
+      </button>
+      <button
+        onClick={() => handleTabChange('businessListings')}
+        className={`px-6 py-2 text-sm font-medium rounded-md ${activeTab === 'businessListings' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+      >
+        Business Listings
+      </button>
+    </div>
+
+    {activeTab === 'profile' && vendor && (
+      <div className="space-y-4 px-5">
+        <div className='flex gap-5 justify-start items-center'>
+          <label className="block text-lg font-medium text-gray-700">Name:</label>
+          <span className='text-lg'>{vendor.username}</span>
         </div>
-        <div className='mb-4 w-full md:w-2/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Date of Birth:</label>
-          <input
-            type="date"
-            name="dob"
-            id='dob'
-            value={updatedVendor?.dob ? formatDate(updatedVendor.dob) : ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
+        <div className='flex gap-5 justify-start items-center'>
+          <label className="block text-lg font-medium text-gray-700">Email:</label>
+          <span className='text-lg'>{vendor.email}</span>
         </div>
-        <div className='mb-4 w-full md:w-2/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white">Zipcode:</label>
-          <input
-            type="text"
-            name="zipCode"
-            id='zipCode'
-            value={updatedVendor?.zipCode || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
+        <div className='flex gap-5 justify-start items-center'>
+          <label className="block text-lg font-medium text-gray-700">Mobile Number:</label>
+          <span className='text-lg'>{vendor.mobileNumber}</span>
         </div>
-        <div className='mb-4 w-full md:w-2/5'>
-          <label className="block text-sm font-medium text-gray-700 dark:text-white"> Area Profile:</label>
-          <input
-            type="text"
-            name="areaProfile"
-            value={updatedVendor?.areaProfile || ''}
-            onChange={handleChange}
-            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
-          />
+        <div className='flex gap-5 justify-start items-center'>
+          <label className="block text-lg font-medium text-gray-700">City:</label>
+          <span className='text-lg'>{vendor.city}</span>
         </div>
-        <button type="submit"   className="w-full mt-6 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600">Update Vendor</button>
-      </form>
+        <div className='flex gap-5 justify-start items-center'>
+          <label className="block text-lg font-medium text-gray-700">Address:</label>
+          <span className='text-lg'>{vendor.address}</span>
+        </div>
+        <div className='flex gap-5 justify-start items-center'>
+          <label className="block text-lg font-medium text-gray-700">Bio:</label>
+          <span className='text-lg'>{vendor.bio}</span>
+        </div>
+      </div>
+    )}
+  {activeTab === 'leads' && vendor && (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Leads</h3>
+        <p>List of leads associated with the vendor</p>
+      </div>
+    )}
+   {activeTab === 'businessListings' && vendor && (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Business Listings</h3>
+        <p>List of business listings created by the vendor</p>
+      </div>
+    )}</div>
     </div>
   );
 };

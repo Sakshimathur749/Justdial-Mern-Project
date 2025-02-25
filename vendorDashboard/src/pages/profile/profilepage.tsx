@@ -13,6 +13,7 @@ const ProfilePage = ({ profileIncomplete }: any) => {
     mobileNumber: '',
     bio: '',
     city: '',
+    address:'',
     profilepicture: '',
   });
   const [successMessage, setSuccessMessage] = useState('');
@@ -47,8 +48,11 @@ const ProfilePage = ({ profileIncomplete }: any) => {
           mobileNumber: data.mobileNumber,
           bio: data.bio || '',
           city: data.city || '',
+          address:data.address||'',
           profilepicture: data.profilepicture || null,
         });
+        localStorage.setItem("userName",data.username)
+        localStorage.setItem("profilepicture",data.profilepicture)
         if (!data.username || !data.email || !data.mobileNumber || !data.city) {
           setShowIncompleteProfilePopup(true);
         }
@@ -72,12 +76,10 @@ const ProfilePage = ({ profileIncomplete }: any) => {
     e.preventDefault();
     const { currentPassword, newPassword, confirmPassword } =
       passwordChangeData;
-
     if (newPassword !== confirmPassword) {
       setPasswordChangeError('New password and confirmation do not match.');
       return;
     }
-
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
@@ -125,7 +127,7 @@ const ProfilePage = ({ profileIncomplete }: any) => {
       !editFormData.username ||
       !editFormData.email ||
       !editFormData.mobileNumber ||
-      !editFormData.city
+      !editFormData.city||!editFormData.address 
     ) {
       setShowIncompleteProfilePopup(true);
       return;
@@ -137,6 +139,7 @@ const ProfilePage = ({ profileIncomplete }: any) => {
     formData.append('mobileNumber', editFormData.mobileNumber);
     formData.append('bio', editFormData.bio);
     formData.append('city', editFormData.city);
+    formData.append('address', editFormData.address);
     if (editFormData.profilepicture) {
       formData.append('profilepicture', editFormData.profilepicture);
     }
@@ -162,6 +165,7 @@ const ProfilePage = ({ profileIncomplete }: any) => {
         mobileNumber: data.mobileNumber,
         bio: data.bio || '',
         city: data.city || '',
+        address: data.address || '',
         profilepicture: data.profilepicture || null,
       });
       setSuccessMessage('Profile updated successfully!');
@@ -311,7 +315,7 @@ const ProfilePage = ({ profileIncomplete }: any) => {
                           Bio
                         </p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                          {profile?.bio || 'Bio'}
+                          {profile?.bio || '-'}
                         </p>
                       </div>
                     </div>
@@ -325,14 +329,9 @@ const ProfilePage = ({ profileIncomplete }: any) => {
                       Address
                     </h4>
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
-                      <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                          City
-                        </p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                          {profile?.city || 'City'}
+                          {profile?.address }{profile?.city}
                         </p>
-                      </div>
                     </div>
                   </div>
                 </div>

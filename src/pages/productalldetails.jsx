@@ -41,11 +41,11 @@ const Productalldetails = () => {
     <div>
       <SearchBanner/>
       <Breadcrumb breadcrumbs={breadcrumbs}/>
-      <div className="d-flex p-5 gap-4 justify-content-center flex-wrap">
-      <div className="col-3 col-md-12 product-right">
+      <div className="d-flex  gap-4 justify-content-center flex-wrap">
+      <div className="col-md-3 col-sm-12">
       <ContactDetail  slug={slug}/>
       </div>
-      <div className="col-8 col-md-12 product-left">
+      <div className="col-md-8 col-sm-12 ">
       <ProductDetail slug={slug}/>
       {/* <Relatedproduct/> */}
       </div>

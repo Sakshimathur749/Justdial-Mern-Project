@@ -357,27 +357,27 @@ const ProductDetail = ({ slug }) => {
                       aria-labelledby="tab_item-0"
                     >
                       <div className="rating_views">
-                        <div className="rank_name">
+                        <div className="rank_name d-flex">
                           <span>Excellent</span>
                           <div style={{ width: "50%" }}>&nbsp;</div>
                           50%
                         </div>
-                        <div className="rank_name">
+                        <div className="rank_name d-flex">
                           <span>Very Good</span>
                           <div style={{ width: "60%" }}>&nbsp;</div>
                           60%
                         </div>
-                        <div className="rank_name">
+                        <div className="rank_name d-flex">
                           <span>Good</span>
                           <div style={{ width: "30%" }}>&nbsp;</div>
                           30%
                         </div>
-                        <div className="rank_name">
+                        <div className="rank_name d-flex">
                           <span>Average</span>
                           <div style={{ width: "0%" }}>&nbsp;</div>
                           0%
                         </div>
-                        <div className="rank_name">
+                        <div className="rank_name d-flex">
                           <span>Poor</span>
                           <div style={{ width: "0%" }}>&nbsp;</div>
                           0%
@@ -565,7 +565,7 @@ const ProductDetail = ({ slug }) => {
                       aria-labelledby="tab_item-2"
                     >
                       <div className="gallery_view">
-                        <div className="gallery">
+                        <div className="gallery d-flex align-self-center flex-wrap">
                             {product.gallery.map((image, index) => (
                           <div className="prod_img" key={index}>
                               <a

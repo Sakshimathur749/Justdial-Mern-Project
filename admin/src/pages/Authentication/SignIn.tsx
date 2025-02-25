@@ -16,6 +16,7 @@ console.log("Sign in tsx ")
 
     try {
       const { token, username, profilepicture ,role} = await login(email, password);
+      console.log(token,"mila hai ki nhi")
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('userName', username);

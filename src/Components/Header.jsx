@@ -38,7 +38,7 @@ function Header() {
     setLoginShow(false);
   }
   const handleForgotPasswordClose = () => setForgotPasswordModal(false);
-  const handleSendLink = async () => {
+  const handleSendLink = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/forgot-password', {
@@ -49,17 +49,18 @@ function Header() {
         body: JSON.stringify({ email }) 
       });
       const data = await response.json();
-      console.log(data)
       if (response.ok) { 
         setSuccessMessage('Password reset link has been sent to your email!');
         const reset= `Password reset link has been sent to your email! ${data.email}`
         setResetMessage(reset);
         setResetModal(true);
+        loginShow(true)
       } else {
+        console.log(data.message)
         setErrorMessage('Failed to send password reset link.');
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
       setErrorMessage('An error occurred while sending the link.');
     }
   };
@@ -306,7 +307,7 @@ function Header() {
         </Container>
       </Navbar>
       {resetMessage && (
-      <Alert variant="info" className="mt-3">
+      <Alert variant="info" className="mt-3  mb-0">
         <strong>{resetMessage}</strong>
       </Alert>
     )}
@@ -371,7 +372,6 @@ function Header() {
             )}
             <Form className="form-horizontal" id="login_form " onSubmit={handleLoginSubmit}>
               <div className="login_box">
-                <div className="title_login">Login with your email and password</div>
                 <div className="user_box">
                   <div className="label_form">Email<span style={{ color: 'red' }}>*</span></div>
                   <input type="text" name="email" id="email_login" className="input_box" data-rule-required="true" value={formData.email} onChange={handleInputChange} placeholder="Enter Email Address" />
@@ -381,20 +381,24 @@ function Header() {
                   <input type={showPassword ? 'text' : 'password'} name="password" id="password_login" data-rule-required="true" className="input_box" value={formData.password} onChange={handleInputChange} placeholder="Enter password" />
                   <img src={showPassword ? Eye : InvisibleEye} height={20} width={20} className="eye object-fit-contain" onClick={togglePasswordVisibility} alt="Toggle Password Visibility" />
                 </div>
+               <div className=" left_bar justify-content-end">
+               <a className="forgt" onClick={()=>handleForgotPasswordOpen()} >Forget your password?</a>
+               </div>
                 
                 <div className="login_box">
                 <Button type="subit" id="login_submit"  className="yellow ui button"> Login</Button>
                   <div className="left_bar">
-                    <a className="forgt" onClick={()=>handleForgotPasswordOpen()} >Forget your password?</a>
+                    <a className="forgt"  style={{cursor:'none'}}>Do not have a Account?</a>
                     <a id="open_register" onClick={handleRegisterOpen} className="sign_up  text-decoration-underline ">Register</a>
                   </div>
                  </div>
               </div>
-              <div className="text-center d-flex flex-wrap justify-content-center align-content-center">
-                <GoogleLogin
+              <div className="text-center pb-3"><img src="https://buyphpcode.com/justdialclone/assets/front/images/or1.png" alt="facebook login"/></div>
+              <div className="text-center d-flex flex-wrap justify-content-center align-content-center" >
+                <GoogleLogin 
                   onSuccess={handleGoogleLoginSuccess}
                   onError={handleGoogleLoginFailure}
-                  useOneTap
+                  useOneTap 
                 />
               </div>
             </Form>
@@ -451,6 +455,7 @@ function Header() {
                   </div>
                 </div>
               </div>
+              <div className="text-center pb-3"><img src="https://buyphpcode.com/justdialclone/assets/front/images/or1.png" alt="facebook login"/></div>
               <div className="text-center d-flex flex-wrap justify-content-center align-content-center">
                 <GoogleLogin
                   onSuccess={handleGoogleLoginSuccess}
