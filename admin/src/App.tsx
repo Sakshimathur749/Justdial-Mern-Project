@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-
+import { Wizard } from 'react-use-wizard';
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import ECommerce from './pages/Dashboard/ECommerce';
@@ -80,7 +80,7 @@ function App() {
         <Route path="/posted-product"  element={<><PostedProductsPage /></>  }/>
         <Route path="/edit-product/:slug" element={ <><EditProductPage/></> } />
         {/* <Route path="/contact" element={ <><ContactDetails/></> } /> */}
-        <Route path="/bussinesslisting/create" element={ <><BussniessListing/></> } />
+        <Route path="/bussinesslisting/create" element={ <Wizard><BussniessListing/></Wizard> } />
         <Route path="/bussinesslisting" element={ <><BusinessListingTable/></> } />
         <Route path="/bussinesslisting/:slug" element={ <><EditBussniessListing/></> } />
         <Route path="/vendor/create" element={ <><Vendor/></> } />

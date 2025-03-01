@@ -2,58 +2,18 @@ const mongoose = require('mongoose');
 
 const vendorSchema = new mongoose.Schema(
   {
-    fullName: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    mobileNumber: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    maritalStatus: {
-      type: String,
-      enum: ['married', 'unmarried'],
-      required: true,
-    },
-    gender: {
-      type: String,
-      enum: ['male', 'female', 'other'],
-      required: true,
-    },
-    dob: {
-      type: Date,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    city:{
-      type: String,
-      required: true,
-    },
-    zipCode: {
-      type: String,
-      required: true,
-    },
-    areaProfile: {
-      type: String,
-      required: true,
-    },
-    slug: {
-      type: String,
-      unique: true, 
-      required: true, 
-    },  
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    businessName: { type: String, required: true },
+    address: String,
+    email:String,
+    username:String,
+    mobileNumber: Number,
+    city:String,
+    bio:String,
+    // category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required:false },
+    slug: { type: String, unique: true, default: function() { return new mongoose.Types.ObjectId().toString(); }},
+    // subCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory' },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     role:{type:String, default:'vendor'},
   },
   { timestamps: true }

@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { createVendor, getVendorById, getAllVendors,getVendorBySlug,updateVendorBySlug,deleteVendorById } = require('../controllers/vendor-controller');
+const {auth} = require('../middleware/auth-middleware');
+const { createVendor, getAllVendors,getVendorBySlug,updateVendorBySlug,deleteVendorById } = require('../controllers/vendor-controller');
 const sharp = require('sharp');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -54,10 +55,10 @@ const compressImage = (req, res, next) => {
     next(); 
   }
 };
-router.post('/vendor', upload.single('profilepicture'),compressImage,createVendor);
-router.get('/vendor/:id', getVendorById);
+router.post('/vendor', upload.single('profilepicture'),compressImage,auth, createVendor);
+// router.get('/vendor/:id', getVendorById);
 router.get('/vendors', getAllVendors);
-// router.put('/vendor/slug/:slug', getVendorBySlug);
+router.put('/vendor/slug/:slug', updateVendorBySlug);
 router.get('/vendor/slug/:slug', getVendorBySlug);
 router.delete('/vendor/:id', deleteVendorById);
 // router.get('/vendor/slug/:slug', updateVendorBySlug);

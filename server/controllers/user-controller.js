@@ -21,8 +21,7 @@ const registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists.' });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword, username, mobileNumber });
+    const newUser = new User({ email, password, username, mobileNumber });
     await newUser.save();
     const payload = { userId: newUser._id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -61,7 +60,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ id: user._id , role:user.role}, process.env.JWT_SECRET, { expiresIn: '7h' });
     res.json({
       token, role:user.role,
-      user: { email: user.email, username: user.username , profilepicture:user.profilepicture, Googleprofilepicture: user.profilepicture},
+      user: { email: user.email, username: user.username , profilepicture:user.profilepicture, Googleprofilepicture: user.profilepicture, password:user.password},
     });
   } catch (error) {
     console.error(error);

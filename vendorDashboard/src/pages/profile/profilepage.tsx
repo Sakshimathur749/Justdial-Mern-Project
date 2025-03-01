@@ -469,6 +469,18 @@ const ProfilePage = ({ profileIncomplete }: any) => {
                     className="w-full p-2 border border-gray-300 rounded-md"
                   />
                 </div>
+                <div>
+                  <label className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={editFormData.address}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                </div>
               </div>
               <button
                 type="submit"

@@ -37,11 +37,6 @@ const DropdownUser = () => {
           {username || 'Loading...'}
           </span>
         </span>
-
-        <span className="h-12 w-12 rounded-full">
-          <img src={`${profileImage}`} alt="User" />
-        </span>
-
         <svg
           className="hidden fill-current sm:block"
           width="12"

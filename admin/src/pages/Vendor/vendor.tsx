@@ -19,10 +19,12 @@ const Vendor = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [bio, setBio] = useState('');
   const [address, setAddress] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState('');
   const navigate = useNavigate();
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    
     const formData = new FormData();
     formData.append('username', username);
     formData.append('email', email);
@@ -31,22 +33,27 @@ const Vendor = () => {
     formData.append('city', city);
     formData.append('address', address);
     formData.append('bio', bio);
+    formData.append('businessName', businessName);
+    const token = localStorage.getItem('token');
+    // formData.append('categoryId', categoryId); 
     if (profilePicture) {
       formData.append('profilepicture', profilePicture);
-    }  
-    try {
+    }
+   try {
       const response = await fetch('http://localhost:5000/api/vendor', {
         method: 'POST',
-        body: formData, 
-            });
-  
+        body: formData,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
       if (response.ok) {
         const result = await response.json();
         setSuccessModal(true);
         navigate('/vendor');
       } else {
         const errorData = await response.json();
-        console.log("Error Data:", errorData);
+        console.log('Error Data:', errorData);
         setErrorModal(true);
       }
     } catch (error) {
@@ -54,7 +61,7 @@ const Vendor = () => {
       setErrorModal(true);
     }
   };
-  
+
   return (
     <div className="container mx-auto p-6">
       <Breadcrumb pageName="Create Vendor" />
@@ -62,7 +69,7 @@ const Vendor = () => {
         <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h4 className="text-lg font-semibold">Success!</h4>
-            <p>Your category has been successfully submitted.</p>
+            <p>Your vendor has been successfully submitted.</p>
             <button
               onClick={() => setSuccessModal(false)}
               className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
@@ -86,8 +93,37 @@ const Vendor = () => {
           </div>
         </div>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-wrap gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-wrap gap-3 p-5"  style={{background:'#fff'}}>
         <div className="mb-4  w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Business Name
+          </label>
+          <input
+            id="businessName"
+            name="businessName"
+            type="text"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
+            className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
+            placeholder="Enter Business Name"
+          />
+        </div>
+
+        {/* Category Dropdown */}
+        {/* <div className="mb-4 w-full md:w-2/5">
+          <label className="block text-sm font-medium text-gray-700 dark:text-white">
+            Category
+          </label>
+          <Select
+            options={categories.map((category) => ({
+              value: category._id,
+              label: category.name,
+            }))}
+            onChange={(selectedOption) => setCategoryId(selectedOption.value)}
+            placeholder="Select Category"
+          />
+        </div> */}
+       <div className="mb-4 w-full md:w-2/5">
           <label className="block text-sm font-medium text-gray-700 dark:text-white">
             User Name
           </label>
@@ -149,7 +185,9 @@ const Vendor = () => {
           </label>
           <input
             type="text"
-            placeholder="Enter City" value={city} onChange={(e)=> setCity(e.target.value)}
+            placeholder="Enter City"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
             className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-primary"
           />
         </div>
