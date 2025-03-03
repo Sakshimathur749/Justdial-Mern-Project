@@ -31,7 +31,7 @@ app.use('/api', SubcategoryRoutes);
 app.use('/api', ProductRoutes);
 app.use('/api', ReviewRoutes);
 app.use('/api',ContactRoutes)
-app.use('/api/auth', AdminRoute);
+app.use('/api/admin', AdminRoute);
 app.use('/api/business', BusinessRoutes);
 app.use('/api', VendorRoutes);
 app.use('/api/user',UserRoutes)

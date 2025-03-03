@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password of Vendor ' });
     }
-    const token = jwt.sign({ id: user._id , role:user.role}, process.env.JWT_SECRET, { expiresIn: '7h' });
+    const token = jwt.sign({ id: user._id , role:user.role, vendor:'vendorpanel'}, process.env.JWT_SECRET, { expiresIn: '7h' });
     res.json({
       token, role:user.role,
       user: { email: user.email, username: user.username , profilepicture:user.profilepicture, Googleprofilepicture: user.profilepicture, password:user.password},

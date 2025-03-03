@@ -3,6 +3,7 @@ const slugify = require('slugify');
 
 const businessSchema = new mongoose.Schema({
   addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   slug: { type: String, unique: true, required: true },
   businessName: { type: String, required: true },
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
@@ -10,8 +11,8 @@ const businessSchema = new mongoose.Schema({
   image: { type: String },
   gallery: { type: [String], max: 10 },
   address: { type: String, required: true },
-  name: { type: String, required: true }, 
-  mobileNumber: { type: String, required: true },
+  userName: { type: String, required: false}, 
+  mobileNumber: { type: String, required: false },
   email: { type: String, required: true },
   openingHours: {
     monday: { open: String, close: String },
