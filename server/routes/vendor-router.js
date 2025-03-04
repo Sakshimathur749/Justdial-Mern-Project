@@ -35,7 +35,6 @@ const compressImage = (req, res, next) => {
             console.error('Error during image compression:', err);
             return res.status(500).json({ error: 'Error during image compression' });
           }
-          console.log('Image compressed:', info);
           req.file.path = tempFilePath;
           next(); 
         });

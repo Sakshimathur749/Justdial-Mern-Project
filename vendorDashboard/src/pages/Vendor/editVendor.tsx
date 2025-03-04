@@ -21,7 +21,6 @@ const EditVendor = () => {
             throw new Error('Failed to fetch vendor details');
           }
           const data = await response.json();
-          console.log(data)
           setVendor(data);
           setUpdatedVendor(data);
          const indiaStates = State.getStatesOfCountry('IN');

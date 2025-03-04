@@ -12,6 +12,5 @@ export const login = async (email: string, password: string): Promise<any> => {
     throw new Error('Invalid email or password');
   }
   const data = await response.json();
-  console.log(data)
-  return { token: data.token,role:data.role, username: data.user.username, profilepicture:data.user.profilepicture , Googleprofilepicture: data.user.Googleprofilepicture};
+return { token: data.token,role:data.role, username: data.user.username, profilepicture:data.user.profilepicture , Googleprofilepicture: data.user.Googleprofilepicture};
 };

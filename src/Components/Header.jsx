@@ -56,7 +56,6 @@ function Header() {
         setResetModal(true);
         loginShow(true)
       } else {
-        console.log(data.message)
         setErrorMessage('Failed to send password reset link.');
       }
     } catch (error) {
@@ -73,10 +72,8 @@ function Header() {
   useEffect(() => {
     const token = localStorage.getItem('token'); 
     const username = localStorage.getItem('username');
-    console.log(username) 
     if (token && username) {
       setUser(username)
-      console.log('Token found:', token,username);
     } else {
       setUser(null);
       console.log('No token found');

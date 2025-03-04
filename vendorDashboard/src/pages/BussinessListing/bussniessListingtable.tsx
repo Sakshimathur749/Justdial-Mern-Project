@@ -17,7 +17,6 @@ const BusinessListingTable = () => {
           throw new Error('Failed to fetch business listings');
         }
         const data = await response.json();
-        console.log(data)
         setBusinessListings(data); 
       } catch (error) {
         console.error('Error fetching business listings:', error);

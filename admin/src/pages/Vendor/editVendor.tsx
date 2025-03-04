@@ -39,7 +39,6 @@ const EditVendor = () => {
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(vendor,"ckjvvdeiu")
     try {
       const response = await fetch(`http://localhost:5000/api/vendor/slug/${slug}`, {
         method: 'PUT',
@@ -52,7 +51,7 @@ const EditVendor = () => {
       if (response.ok) {
         setVendor(data)
         setUpdatedVendor(data);
-      }else{ console.log(response.json())
+      }else{ 
         throw new Error('Failed to update vendor data');}
       setSuccessModal(true);
       setIsEditing(false);

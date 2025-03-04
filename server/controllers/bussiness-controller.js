@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 
 const createBusiness = async (req, res) => {
   const {businessName, userName,categoryId, subcategoryId, relevantTags, keywords, websiteUrl, about, mapEmbedLink, mobileNumber, openingHours, services, paymentModes, address, email } = req.body;
-console.log(openingHours,"req.body")
   try {
     if (req.user.role !== 'vendor') {
       return res.status(403).json({ message: 'Access denied. Vendor role required.' });

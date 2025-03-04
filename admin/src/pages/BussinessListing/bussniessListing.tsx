@@ -105,8 +105,7 @@ const BusinessListing = () => {
     }
     setGalleryImages([...galleryImages, ...files]);
   };
-  const handleSubmit = async (e: React.FormEvent) => {
-    console.log("HIIIHIHH")
+  const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('businessName', businessName);
     formData.append('mobileNumber', mobileNumber);
@@ -134,7 +133,6 @@ const BusinessListing = () => {
         },
       );
       const responseData = await response.json();
-      console.log(responseData);
       if (response.ok) {
         setSuccessModal(true);
         navigate('/businesslisting');

@@ -39,7 +39,6 @@ const EditMembershipPlan = () => {
   const handleSubmit = (event:any) => {
     event.preventDefault();
     const membershipData = { title, price, validity,features};
-    console.log('Submitted membership data:', membershipData);
     navigate('/membership-plan');
   };
 

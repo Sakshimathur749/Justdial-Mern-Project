@@ -86,7 +86,6 @@ useEffect(() => {
       try {
         const response = await fetch(`http://localhost:5000/api/business/listing/slug/${slug}`);
         const data = await response.json();
-        console.log(data)        
         if (data) {
           setBusinessName(data.businessName);
           setAddedBy(data.addedBy);
@@ -101,7 +100,6 @@ useEffect(() => {
           setGalleryImages(data.gallery);
           setHours(data.openingHours);
           setPaymentModes(data.paymentModes);
-          console.log(' Payment Modes:',data.paymentModes);
           setBusinessService(data.services);
           setAboutYear(new Date(data.aboutYear));
           setPincode(data.location.pinCode);
@@ -193,7 +191,6 @@ useEffect(() => {
     });
     formData.append('services', JSON.stringify(businessService));
     formData.append('paymentModes', JSON.stringify(paymentModes));
-    console.log('Selected Payment Modes:', paymentModes);
     formData.append('aboutYear', aboutYear ? aboutYear.getFullYear().toString() : '');
     try {
       const response = await fetch(`http://localhost:5000/api/business/listing/${slug}`, {

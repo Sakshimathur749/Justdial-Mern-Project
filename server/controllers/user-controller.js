@@ -34,7 +34,6 @@ const registerUser = async (req, res) => {
 };
 const loginUser = async (req, res) => {
   const { email, password  } = req.body;
-  console.log(email,password)
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -56,9 +55,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not Register' });
     }
-    console.log( password, user.password,"hjsute")
     const isMatch = await bcrypt.compare(password.trim(), user.password);
-    console.log(isMatch)
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password of Vendor ' });
     }

@@ -18,10 +18,8 @@ const decryptData = (encryptedData) => {
 };
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  console.log(email)
   try {
     const user = await User.findOne({ email });
-    console.log(user,"forget password")
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
@@ -58,7 +56,6 @@ router.post('/forgot-password', async (req, res) => {
 router.get('/change-password/:encryptedData', async (req, res) => {
   try {
     const { userId, token } = decryptData(decodeURIComponent(req.params.encryptedData));
-    console.log("Decrypted Data:", decryptData(decodeURIComponent(req.params.encryptedData)));
     const user = await User.findOne({
       _id: userId,
       resetPasswordToken: token,
@@ -72,8 +69,7 @@ router.get('/change-password/:encryptedData', async (req, res) => {
 });
 router.post('/reset-password/:encryptedData', async (req, res) => {
   const { newpassword , confirmPassword} = req.body;
-  console.log("newpassword", req.body)
-  if (newpassword !== confirmPassword) {
+ if (newpassword !== confirmPassword) {
     return res.status(400).json({ message: "Passwords do not match" });
   }
   try {

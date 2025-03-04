@@ -8,7 +8,6 @@ const SignIn: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-console.log("Sign in tsx ")
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -16,7 +15,6 @@ console.log("Sign in tsx ")
 
     try {
       const { token, username, profilepicture ,role} = await login(email, password);
-      console.log(token,"mila hai ki nhi")
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('userName', username);

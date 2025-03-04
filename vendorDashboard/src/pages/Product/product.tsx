@@ -18,7 +18,7 @@ const PostedProductsPage = () => {
           throw new Error('Failed to fetch products');
         }
         const data = await response.json();
-        setProducts(data);console.log(data)
+        setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
