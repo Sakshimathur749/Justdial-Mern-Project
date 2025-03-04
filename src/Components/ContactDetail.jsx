@@ -17,6 +17,7 @@ const ContactDetail = ({ slug }) => {
           throw new Error('Failed to fetch business data');
         }
         const data = await response.json();
+        console.log(data)
         setBusiness(data);
       } catch (error) {
         setError(error.message);
@@ -35,7 +36,6 @@ const ContactDetail = ({ slug }) => {
       <Container>
         <Row>
           <Col lg='12' md='12' sm='12'>
-            <h1>{business?.businessName}</h1>
             <div className="categories_sect sidebar-nav" id="business_times_div">
               <div className="sidebar-brand">
                 <img

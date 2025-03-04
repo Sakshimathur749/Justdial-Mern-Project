@@ -116,7 +116,6 @@
 }
 /* General gallery container */
 .gallery_images {
-    display: flex;
     gap:50px;
     align-items: center;
     margin-bottom: 20px;padding: 5px;border: 1px solid #eaeaea;

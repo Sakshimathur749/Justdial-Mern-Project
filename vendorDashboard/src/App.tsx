@@ -24,6 +24,7 @@ import MembershipPlan from './pages/MembershipDetails/membershipPlan';
 import EditMembershipPlan from './pages/MembershipDetails/editMembershipPlan';
 import Membership from './pages/MembershipDetails/membership';
 import Profilepage from './pages/profile/profilepage';
+import Viewbussiness from './pages/BussinessListing/viewbussiness';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -92,7 +93,7 @@ function App() {
         {/* <Route path="/contact" element={ <><ContactDetails/></> } /> */}
         <Route path="/bussinesslisting/create" element={ <><BussniessListing/></> } />
         <Route path="/bussinesslisting" element={ <><BusinessListingTable/></> } />
-        <Route path="/bussinesslisting/:slug" element={ <><EditBussniessListing/></> } />
+        <Route path="/bussinesslisting/:slug" element={ <><Viewbussiness/></> } />
         <Route path="/vendor/create" element={ <><Vendor/></> } />
         <Route path="/vendor" element={ <><VendorTable/></> } />
         <Route path="/vendor/:slug" element={<EditVendor />} />

@@ -111,6 +111,7 @@ const BusinessListing = () => {
     formData.append('email', email);
     formData.append('categoryId', selectedCategory);
     formData.append('subcategoryId', selectedSubcategory);
+    console.log(openingHours,"openingshours")
     formData.append('openingHours', JSON.stringify(openingHours));
     formData.append('mapEmbedLink', mapEmbedLink);
     formData.append('about', about);

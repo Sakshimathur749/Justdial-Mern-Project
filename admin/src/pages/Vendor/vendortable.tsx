@@ -49,59 +49,6 @@ const VendorTable = () => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
   };
-
-  // const columns = [
-  //   {
-  //     name: 'S.no',
-  //     selector: (row: any, index: any) => index + 1,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: 'Full Name',
-  //     selector: (row: any) => row.username,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: 'Phone Number',
-  //     selector: (row: any) => row.mobileNumber,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: 'City',
-  //     selector: (row: any) => row.city,
-  //     sortable: true,
-  //   },
-  //   // {
-  //   //   name: 'Created At',
-  //   //   selector: (row: any) => formatDate(row.createdAt),
-  //   //   sortable: true,
-  //   // },
-  //   {
-  //     name: 'View',
-  //     cell: (row: any) => (
-        // <button
-        //   className="inline-flex items-center justify-center rounded bg-blue-500 p-4 text-center font-medium text-white hover:bg-opacity-90"
-        //   onClick={() => handleView(row.slug)}
-        // >
-        //   View
-        // </button>
-  //     ),
-  //     sortable: false,
-  //   },
-  //   {
-  //     name: 'Delete',
-  //     cell: (row: any) => (
-  //       <button
-  //         className="inline-flex items-center justify-center rounded bg-red-500 p-4 text-center font-medium text-white hover:bg-opacity-90"
-  //         onClick={() => handleDelete(row._id)}
-  //       >
-  //         Delete
-  //       </button>
-  //     ),
-  //     sortable: false,
-  //   },
-  // ];
-  console.log(vendors);
   return (
     <div>
       <Breadcrumb pageName="Vendors" />

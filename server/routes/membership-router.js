@@ -1,5 +1,3 @@
-// routes/membershipRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const membershipController = require('../controllers/membership-controller');

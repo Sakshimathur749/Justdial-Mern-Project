@@ -128,38 +128,38 @@ const ProductDetail = ({ slug }) => {
       <Container>
         <Row>
           <div className="col-sm-12">
+              <div className="gallery_images mb-0 p-2">
+              <h1 className="p-2">{product.businessName}</h1>
+              </div>
             <div className="gallery_images">
-            <div className="main-image">
+              <div className="d-flex">
+              <div className="main-image">
                 <img
                   src={`http://localhost:5173/src/images/uploads/gallery/${displayedImages[0]}`}
                   alt="Product" 
                   className="img-fluid object-fit-contain"
                 />
               </div>
-
               <div className="other-images">
                 {displayedImages.slice(1, visibleImages).map((image, index) => (
                   <div key={index} className="small-image">
                     <img src={`http://localhost:5173/src/images/uploads/gallery/${image}`} className="object-fit-contain" alt={`Image ${index + 1}`} />
                   </div>
                 ))}
-
-                {/* Display "X More" if there are more than the visible images */}
                 {totalImages > visibleImages && (
                   <div className="small-image more-images">
                     {`+${totalImages - visibleImages} More`}
                   </div>
                 )}
               </div>
+              </div>
             </div>
             <div className="p_detail_view">
               <div>
                 <div className="product_detail_banner">
                   <div className="product_title etd d-flex justify-content-between">
-                    <a >{product.businessName}</a>
                     <a ><svg xmlns="http://www.w3.org/2000/svg" height={20} width={20} viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg></a>
                   </div>
-
                   <div className="resta-rating-block12 d-flex gap-2 pb-3">
                     {[...Array(5)].map((_, index) => (
                       <svg
