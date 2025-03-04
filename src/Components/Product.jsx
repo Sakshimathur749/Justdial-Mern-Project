@@ -18,7 +18,6 @@ const Product = () => {
             if (!response.ok) {
                 throw new Error('Subcategories not found');
             }
-            console.log(response.json())
             return response.json();
         })
         .then(data => {

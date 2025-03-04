@@ -28,8 +28,7 @@ const ResetPassword = () => {
         body: JSON.stringify({ newpassword, confirmPassword })
       });
       const data = await response.json();
-      console.log(data, response,"jsadfjkio")
-      if (data.token) {
+     if (data.token) {
         setuser(data);
         localStorage.setItem("authToken", data.token);
       window.location.href = "/";

@@ -60,8 +60,6 @@ const ContactDetail = ({ slug }) => {
               </ul>
               <div className="clearfix"></div>
             </div>
-
-            {/* Services */}
             <div className="categories_sect sidebar-nav">
               <div className="sidebar-brand">
                 <img
