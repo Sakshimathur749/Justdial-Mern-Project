@@ -10,6 +10,7 @@ const TopCities = () => {
       try {
         const response = await fetch('http://localhost:5000/api/business/listing');
         const data = await response.json();
+       console.log(data)
         setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -36,7 +37,7 @@ const TopCities = () => {
                       <div className="first-cate-img image-anime image">
                         <img
                           className="over-img object-fit-contain w-100"
-                          alt={product.title}
+                          alt={product.businessName}
                           src={`http://localhost:5173/src/images/uploads/image/${product.image}`}
                         />
                       </div>
@@ -47,12 +48,12 @@ const TopCities = () => {
                         <div className="resta-name">
                           <h6>
                             <a href={`/products/${product.slug}`}>
-                              {product.title}
+                              {product.businessName}
                             </a>
                           </h6>
                           <span></span>
                         </div>
-                        <div className="resta-content">{product.location.city}{product.location.country}{product.location.pincode}</div>
+                        <div className="resta-content">{product.address}</div>
                         <div className="resta-rating-block">
                         {[...Array(5)].map((_, index) => (
                       <svg

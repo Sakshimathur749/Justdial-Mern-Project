@@ -17,6 +17,7 @@ const BusinessListingTable = () => {
           throw new Error('Failed to fetch business listings');
         }
         const data = await response.json();
+        console.log(data)
         setBusinessListings(data); 
       } catch (error) {
         console.error('Error fetching business listings:', error);
@@ -55,22 +56,22 @@ const BusinessListingTable = () => {
       sortable: true,
     },
     {
-      name: 'Category',
-      selector: (row: any) => row.categoryId,
+      name: 'Main Category',
+      selector: (row: any) => row.categoryId.name,
       sortable: true,
     },
     {
       name: 'Subcategory',
-      selector: (row: any) => row.subcategoryId,
+      selector: (row: any) => row.subcategoryId.name,
       sortable: true,
     },
     {
-      name: 'Person Name',
-      selector: (row: any) => row.personName,
+      name: 'Vendor Name',
+      selector: (row: any) => row.addedBy.name,
       sortable: true,
     },
     {
-      name: 'Edit',
+      name: 'View',
       cell: (row: any) => (
         <button
         className="inline-flex items-center justify-center rounded bg-blue-500 p-4 text-center font-medium text-white hover:bg-opacity-90" onClick={() => handleEdit(row.slug)} 
@@ -80,19 +81,7 @@ const BusinessListingTable = () => {
       ),
       sortable: false,
     },
-    {
-      name: 'Delete',
-      cell: (row: any) => (
-        <button
-          className="inline-flex items-center justify-center rounded bg-red-500 p-4 text-center font-medium text-white hover:bg-opacity-90"
-          onClick={() => handleDelete(row._id)} 
-        >
-          Delete
-        </button>
-      ),
-      sortable: false,
-    },
-  ];
+    ];
 
   return (
     <div>

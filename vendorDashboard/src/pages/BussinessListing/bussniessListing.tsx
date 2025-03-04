@@ -27,8 +27,8 @@ const BusinessListing = () => {
     saturday: { open: '', close: '' },
     sunday: { open: '', close: '' },
   });
-  const [category, setCategory] = useState('');
-  const [subcategory, setSubcategory] = useState('');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subCategories, setSubCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any>('');
   const [selectedSubcategory, setSelectedSubcategory] = useState<any>('');
   const [about, setAbout] = useState<string>('');
@@ -39,8 +39,6 @@ const BusinessListing = () => {
   const [paymentModes, setPaymentModes] = useState<string[]>([]);
   const [websiteUrl, setWebsiteUrl] = useState<string>('');
   const [services, setServices] = useState<string[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [subCategories, setSubCategories] = useState<any[]>([]);
   const [successModal, setSuccessModal] = useState<boolean>(false);
   const [errorModal, setErrorModal] = useState<boolean>(false);
   useEffect(() => {
@@ -105,8 +103,7 @@ const BusinessListing = () => {
     }
     setGalleryImages([...galleryImages, ...files]);
   };
-  const handleSubmit = async (e: React.FormEvent) => {
-    console.log("HIIIHIHH")
+  const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('businessName', businessName);
     formData.append('mobileNumber', mobileNumber);
@@ -114,7 +111,6 @@ const BusinessListing = () => {
     formData.append('email', email);
     formData.append('categoryId', selectedCategory);
     formData.append('subcategoryId', selectedSubcategory);
-    formData.append('mobileNumber', mobileNumber);
     formData.append('openingHours', JSON.stringify(openingHours));
     formData.append('mapEmbedLink', mapEmbedLink);
     formData.append('about', about);
@@ -139,7 +135,6 @@ const BusinessListing = () => {
       console.log(responseData);
       if (response.ok) {
         setSuccessModal(true);
-        navigate('/businesslisting');
       } else {
         setErrorModal(true);
       }

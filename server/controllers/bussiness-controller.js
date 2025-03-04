@@ -5,74 +5,43 @@ const Subcategory = require('../modals/subcategory-modal');
 const Vendor = require('../modals/vendor-modal');
 const mongoose = require('mongoose');
 
-// Create a new business listing
 const createBusiness = async (req, res) => {
-  const { categoryId, subcategoryId, relevantTags, keywords, websiteUrl, about, mapEmbedLink, mobileNumber, openingHours, services, paymentModes, address, email } = req.body;
-  
+  const {businessName, userName,categoryId, subcategoryId, relevantTags, keywords, websiteUrl, about, mapEmbedLink, mobileNumber, openingHours, services, paymentModes, address, email } = req.body;
   try {
     if (req.user.role !== 'vendor') {
       return res.status(403).json({ message: 'Access denied. Vendor role required.' });
     }
-
-    const userId = new mongoose.Types.ObjectId(req.user.id);
-    const vendor = await Vendor.findOne({ userId });
-
+    const vendor = await Vendor.findById(req.user.id);
+    console.log(vendor.username)
     if (!vendor) {
       return res.status(400).json({ message: 'Vendor not found' });
     }
-
-    const slug = slugify(vendor.businessName, { lower: true, strict: true });
+    const slug = slugify(businessName, { lower: true, strict: true });
     const existingBusiness = await Business.findOne({ slug });
     if (existingBusiness) {
       return res.status(400).json({ message: 'Business with this name already exists' });
     }
-
-    const category = await Category.findOne({ slug: categoryId });
-    const subcategory = await Subcategory.findOne({ slug: subcategoryId });
+    const category = await Category.findOne({slug: categoryId});
+    const subcategory = await Subcategory.findOne({slug:subcategoryId});
     if (!category || !subcategory) {
       return res.status(404).json({ message: 'Category or Subcategory not found' });
     }
-
     const image = req.files && req.files.image ? req.files.image[0].filename : null;
     const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
-
-    const newBusiness = new Business({
-      slug,
-      addedBy: vendor._id, 
-      businessName: vendor.businessName,
-      categoryId: category.slug,
-      subcategoryId: subcategory.slug,
-      status: 'active',
-      relevantTags,
-      keywords,
-      websiteUrl,
-      about,
-      mapEmbedLink,
-      image,
-      gallery,
-      address,
-      userName: vendor.username,
-      mobileNumber,
-      openingHours,
-      services,
-      paymentModes,
-      email
-    });
-
+    const newBusiness = new Business({slug, addedBy: {_id:vendor._id,name:vendor.username}, businessName,categoryId: {_id:category._id, name:category.name},
+       subcategoryId:{ id:subcategory._id, name:subcategory.name}, status: 'active',relevantTags, keywords, websiteUrl, about, mapEmbedLink, image,  
+       gallery,  address,mobileNumber,  openingHours, services, paymentModes,email});
     await newBusiness.save();
-
     const populatedProduct = await Business.findById(newBusiness._id)
-      .populate('categoryId')
-      .populate('subcategoryId');
-
+      .populate('categoryId._id', 'categoryId.name')
+      .populate('subcategoryId._id', 'subcategoryId.name')
+      .populate('addedBy._id', 'addedBy.name');
     res.status(201).json({ success: true, populatedProduct });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating business listing' });
   }
 };
-
-// Get all businesses
 const getAllBusinesses = async (req, res) => {
   try {
     const businesses = await Business.find();
@@ -82,8 +51,6 @@ const getAllBusinesses = async (req, res) => {
     res.status(500).json({ message: 'Error fetching business listings' });
   }
 };
-
-// Get business by slug
 const getBusinessBySlug = async (req, res) => {
   const { slug } = req.params;
   try {
@@ -97,35 +64,97 @@ const getBusinessBySlug = async (req, res) => {
     res.status(500).json({ message: 'Error fetching business' });
   }
 };
-
-// Delete business by ID
 const deleteBusinessById = async (req, res) => {
-  const { id } = req.params;
+  const BussinessDelete= req.params.id;
   try {
     const business = await Business.findByIdAndDelete(id);
     if (!business) {
       return res.status(404).json({ message: 'Business not found' });
     }
-    res.status(200).json({ message: 'Business deleted successfully' });
+    if (business.image) {
+      const imagePath = path.join(
+        __dirname,
+        "../../admin/src/images/uploads/image",
+        business.image
+      );
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+    if (business.gallery.length > 0) {
+      business.gallery.forEach((image) => {
+        const galleryImagePath = path.join(
+          __dirname,
+          "../../admin/src/images/uploads/gallery",
+          image
+        );
+        if (fs.existsSync(galleryImagePath)) {
+          fs.unlinkSync(galleryImagePath);
+        }
+      });
+    }
+    await Business.findByIdAndDelete(BussinessDelete);
+    res.status(200).json({ message: 'Bussiness deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error deleting business' });
   }
 };
-
-// Update business by slug
 const updateBusinessBySlug = async (req, res) => {
   const { slug } = req.params;
-  const updatedData = req.body;
+  const {businessName, userName,categoryId, subcategoryId, relevantTags, keywords, websiteUrl, about, mapEmbedLink, mobileNumber, openingHours, services, paymentModes, address, email } = req.body;
+  const image = req.files && req.files.image ? req.files.image[0].filename : null;
+  const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
   try {
-    const business = await Business.findByIdAndUpdate(slug, updatedData, { new: true });
+    const business = await Business.findOne({ slug });
     if (!business) {
       return res.status(404).json({ message: 'Business not found' });
     }
-    res.status(200).json(business);
+    let category;
+    if (categoryId) {
+      category = await Category.findOne({ slug: categoryId });
+      if (!category) return res.status(400).json({ message: 'Category not found' });
+    }
+    let subcategory;
+    if (subcategoryId) {
+      subcategory = await Subcategory.findOne({ slug: subcategoryId });
+      if (!subcategory) return res.status(400).json({ message: 'Subcategory not found' });
+    }
+    if (image && business.image) {
+      const oldImagePath = path.join(__dirname, '../../admin/src/images/uploads/image', business.image);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+    if (gallery.length > 0 && business.gallery.length > 0) {
+      business.gallery.forEach(file => {
+        const oldGalleryPath = path.join(__dirname, '../../admin/src/images/uploads/gallery', file);
+        if (fs.existsSync(oldGalleryPath)) {
+          fs.unlinkSync(oldGalleryPath);
+        }
+      });
+    }
+    if (businessName) business.businessName = businessName;
+    if (category) business.categoryId = category._id;
+    if (subcategory) business.subcategoryId = subcategory._id;
+    if (relevantTags) business.relevantTags = relevantTags.split(',').map(tag => tag.trim());
+    if (keywords) business.keywords = keywords.split(',').map(keyword => keyword.trim());
+    if (websiteUrl) business.websiteUrl = websiteUrl;
+    if (about) business.about = about;
+    if (mapEmbedLink) business.mapEmbedLink = mapEmbedLink;
+    if (mobileNumber) business.mobileNumber = mobileNumber;
+    if (openingHours) business.openingHours = openingHours;
+    if (services) business.services = services;
+    if (paymentModes) business.paymentModes = paymentModes;
+    if (address) business.address = address;
+    if (email) business.email = email;
+    if (image) business.image = image;
+    if (gallery.length > 0) business.gallery = gallery;
+    await business.save();
+  res.status(200).json(business);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error('Error updating business by slug:', err);
+    res.status(500).json({ message: 'Server Error', error: err.message });
   }
 };
 

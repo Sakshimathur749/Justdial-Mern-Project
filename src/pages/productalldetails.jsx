@@ -28,6 +28,7 @@ const Productalldetails = () => {
           throw new Error('Failed to fetch business data');
         }
         const data = await response.json();
+        console.log(data)
         setBusiness(data); 
       } catch (error) {
         setError(error.message); 

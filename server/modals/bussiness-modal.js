@@ -2,12 +2,20 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 
 const businessSchema = new mongoose.Schema({
-  addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  addedBy: {
+    _id:{ type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
+    name: { type: String }
+  },
   slug: { type: String, unique: true, required: true },
   businessName: { type: String, required: true },
-  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
-  subcategoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory', required: true },
+  categoryId: {
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+    name: { type: String }
+  },
+  subcategoryId: {
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory' },
+    name: { type: String }
+  },
   image: { type: String },
   gallery: { type: [String], max: 10 },
   address: { type: String, required: true },

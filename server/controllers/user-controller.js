@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../modals/user-modal');
+const Vendor = require('../modals/vendor-modal');
 const Membership= require('../modals/membership-modal')
 const defaultAdminCredentials = {
   email: 'admin@gmail.com',
@@ -17,21 +18,23 @@ const registerUser = async (req, res) => {
     return res.status(400).json({ message: 'All fields are required.' });
   }
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await Vendor.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists.' });
     }
-    const newUser = new User({ email, password, username, mobileNumber });
+    const newUser = new Vendor({ email, password, username, mobileNumber });
     await newUser.save();
     const payload = { userId: newUser._id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(201).json({ message: 'User registered successfully.',token ,  user: { email: newUser.email, username: newUser.username, mobileNumber: newUser.mobileNumber , password:newUser.password},});
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: 'Server error' });
   }
 };
 const loginUser = async (req, res) => {
   const { email, password  } = req.body;
+  console.log(email,password)
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
@@ -49,15 +52,18 @@ const loginUser = async (req, res) => {
         return res.status(400).json({ message: 'Invalid password of Admin' });
       }
     }
-    const user = await User.findOne({ email });
+    const user = await Vendor.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'User not Register' });
     }
+    console.log( password, user.password,"hjsute")
     const isMatch = await bcrypt.compare(password.trim(), user.password);
+    console.log(isMatch)
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid password of Vendor ' });
     }
-    const token = jwt.sign({ id: user._id , role:user.role, vendor:'vendorpanel'}, process.env.JWT_SECRET, { expiresIn: '7h' });
+    const payload = { id: user._id,  role: user.role, vendor:'vendorpanel',};
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7h' });
     res.json({
       token, role:user.role,
       user: { email: user.email, username: user.username , profilepicture:user.profilepicture, Googleprofilepicture: user.profilepicture, password:user.password},
@@ -81,7 +87,7 @@ const getProfile = async (req, res) => {
         address:'Hk High Tech'
       });
     }
-    const user = await User.findById(req.user.id);
+    const user = await Vendor.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -98,7 +104,7 @@ const updateProfile = async (req, res) => {
     return res.status(400).json({ message: 'Please provide all fields' });
   }
   try {
-    const user = await User.findById(req.user.id);
+    const user = await Vendor.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -126,7 +132,7 @@ const updateProfile = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
-    const user = await User.findById(req.user.id);
+    const user = await Vendor.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

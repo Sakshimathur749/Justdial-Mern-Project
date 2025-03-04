@@ -35,15 +35,8 @@ const mongoose = require('mongoose');
 //   }
 // };
 const createVendor = async (req, res) => {
-  const { businessName, mobileNumber, address, city, bio, password, email, username } = req.body;
+  const {  mobileNumber, address, city, bio, password, email, username } = req.body;
   try {
-    let userId = req.user.id;
-    if (userId === 'defaultAdminId') {
-      userId = new mongoose.Types.ObjectId('507f191e810c19729de860ea');
-    }
-    if (userId !== 'defaultAdminId' && !password) {
-      return res.status(400).json({ message: 'Password is required for vendor registration.' });
-    }
     if (!email) {
       return res.status(400).json({ message: 'Email is required' });
     }
@@ -60,11 +53,11 @@ const createVendor = async (req, res) => {
     let existingSlug = await Vendor.findOne({ slug: emailSlug });
     if (existingSlug) {
       const uniqueSlug = `${emailSlug}-${Date.now()}`;
-      const vendor = new Vendor({ userId, businessName,  mobileNumber, address,username, city,  bio,   email,   slug: uniqueSlug,     password: hashedPassword,});
+      const vendor = new Vendor({ mobileNumber, address,username, city,  bio,   email,   slug: uniqueSlug,     password: hashedPassword,});
       await vendor.save();
       return res.status(201).json(vendor);
     }
-   const vendor = new Vendor({userId, businessName,  mobileNumber, address,city, bio,username, email, slug: emailSlug,  password: hashedPassword,  });
+   const vendor = new Vendor({ mobileNumber, address,city, bio,username, email, slug: emailSlug,  password: hashedPassword,  });
     await vendor.save();
     res.status(201).json(vendor);
   } catch (err) {

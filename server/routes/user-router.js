@@ -61,7 +61,7 @@ const compressImage = (req, res, next) => {
 };
 const client = new OAuth2Client('510164715040-lj99bre09a5co1gbelb7u3ul16kgakqo.apps.googleusercontent.com');
 router.post('/register', registerUser);
-router.post('/login', loginUser);
+router.post('/login',  loginUser);
 router.get('/profile', auth, getProfile);
 router.put('/change-password', auth, changePassword);
 router.put('/profile-edit', auth, upload.single('profilepicture'),compressImage, updateProfile);

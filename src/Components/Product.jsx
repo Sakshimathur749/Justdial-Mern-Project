@@ -18,6 +18,7 @@ const Product = () => {
             if (!response.ok) {
                 throw new Error('Subcategories not found');
             }
+            console.log(response.json())
             return response.json();
         })
         .then(data => {
@@ -411,7 +412,7 @@ useEffect(() => {
                             </div>
                             <div className="adr">
                               <div className="street-address">
-                                {product.location.city}{""}{product.location.state}{""}{product.location.country}{""}{product.location.pinCode}
+                                {product.address}
                               </div>
                             </div>
                             <div className="price-range">$</div>

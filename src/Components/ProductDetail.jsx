@@ -29,6 +29,7 @@ const ProductDetail = ({ slug }) => {
           throw new Error('Product not found');
         }
         const data = await response.json();
+        console.log(data,"ghjdcz")
         setProduct(data);
         const reviewResponse = await fetch(`http://localhost:5000/api/review/slug/${slug}`);
     if (!reviewResponse.ok) {
@@ -155,7 +156,7 @@ const ProductDetail = ({ slug }) => {
               <div>
                 <div className="product_detail_banner">
                   <div className="product_title etd d-flex justify-content-between">
-                    <a >{product.title}</a>
+                    <a >{product.businessName}</a>
                     <a ><svg xmlns="http://www.w3.org/2000/svg" height={20} width={20} viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg></a>
                   </div>
 
@@ -201,7 +202,7 @@ const ProductDetail = ({ slug }) => {
                       />
                     </svg>{" "}
                     <span>
-                      {product.location.country} (<a  href={`https://www.google.com/maps?q=${encodeURIComponent( product.location.city)}`}
+                      {product.address} (<a  href={`https://www.google.com/maps?q=${encodeURIComponent( product.address)}`}
                               target="_blank"
                               rel="nofollow noopener"> map</a>
                       )
