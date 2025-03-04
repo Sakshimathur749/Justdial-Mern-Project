@@ -7,12 +7,12 @@ const mongoose = require('mongoose');
 
 const createBusiness = async (req, res) => {
   const {businessName, userName,categoryId, subcategoryId, relevantTags, keywords, websiteUrl, about, mapEmbedLink, mobileNumber, openingHours, services, paymentModes, address, email } = req.body;
+console.log(openingHours,"req.body")
   try {
     if (req.user.role !== 'vendor') {
       return res.status(403).json({ message: 'Access denied. Vendor role required.' });
     }
     const vendor = await Vendor.findById(req.user.id);
-    console.log(vendor.username)
     if (!vendor) {
       return res.status(400).json({ message: 'Vendor not found' });
     }
@@ -28,9 +28,14 @@ const createBusiness = async (req, res) => {
     }
     const image = req.files && req.files.image ? req.files.image[0].filename : null;
     const gallery = req.files && req.files.gallery ? req.files.gallery.map(file => file.filename) : [];
+    let parsedOpeningHours = null;
+    if (openingHours) {
+      parsedOpeningHours = JSON.parse(openingHours); 
+    }
     const newBusiness = new Business({slug, addedBy: {_id:vendor._id,name:vendor.username}, businessName,categoryId: {_id:category._id, name:category.name},
        subcategoryId:{ id:subcategory._id, name:subcategory.name}, status: 'active',relevantTags, keywords, websiteUrl, about, mapEmbedLink, image,  
-       gallery,  address,mobileNumber,  openingHours, services, paymentModes,email});
+       gallery,  address,mobileNumber,  openingHours:parsedOpeningHours, services, paymentModes,email});
+       console.log(newBusiness.openingHours.monday);
     await newBusiness.save();
     const populatedProduct = await Business.findById(newBusiness._id)
       .populate('categoryId._id', 'categoryId.name')

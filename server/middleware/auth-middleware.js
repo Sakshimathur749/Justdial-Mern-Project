@@ -14,8 +14,7 @@ const auth = async (req, res, next) => {
     if (!secret) {
       throw new Error("JWT secret key is missing. Check .env file.");
     }
-    const decoded = jwt.verify(token, secret);    
-    console.log(decoded.id)
+    const decoded = jwt.verify(token, secret);  
     if (decoded.id === 'defaultAdminId') {
       req.user = { id: 'defaultAdminId', role: 'Admin' }; 
       return next();
@@ -25,11 +24,9 @@ const auth = async (req, res, next) => {
       return next();
     }
     const user = await Vendor.findById(decoded.id);
-    console.log(user, decoded.id,"skjdjfa")
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-    
     req.user = user;
     next();
   } catch (err) {
