@@ -35,7 +35,6 @@ console.log(openingHours,"req.body")
     const newBusiness = new Business({slug, addedBy: {_id:vendor._id,name:vendor.username}, businessName,categoryId: {_id:category._id, name:category.name},
        subcategoryId:{ id:subcategory._id, name:subcategory.name}, status: 'active',relevantTags, keywords, websiteUrl, about, mapEmbedLink, image,  
        gallery,  address,mobileNumber,  openingHours:parsedOpeningHours, services, paymentModes,email});
-       console.log(newBusiness.openingHours.monday);
     await newBusiness.save();
     const populatedProduct = await Business.findById(newBusiness._id)
       .populate('categoryId._id', 'categoryId.name')
